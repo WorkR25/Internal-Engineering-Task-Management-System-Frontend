@@ -16,8 +16,12 @@
 //     return <CreateRole />;
 // }
 
-import CreateProject from "@/pages/create-project";
+// import CreateProject from "@/pages/create-project";
 
+// export default function Home() {
+//     return <CreateProject />;
+// }
+import AssignTask from "@/components/task-detail-review/assign-task";
 export default function Home() {
-    return <CreateProject />;
-}
+     return <AssignTask />;
+ }
