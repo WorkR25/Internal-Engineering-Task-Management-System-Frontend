@@ -28,7 +28,11 @@
 //   return <Team />;
 // }
 
-import AssignTask from "@/components/task-detail-review/assign-task";
+// import AssignTask from "@/components/task-detail-review/assign-task";
+// export default function Home() {
+//      return <AssignTask />;
+//  }
+import AddMember from "@/components/project-member/add-member";
 export default function Home() {
-     return <AssignTask />;
- }
+     return <AddMember />;
+}
