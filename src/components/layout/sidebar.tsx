@@ -7,6 +7,7 @@ type PageName =
   | "task-board"
   | "task-detail-review"
   | "team"
+  | "reviews"
   | "performance";
 
 interface SidebarProps {
@@ -37,6 +38,11 @@ export default function Sidebar({
       label: "Task Detail Review",
       id: "task-detail-review",
       href: "/task-detail-review",
+    },
+    {
+      label: "Reviews",
+      id: "reviews",
+      href: "/reviews",
     },
     {
       label: "Team",
