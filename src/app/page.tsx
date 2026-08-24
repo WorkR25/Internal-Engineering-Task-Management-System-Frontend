@@ -1,7 +1,11 @@
+// import Dashboard from "../pages/dashboard";
 
+// export default function Home() {
+//   return <Dashboard />;
+// }
 
-import Dashboard from "../pages/dashboard";
+import Performance from "../pages/auth/signin";
 
 export default function Home() {
-  return <Dashboard />;
+  return <Performance />;
 }
