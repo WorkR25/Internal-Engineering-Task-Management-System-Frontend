@@ -1,11 +1,13 @@
 "use client";
 
+import Link from "next/link";
+
 type PageName =
   | "dashboard"
   | "task-board"
   | "task-detail-review"
-  | "performance"
-  | "team";
+  | "team"
+  | "performance";
 
 interface SidebarProps {
   onPageChange: (page: PageName) => void;
@@ -19,26 +21,37 @@ export default function Sidebar({
   const navigation: {
     label: string;
     id: PageName;
+    href: string;
   }[] = [
     {
       label: "Dashboard",
       id: "dashboard",
+      href: "/",
     },
     {
       label: "Task Board",
       id: "task-board",
+      href: "/task-board",
     },
     {
       label: "Task Detail Review",
       id: "task-detail-review",
+      href: "/task-detail-review",
+    },
+    {
+      label: "Team",
+      id: "team",
+      href: "/team",
     },
     {
       label: "Performance",
       id: "performance",
+      href: "/performance",
     },
     {
       label: "Team",
-      id: "team", 
+      id: "team",
+      href: "/team", 
     },
 
   ];
@@ -56,14 +69,13 @@ export default function Sidebar({
       {/* NAVIGATION */}
       <nav className="flex-1 px-3 py-5">
         <div className="space-y-1">
-
           {navigation.map((item) => {
             const isActive = activePage === item.id;
 
             return (
-              <button
+              <Link
                 key={item.id}
-                type="button"
+                href={item.href}
                 onClick={() => onPageChange(item.id)}
                 className={`block w-full rounded-md px-3 py-2.5 text-left text-sm transition ${
                   isActive
@@ -72,10 +84,9 @@ export default function Sidebar({
                 }`}
               >
                 {item.label}
-              </button>
+              </Link>
             );
           })}
-
         </div>
       </nav>
 
