@@ -1,7 +1,9 @@
 "use client";
+import { useState } from 'react';
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '../components/layout/sidebar';
+import AddDeveloperModal from '../components/team/add_developer';
 
 // Mock data based on the provided UI design
 const developers = [
@@ -15,17 +17,15 @@ const developers = [
 
 export default function TeamPage() {
   const router = useRouter();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="flex min-h-screen bg-[#f8f9fc] font-sans">
       
       {/* Sidebar Integration */}
-      <Sidebar 
-        activePage="team" 
-        onPageChange={(page) => {
-          router.push(`/${page}`);
-        }} 
-      />
+       <Sidebar 
+            activePage="team"
+            onPageChange={() => {}}
+        />
 
       {/* Main Content Area - Offset by sidebar width (ml-56) */}
       <div className="flex-1 bg-white p-8 ml-56"> 
@@ -38,7 +38,9 @@ export default function TeamPage() {
           </div>
           
           <div className="flex items-center space-x-6">
-            <button className="bg-[#4f46e5] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm">
+            <button 
+                onClick={() => setIsModalOpen(true)}
+                className="bg-[#4f46e5] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm">
               + Add Developer
             </button>
             
@@ -116,6 +118,8 @@ export default function TeamPage() {
           </table>
         </div>
       </div>
+        {/* Add Developer Modal Component */}
+      <AddDeveloperModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

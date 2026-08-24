@@ -1,4 +1,11 @@
-// import Dashboard from "../pages/dashboard";
+"use client";
+
+// import Dashboard from "@/pages/dashboard";
+
+// export default function Home() {
+//   return <Dashboard />;
+// }
+// // import Dashboard from "../pages/dashboard";
 
 // export default function Home() {
 //   return <Dashboard />;
@@ -22,13 +29,13 @@
 //     return <CreateProject />;
 // }
 
-// import Team from "../pages/team";
+import Team from "../pages/team";
 
-// export default function Home() {
-//   return <Team />;
-// }
-
-import AssignTask from "@/components/task-detail-review/assign-task";
 export default function Home() {
-     return <AssignTask />;
- }
+  return <Team />;
+}
+
+// import AssignTask from "@/components/task-detail-review/assign-task";
+// export default function Home() {
+//      return <AssignTask />;
+//  }
