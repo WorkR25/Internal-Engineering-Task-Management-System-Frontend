@@ -48,11 +48,7 @@ export default function Sidebar({
       id: "performance",
       href: "/performance",
     },
-    {
-      label: "Team",
-      id: "team",
-      href: "/team", 
-    },
+    
 
   ];
 
