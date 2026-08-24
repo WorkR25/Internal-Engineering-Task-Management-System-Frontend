@@ -1,8 +1,7 @@
-import { redirect } from 'next/navigation';
-
-export default function RootPage() {
-  // Automatically redirect anyone visiting '/' to the sign-in page
-  redirect('/auth/signin');
-}  
 
 
+import Dashboard from "../pages/dashboard";
+
+export default function Home() {
+  return <Dashboard />;
+}
