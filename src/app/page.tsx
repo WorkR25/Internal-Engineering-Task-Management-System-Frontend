@@ -4,11 +4,11 @@
 //   return <Dashboard />;
 // }
 
-// import Performance from "../pages/performance";
+import Performance from "../pages/performance";
 
-// export default function Home() {
-//   return <Performance />;
-// }
+export default function Home() {
+  return <Performance />;
+}
 
 // import CreateRole from "@/pages/create-role";
 
@@ -16,8 +16,8 @@
 //     return <CreateRole />;
 // }
 
-import CreateProject from "@/pages/create-project";
+// import CreateProject from "@/pages/create-project";
 
-export default function Home() {
-    return <CreateProject />;
-}
+// export default function Home() {
+//     return <CreateProject />;
+// }
