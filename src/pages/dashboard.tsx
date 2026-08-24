@@ -63,7 +63,10 @@ const pendingReviews = [
 export default function Dashboard() {
   return (
     <main className="min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar 
+        activePage="dashboard"
+        onPageChange={() => {}}
+        />
 
       <section className="ml-56 min-h-screen">
         <header className="flex items-center justify-between border-b border-gray-200 bg-white px-7 py-5">

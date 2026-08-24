@@ -10,8 +10,14 @@
 //   return <Performance />;
 // }
 
-import CreateRole from "@/pages/create-role";
+// import CreateRole from "@/pages/create-role";
+
+// export default function Home() {
+//     return <CreateRole />;
+// }
+
+import CreateProject from "@/pages/create-project";
 
 export default function Home() {
-    return <CreateRole />;
+    return <CreateProject />;
 }
