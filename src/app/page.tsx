@@ -1,14 +1,14 @@
-// import Dashboard from "../pages/dashboard";
-
-// export default function Home() {
-//   return <Dashboard />;
-// }
-
-import Performance from "../pages/performance";
+import Dashboard from "../pages/dashboard";
 
 export default function Home() {
-  return <Performance />;
+  return <Dashboard />;
 }
+
+// import Performance from "../pages/performance";
+
+// export default function Home() {
+//   return <Performance />;
+// }
 
 // import CreateRole from "@/pages/create-role";
 
@@ -21,3 +21,4 @@ export default function Home() {
 // export default function Home() {
 //     return <CreateProject />;
 // }
+
