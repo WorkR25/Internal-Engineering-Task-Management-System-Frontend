@@ -27,7 +27,7 @@ const navigation = [
 ];
 
 export default function Sidebar() {
-  const pathname = usePathname();
+  const pathname = usePathname() ??"";
 
   return (
     <aside className="fixed left-0 top-0 z-20 flex h-screen w-56 flex-col border-r border-gray-200 bg-white">
