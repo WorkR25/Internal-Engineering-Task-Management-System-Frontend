@@ -4,8 +4,14 @@
 //   return <Dashboard />;
 // }
 
-import Performance from "../pages/performance";
+// import Performance from "../pages/performance";
+
+// export default function Home() {
+//   return <Performance />;
+// }
+
+import CreateRole from "@/pages/create-role";
 
 export default function Home() {
-  return <Performance />;
+    return <CreateRole />;
 }
