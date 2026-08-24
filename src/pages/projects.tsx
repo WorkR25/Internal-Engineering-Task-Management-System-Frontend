@@ -28,9 +28,9 @@ export default function ProjectsPage() {
       
       {/* Sidebar Integration */}
       <Sidebar
-              activePage="projects"
-              onPageChange={() => {}}
-            />
+            activePage="projects"
+            onPageChange={() => {}}
+        />
 
       {/* Main Content Area - Offset by sidebar width (ml-56) */}
       <div className="flex-1 ml-56 flex flex-col"> 
