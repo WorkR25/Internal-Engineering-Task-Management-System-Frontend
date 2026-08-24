@@ -7,7 +7,8 @@ type PageName =
   | "task-board"
   | "task-detail-review"
   | "team"
-  | "performance";
+  | "performance"
+  | "projects";
 
 interface SidebarProps {
   onPageChange: (page: PageName) => void;
@@ -48,7 +49,11 @@ export default function Sidebar({
       id: "performance",
       href: "/performance",
     },
-    
+    {
+      label: "Projects",
+      id: "projects", 
+      href: "/projects",
+    },
 
   ];
 
