@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Sidebar from "../components/layout/sidebar";
 
-
 const tasks = {
   todo: [
     {
@@ -167,7 +166,7 @@ export default function TaskBoard() {
     <div className="min-h-screen bg-[#f8f9fc] text-gray-900">
       <Sidebar />
 
-      <main className="ml-64 min-h-screen">
+      <main className="ml-56 min-h-screen">
         <div className="mx-auto max-w-[1600px] px-6 py-6">
           <div className="mb-6 flex items-center justify-between">
             <div>
@@ -182,8 +181,9 @@ export default function TaskBoard() {
 
             <div className="flex items-center gap-3">
               <button
+                type="button"
                 onClick={() => setShowCreateTask(true)}
-                className="rounded-md bg-[#5146e5] px-4 py-2 text-xs font-medium text-white shadow-sm"
+                className="rounded-md bg-[#5146e5] px-4 py-2 text-xs font-medium text-white shadow-sm hover:bg-indigo-700"
               >
                 + New Task
               </button>
@@ -199,19 +199,31 @@ export default function TaskBoard() {
           </div>
 
           <div className="mb-6 flex items-center gap-2">
-            <button className="rounded-md bg-[#5146e5] px-3 py-2 text-[10px] font-medium text-white">
+            <button
+              type="button"
+              className="rounded-md bg-[#5146e5] px-3 py-2 text-[10px] font-medium text-white"
+            >
               All Tasks
             </button>
 
-            <button className="rounded-md border border-gray-200 bg-white px-3 py-2 text-[10px] font-medium text-gray-600">
+            <button
+              type="button"
+              className="rounded-md border border-gray-200 bg-white px-3 py-2 text-[10px] font-medium text-gray-600"
+            >
               My Tasks
             </button>
 
-            <button className="rounded-md border border-gray-200 bg-white px-3 py-2 text-[10px] font-medium text-gray-600">
+            <button
+              type="button"
+              className="rounded-md border border-gray-200 bg-white px-3 py-2 text-[10px] font-medium text-gray-600"
+            >
               High Priority
             </button>
 
-            <button className="rounded-md border border-gray-200 bg-white px-3 py-2 text-[10px] font-medium text-gray-600">
+            <button
+              type="button"
+              className="rounded-md border border-gray-200 bg-white px-3 py-2 text-[10px] font-medium text-gray-600"
+            >
               Overdue
             </button>
           </div>
@@ -252,7 +264,37 @@ export default function TaskBoard() {
         </div>
       </main>
 
-      
+      {showCreateTask && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-gray-900">
+                Create New Task
+              </h2>
+
+              <button
+                type="button"
+                onClick={() => setShowCreateTask(false)}
+                className="text-sm text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="mt-2 text-xs text-gray-500">
+              Task creation will be connected to the API later.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setShowCreateTask(false)}
+              className="mt-5 rounded-md bg-[#5146e5] px-4 py-2 text-xs font-medium text-white"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
