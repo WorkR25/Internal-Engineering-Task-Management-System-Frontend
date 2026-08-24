@@ -164,7 +164,10 @@ export default function TaskBoard() {
 
   return (
     <div className="min-h-screen bg-[#f8f9fc] text-gray-900">
-      <Sidebar />
+      <Sidebar 
+        activePage="task-board"
+        onPageChange={() => {}}
+      />
 
       <main className="ml-56 min-h-screen">
         <div className="mx-auto max-w-[1600px] px-6 py-6">
