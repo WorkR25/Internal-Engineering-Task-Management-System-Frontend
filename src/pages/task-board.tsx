@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Sidebar from "../components/layout/sidebar";
+import CreateTask from "../components/task-board/create-task";
 
 const tasks = {
   todo: [
@@ -18,6 +19,7 @@ const tasks = {
       deadline: "Dec 5, 2026",
     },
   ],
+
   inProgress: [
     {
       title: "Implement payment webhook handler",
@@ -32,6 +34,7 @@ const tasks = {
       deadline: "Dec 6, 2026",
     },
   ],
+
   inReview: [
     {
       title: "Fix N+1 query on dashboard",
@@ -46,6 +49,7 @@ const tasks = {
       deadline: "Dec 7, 2026",
     },
   ],
+
   changesRequested: [
     {
       title: "Refactor review scoring service",
@@ -54,6 +58,7 @@ const tasks = {
       deadline: "Dec 5, 2026",
     },
   ],
+
   completed: [
     {
       title: "Seed roles and assignment reasons",
@@ -159,18 +164,20 @@ function Column({
 }
 
 export default function TaskBoard() {
-  const [showCreateTask, setShowCreateTask] =
-    useState(false);
+  const [showCreateTask, setShowCreateTask] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#f8f9fc] text-gray-900">
-      <Sidebar 
+
+      <Sidebar
         activePage="task-board"
         onPageChange={() => {}}
       />
 
       <main className="ml-56 min-h-screen">
         <div className="mx-auto max-w-[1600px] px-6 py-6">
+
+          {/* HEADER */}
           <div className="mb-6 flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold tracking-tight">
@@ -183,6 +190,7 @@ export default function TaskBoard() {
             </div>
 
             <div className="flex items-center gap-3">
+
               <button
                 type="button"
                 onClick={() => setShowCreateTask(true)}
@@ -198,10 +206,13 @@ export default function TaskBoard() {
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#5146e5] text-[10px] font-semibold text-white">
                 AG
               </div>
+
             </div>
           </div>
 
+          {/* FILTERS */}
           <div className="mb-6 flex items-center gap-2">
+
             <button
               type="button"
               className="rounded-md bg-[#5146e5] px-3 py-2 text-[10px] font-medium text-white"
@@ -229,10 +240,13 @@ export default function TaskBoard() {
             >
               Overdue
             </button>
+
           </div>
 
+          {/* TASK BOARD */}
           <div className="overflow-x-auto">
             <div className="flex min-w-[1150px] gap-5">
+
               <Column
                 title="TODO"
                 count={2}
@@ -262,42 +276,19 @@ export default function TaskBoard() {
                 count={2}
                 tasks={tasks.completed}
               />
+
             </div>
           </div>
+
         </div>
       </main>
 
-      {showCreateTask && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold text-gray-900">
-                Create New Task
-              </h2>
+      {/* CREATE TASK MODAL */}
+      <CreateTask
+        open={showCreateTask}
+        onClose={() => setShowCreateTask(false)}
+      />
 
-              <button
-                type="button"
-                onClick={() => setShowCreateTask(false)}
-                className="text-sm text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-
-            <p className="mt-2 text-xs text-gray-500">
-              Task creation will be connected to the API later.
-            </p>
-
-            <button
-              type="button"
-              onClick={() => setShowCreateTask(false)}
-              className="mt-5 rounded-md bg-[#5146e5] px-4 py-2 text-xs font-medium text-white"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
