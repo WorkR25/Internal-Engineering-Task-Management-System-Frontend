@@ -1,4 +1,4 @@
-import Sidebar from "../components/sidebar";
+import Sidebar from "../components/layout/sidebar";
 
 const projects = [
   {
@@ -65,7 +65,7 @@ export default function Dashboard() {
     <main className="min-h-screen bg-gray-50">
       <Sidebar />
 
-      <section className="ml-52 min-h-screen">
+      <section className="ml-56 min-h-screen">
         <header className="flex items-center justify-between border-b border-gray-200 bg-white px-7 py-5">
           <div>
             <h1 className="text-lg font-semibold text-gray-900">
@@ -83,7 +83,7 @@ export default function Dashboard() {
             </span>
 
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-xs font-semibold text-[#5146e5]">
-              AD
+              AG
             </div>
           </div>
         </header>
