@@ -114,7 +114,7 @@ export default function TaskDetailReview() {
   return (
     <div className="min-h-screen bg-[#f8f9fc] text-gray-900">
       <Sidebar 
-      activePage="task-board"
+      activePage="task-detail-review"
       onPageChange={() => {}}
       />
 
