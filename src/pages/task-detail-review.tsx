@@ -113,7 +113,10 @@ export default function TaskDetailReview() {
 
   return (
     <div className="min-h-screen bg-[#f8f9fc] text-gray-900">
-      <Sidebar />
+      <Sidebar 
+      activePage="task-board"
+      onPageChange={() => {}}
+      />
 
       <main className="ml-52 min-h-screen">
         <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
@@ -256,7 +259,7 @@ export default function TaskDetailReview() {
                   </div>
 
                   <p className="mt-4 text-[10px] leading-5 text-gray-600">
-                    "{submission.description}"
+                    &quot;{submission.description}&quot;
                   </p>
                 </div>
               </section>
