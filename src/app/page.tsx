@@ -15,9 +15,9 @@
 // export default function Home() {
 //     return <CreateRole />;
 // }
-
-import CreateProject from "@/pages/create-project";
+//
+import Dashboard from "@/pages/dashboard";
 
 export default function Home() {
-    return <CreateProject />;
+  return <Dashboard />;
 }

@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
+
 type PageName =
   | "dashboard"
   | "task-board"
   | "task-detail-review"
+  | "team"
   | "performance";
 
 interface SidebarProps {
@@ -11,10 +14,6 @@ interface SidebarProps {
   activePage: PageName;
 }
 
-<<<<<<< HEAD
-export default function Sidebar() {
-  const pathname = usePathname() ?? "";
-=======
 export default function Sidebar({
   onPageChange,
   activePage,
@@ -22,25 +21,34 @@ export default function Sidebar({
   const navigation: {
     label: string;
     id: PageName;
+    href: string;
   }[] = [
     {
       label: "Dashboard",
       id: "dashboard",
+      href: "/",
     },
     {
       label: "Task Board",
       id: "task-board",
+      href: "/task-board",
     },
     {
       label: "Task Detail Review",
       id: "task-detail-review",
+      href: "/task-detail-review",
+    },
+    {
+      label: "Team",
+      id: "team",
+      href: "/team",
     },
     {
       label: "Performance",
       id: "performance",
+      href: "/performance",
     },
   ];
->>>>>>> c585a956d3a4e0fde95e6245add12e115c3a9537
 
   return (
     <aside className="fixed left-0 top-0 z-20 flex h-screen w-56 flex-col border-r border-gray-200 bg-white">
@@ -55,14 +63,13 @@ export default function Sidebar({
       {/* NAVIGATION */}
       <nav className="flex-1 px-3 py-5">
         <div className="space-y-1">
-
           {navigation.map((item) => {
             const isActive = activePage === item.id;
 
             return (
-              <button
+              <Link
                 key={item.id}
-                type="button"
+                href={item.href}
                 onClick={() => onPageChange(item.id)}
                 className={`block w-full rounded-md px-3 py-2.5 text-left text-sm transition ${
                   isActive
@@ -71,10 +78,9 @@ export default function Sidebar({
                 }`}
               >
                 {item.label}
-              </button>
+              </Link>
             );
           })}
-
         </div>
       </nav>
 
