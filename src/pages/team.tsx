@@ -1,5 +1,6 @@
+"use client";
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import Sidebar from '../components/layout/sidebar';
 
 // Mock data based on the provided UI design
