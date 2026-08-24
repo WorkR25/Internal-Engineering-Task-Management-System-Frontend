@@ -1,4 +1,11 @@
-// import Dashboard from "../pages/dashboard";
+"use client";
+
+// import Dashboard from "@/pages/dashboard";
+
+// export default function Home() {
+//   return <Dashboard />;
+// }
+// // import Dashboard from "../pages/dashboard";
 
 // export default function Home() {
 //   return <Dashboard />;
