@@ -1,4 +1,3 @@
-/* Must be included for Tailwind v4 to resolve global utilities */
 @reference "../../../app/globals.css";
 
 .performance-container {
@@ -10,10 +9,11 @@
 }
 
 .content-wrapper {
-  @apply mx-auto max-w-[1400px];
+  @apply w-full;
 }
 
-/* Header Section */
+/* Header */
+
 .performance-header {
   @apply mb-6 flex items-center justify-between;
 }
@@ -30,10 +30,6 @@
   @apply flex items-center gap-3;
 }
 
-.period-select {
-  @apply rounded-md border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600 outline-none;
-}
-
 .admin-badge {
   @apply rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-semibold text-gray-600;
 }
@@ -42,9 +38,10 @@
   @apply flex h-8 w-8 items-center justify-center rounded-full bg-[#5146e5] text-[10px] font-semibold text-white;
 }
 
-/* Metrics Grid */
+/* Metrics */
+
 .metrics-grid {
-  @apply grid gap-4 md:grid-cols-2 xl:grid-cols-4;
+  @apply grid w-full gap-4 md:grid-cols-2 xl:grid-cols-4;
 }
 
 .metric-card {
@@ -59,26 +56,18 @@
   @apply mt-2 text-2xl font-semibold text-gray-900;
 }
 
-.metric-change-positive {
-  @apply mt-1 text-xs text-emerald-600;
+.metric-change {
+  @apply mt-1 text-xs;
 }
 
-.metric-change-negative {
-  @apply mt-1 text-xs text-red-500;
+/* Trend Section */
+
+.trend-section {
+  @apply mt-5 w-full overflow-hidden rounded-xl border border-gray-200 bg-white;
 }
 
-/* Bottom Split Layout */
-.bottom-split-layout {
-  @apply mt-5 grid gap-5 xl:grid-cols-[1.7fr_1fr];
-}
-
-/* Developer Performance Table */
-.section-card {
-  @apply overflow-hidden rounded-xl border border-gray-200 bg-white;
-}
-
-.section-header {
-  @apply flex items-center justify-between border-b border-gray-200 px-5 py-4;
+.overview-header {
+  @apply border-b border-gray-200 px-5 py-4;
 }
 
 .section-title {
@@ -89,12 +78,42 @@
   @apply mt-1 text-xs text-gray-400;
 }
 
-.table-header-row {
-  @apply grid grid-cols-[2fr_1fr_1fr_1fr] border-b border-gray-200 px-5 py-3 text-[10px] font-medium text-gray-500;
+.trend-chart-wrapper {
+  @apply w-full px-5 pb-4;
 }
 
-.table-row {
-  @apply grid grid-cols-[2fr_1fr_1fr_1fr] items-center border-b border-gray-100 px-5 py-3.5 last:border-0;
+.trend-chart {
+  @apply w-full;
+}
+
+.performance-trend-chart {
+  @apply block h-[280px] w-full;
+}
+
+.trend-labels {
+  @apply grid w-full grid-cols-6 text-center text-[10px] text-gray-400;
+}
+
+/* Developer Comparison */
+
+.developer-comparison {
+  @apply mt-5 w-full overflow-hidden rounded-xl border border-gray-200 bg-white;
+}
+
+.section-header {
+  @apply flex items-center justify-between border-b border-gray-200 px-5 py-4;
+}
+
+.export-button {
+  @apply rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50;
+}
+
+.developer-table-header {
+  @apply grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] border-b border-gray-200 px-5 py-3 text-[10px] font-medium text-gray-500;
+}
+
+.developer-table-row {
+  @apply grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] items-center border-b border-gray-100 px-5 py-3.5 last:border-0;
 }
 
 .dev-info-wrapper {
@@ -102,7 +121,7 @@
 }
 
 .dev-avatar {
-  @apply flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5];
+  @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5];
 }
 
 .dev-name {
@@ -114,67 +133,54 @@
 }
 
 .table-text-bold {
-  @apply text-xs font-medium text-gray-700;
-}
-
-.table-text-success {
-  @apply text-xs text-emerald-600;
-}
-
-/* Performance Overview Section */
-.overview-card {
-  @apply rounded-xl border border-gray-200 bg-white p-5;
-}
-
-.overview-header {
-  @apply mb-5;
-}
-
-.overview-list {
-  @apply space-y-5;
-}
-
-.bar-header {
-  @apply mb-2 flex items-center justify-between;
-}
-
-.bar-label {
-  @apply text-xs text-gray-600;
-}
-
-.bar-value {
   @apply text-xs font-semibold text-gray-800;
 }
 
-.progress-track {
-  @apply h-2 rounded-full bg-gray-100;
+/* Developer Trend */
+
+.sparkline {
+  @apply block;
 }
 
-.progress-fill {
-  @apply h-2 rounded-full bg-[#5146e5];
+/* Responsive */
+
+@media (max-width: 1024px) {
+  .main-section {
+    @apply ml-56;
+  }
+
+  .developer-table-header,
+  .developer-table-row {
+    @apply min-w-[850px];
+  }
 }
 
-/* Review Insights Section */
-.insights-card {
-  @apply mt-5 rounded-xl border border-gray-200 bg-white p-5;
-}
+@media (max-width: 768px) {
+  .main-section {
+    @apply ml-0 p-4;
+  }
 
-.insights-grid {
-  @apply mt-5 grid gap-4 md:grid-cols-3;
-}
+  .performance-header {
+    @apply flex-col items-start gap-4;
+  }
 
-.insight-item {
-  @apply rounded-lg bg-gray-50 p-4;
-}
+  .metrics-grid {
+    @apply grid-cols-1;
+  }
 
-.insight-label {
-  @apply text-[10px] font-medium text-gray-500;
-}
+  .trend-section {
+    @apply p-4;
+  }
 
-.insight-value {
-  @apply mt-2 text-xl font-semibold text-gray-900;
-}
+  .trend-chart-wrapper {
+    @apply px-0;
+  }
 
-.insight-change-positive {
-  @apply mt-1 text-[10px] text-emerald-600;
+  .performance-trend-chart {
+    @apply h-[220px] w-full;
+  }
+
+  .trend-labels {
+    @apply text-[9px];
+  }
 }
