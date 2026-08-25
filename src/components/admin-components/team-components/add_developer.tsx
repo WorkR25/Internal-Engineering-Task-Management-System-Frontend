@@ -3,9 +3,6 @@
 import React, { useState, useEffect } from "react";
 import "./add_developer.css"; // Styles for this modal (see add-developer.css)
 
-/* ============================================================
-   Types
-   ============================================================ */
 
 interface AddDeveloperModalProps {
   isOpen: boolean;      // Controls whether the modal is rendered
@@ -76,17 +73,8 @@ export default function AddDeveloperModal({ isOpen, onClose }: AddDeveloperModal
    *   POST /api/v1/auth/signup
    *   Body: { fullName: formData.fullName, email: formData.email }
    *   Response (expected): { tempPassword: string, developerId: string, ... }
-   *
-   * Example:
-   *
-   *   const handleCreateAccount = async () => {
-   *     setIsSubmitting(true);
-   *     setErrorMessage(null);
-   *     try {
-   *       const res = await fetch("/api/v1/auth/signup", {
-   *         method: "POST",
-   *         headers: { "Content-Type": "application/json" },
-   *         body: JSON.stringify(formData),
+  
+  
    
    * ------------------------------------------------------------
    */

@@ -1,219 +1,109 @@
+@import "../../../app/globals.css";
+
 .assign-task-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 370px;
-  background: #ffffff;
-  border: 1px solid #e4e6eb;
-  border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-  font-family: Arial, Helvetica, sans-serif;
+  @apply fixed left-1/2 top-1/2 w-[370px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[10px] border border-[#e4e6eb] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)] font-sans;
 }
 
 .assign-task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 17px;
-  border-bottom: 1px solid #e8e9ee;
+  @apply flex items-start justify-between border-b border-[#e8e9ee] px-[17px] py-[17px];
 }
 
 .assign-task-title {
-  margin: 0;
-  font-size: 14px;
-  color: #172033;
+  @apply m-0 text-[14px] text-[#172033];
 }
 
 .assign-task-subtitle {
-  margin: 4px 0 0;
-  font-size: 9px;
-  color: #7b8495;
+  @apply mt-1 text-[9px] text-[#7b8495];
 }
 
 .close-button {
-  border: none;
-  background: transparent;
-  color: #a0a7b4;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
+  @apply cursor-pointer border-none bg-transparent text-[20px] leading-none text-[#a0a7b4] hover:text-gray-600;
 }
 
-/* Task Information */
-
 .task-info {
-  margin: 15px 17px 13px;
-  padding: 11px;
-  border: 1px solid #e4e7ec;
-  border-radius: 8px;
-  background: #fafbfc;
+  @apply mx-[17px] mb-[13px] mt-[15px] rounded-[8px] border border-[#e4e7ec] bg-[#fafbfc] p-[11px];
 }
 
 .task-name {
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #273044;
+  @apply mb-[6px] text-[12px] font-semibold text-[#273044];
 }
 
 .task-meta {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-wrap: wrap;
-  font-size: 9px;
-  color: #70798a;
+  @apply flex flex-wrap items-center gap-[5px] text-[9px] text-[#70798a];
 }
 
 .priority-badge {
-  margin-left: auto;
-  padding: 4px 7px;
-  border-radius: 5px;
-  background: #fff3e3;
-  color: #d47b20;
-  font-size: 8px;
+  @apply ml-auto rounded-[5px] bg-[#fff3e3] px-[7px] py-1 text-[8px] text-[#d47b20];
 }
 
 .status-badge {
-  padding: 4px 7px;
-  border-radius: 5px;
-  background: #f0f1f4;
-  color: #687184;
-  font-size: 8px;
+  @apply rounded-[5px] bg-[#f0f1f4] px-[7px] py-1 text-[8px] text-[#687184];
 }
 
-/* Assign Section */
-
 .assign-label {
-  margin: 0 17px 7px;
-  font-size: 9px;
-  font-weight: 600;
-  color: #4d5667;
+  @apply mx-[17px] mb-[7px] text-[9px] font-semibold text-[#4d5667];
 }
 
 .developer-list {
-  padding: 0 17px;
+  @apply px-[17px];
 }
 
 .developer-button {
-  width: 100%;
-  height: 43px;
-  margin-bottom: 6px;
-  padding: 0 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #e2e5eb;
-  border-radius: 7px;
-  background: #ffffff;
-  cursor: pointer;
-  text-align: left;
+  @apply mb-[6px] flex h-[43px] w-full cursor-pointer items-center justify-between rounded-[7px] border border-[#e2e5eb] bg-white px-[10px] text-left;
 }
 
-.developer-button.selected {
-  border: 1px solid #756ef0;
-  background: #f8f7ff;
+.developer-button-selected {
+  @apply border-[#756ef0] bg-[#f8f7ff];
 }
 
 .developer-info {
-  display: flex;
-  align-items: center;
-  gap: 9px;
+  @apply flex items-center gap-[9px];
 }
 
 .developer-avatar {
-  width: 23px;
-  height: 23px;
-  border-radius: 50%;
-  background: #efefff;
-  color: #5d57b7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 8px;
-  font-weight: 700;
+  @apply flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#efefff] text-[8px] font-bold text-[#5d57b7];
 }
 
 .developer-details {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  @apply flex flex-col gap-[2px];
 }
 
 .developer-name {
-  font-size: 10px;
-  color: #273044;
+  @apply text-[10px] text-[#273044];
 }
 
 .developer-role {
-  font-size: 8px;
-  color: #7b8495;
+  @apply text-[8px] text-[#7b8495];
 }
-
-/* Radio Button */
 
 .radio-button {
-  width: 13px;
-  height: 13px;
-  border: 1.5px solid #d2d7df;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @apply flex h-[13px] w-[13px] items-center justify-center rounded-full border-[1.5px] border-[#d2d7df];
 }
 
-.radio-button.selected {
-  border: 1.5px solid #625be0;
+.radio-button-selected {
+  @apply border-[#625be0];
 }
 
 .radio-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #625be0;
+  @apply h-[7px] w-[7px] rounded-full bg-[#625be0];
 }
 
-/* Footer */
-
 .assign-task-footer {
-  margin-top: 10px;
-  padding: 13px 17px;
-  border-top: 1px solid #e8e9ee;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  @apply mt-[10px] flex items-center justify-between gap-[10px] border-t border-[#e8e9ee] px-[17px] py-[13px];
 }
 
 .footer-note {
-  font-size: 7px;
-  color: #a0a7b4;
+  @apply text-[7px] text-[#a0a7b4];
 }
 
 .footer-actions {
-  display: flex;
-  gap: 7px;
-}
-
-.cancel-button,
-.assign-button {
-  padding: 7px 11px;
-  border-radius: 6px;
-  font-size: 9px;
-  font-weight: 600;
-  cursor: pointer;
+  @apply flex gap-[7px];
 }
 
 .cancel-button {
-  background: #ffffff;
-  border: 1px solid #dfe2e8;
-  color: #606979;
+  @apply cursor-pointer rounded-[6px] border border-[#dfe2e8] bg-white px-[11px] py-[7px] text-[9px] font-semibold text-[#606979] hover:bg-gray-50;
 }
 
 .assign-button {
-  background: #5147d8;
-  border: 1px solid #5147d8;
-  color: #ffffff;
+  @apply cursor-pointer rounded-[6px] border border-[#5147d8] bg-[#5147d8] px-[11px] py-[7px] text-[9px] font-semibold text-white hover:bg-indigo-700;
 }
