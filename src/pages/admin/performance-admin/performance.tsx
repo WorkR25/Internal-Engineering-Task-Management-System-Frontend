@@ -318,7 +318,7 @@ export default function Performance() {
                   onClick={() => setView("my")}
                   className={`rounded px-3 py-1.5 text-xs font-medium transition ${
                     view === "my"
-                      ? "bg-white text-gray-900 shadow-sm"
+                      ? "bg-[#5146e5] text-white"
                       : "text-gray-500"
                   }`}
                 >
@@ -326,16 +326,15 @@ export default function Performance() {
                 </button>
 
                 <button
-                  type="button"
-                  onClick={() => setView("team")}
-                  className={`rounded px-3 py-1.5 text-xs font-medium transition ${
-                    view === "team"
-                      ? "bg-[#5146e5] text-white"
-                      : "text-gray-500"
-                  }`}
-                >
-                  Team
-                </button>
+                    onClick={() => setView("team")}
+                    className={`rounded px-3 py-1.5 text-xs font-medium transition ${
+                      view === "team"
+                        ? "bg-[#5146e5] text-white"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    Team
+                  </button>
               </div>
 
               <span className="admin-badge">ADMIN</span>
