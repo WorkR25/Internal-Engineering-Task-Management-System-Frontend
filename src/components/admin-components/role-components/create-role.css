@@ -1,0 +1,82 @@
+@reference "../../../app/globals.css";
+
+.create-role-page {
+    @apply flex min-h-screen items-center justify-center bg-white;
+}
+
+.create-role-card {
+    @apply w-full max-w-[360px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg;
+}
+
+.create-role-header {
+    @apply flex items-start justify-between border-b border-gray-200 px-5 py-4;
+}
+
+.create-role-header-content h1 {
+    @apply text-sm font-bold text-gray-900;
+}
+
+.create-role-header-content p {
+    @apply mt-0.5 text-[10px] text-gray-500;
+}
+
+.create-role-close {
+    @apply text-sm text-gray-400 hover:text-gray-600;
+}
+
+.create-role-form {
+    @apply px-5 py-4;
+}
+
+.create-role-info {
+    @apply mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5;
+}
+
+.create-role-info p {
+    @apply text-[10px] leading-4 text-gray-600;
+}
+
+.create-role-info span {
+    @apply font-semibold;
+}
+
+.create-role-field {
+    @apply mb-4;
+}
+
+.create-role-field-description {
+    @apply block;
+}
+
+.create-role-field label,
+.create-role-field-description label {
+    @apply mb-1.5 block text-[10px] font-semibold text-gray-700;
+}
+
+.create-role-field input {
+    @apply w-full rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-800 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100;
+}
+
+.create-role-field-description textarea {
+    @apply w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-800 outline-none placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100;
+}
+
+.create-role-footer {
+    @apply flex items-center justify-between border-t border-gray-200 bg-gray-50 px-5 py-3;
+}
+
+.create-role-footer p {
+    @apply text-[9px] text-gray-400;
+}
+
+.create-role-actions {
+    @apply flex gap-2;
+}
+
+.create-role-cancel {
+    @apply rounded-md border border-gray-300 bg-white px-3 py-1.5 text-[10px] font-semibold text-gray-600 hover:bg-gray-50;
+}
+
+.create-role-submit {
+    @apply rounded-md bg-indigo-600 px-3 py-1.5 text-[10px] font-semibold text-white hover:bg-indigo-700;
+}

@@ -1,10 +1,10 @@
 "use client";
 
-import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
+// import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
 
-export default function Home() {
-  return <Dashboard />;
-}
+// export default function Home() {
+//   return <Dashboard />;
+// }
 
 // import MyTask from "@/pages/developer/my-task/my-task";
 
@@ -35,11 +35,11 @@ export default function Home() {
 //   return <Performance />;
 // }
 
-// import CreateRole from "@/pages/create-role";
+import CreateRole from "@/components/admin-components/role-components/create-role";
 
-// export default function Home() {
-//     return <CreateRole />;
-// }
+export default function Home() {
+    return <CreateRole />;
+}
 //
 // import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
 //  export default function Home() {
@@ -67,4 +67,9 @@ export default function Home() {
 
 // export default function Page() {
 //   return <SubmitForReview />;
+// }
+// import ReviewsQueue from "@/components/admin-components/reviews-components/reviews-queue";
+
+// export default function Page() {
+//   return <ReviewsQueue />;
 // }
