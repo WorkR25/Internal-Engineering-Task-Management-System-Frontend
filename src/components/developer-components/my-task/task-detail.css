@@ -1,0 +1,254 @@
+@reference "../../../app/globals.css";
+
+.developer-task-detail-page {
+  @apply min-h-screen bg-[#f8f9fc] text-[#172033];
+}
+
+.developer-task-detail-header {
+  @apply mb-3 flex items-center justify-between;
+}
+
+.developer-task-detail-back {
+  @apply cursor-pointer border-0 bg-transparent p-0 text-xs font-semibold text-[#5146e5] hover:underline;
+}
+
+.developer-task-detail-user {
+  @apply flex items-center gap-2;
+}
+
+.developer-role-badge {
+  @apply rounded-full bg-[#f1edff] px-2.5 py-1 text-[9px] font-bold text-[#5146e5];
+}
+
+.developer-user-avatar {
+  @apply flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-bold text-[#5146e5];
+}
+
+.developer-task-detail-breadcrumb {
+  @apply mt-1 text-[11px] font-semibold text-[#7b8494];
+}
+
+.developer-task-detail-title-row {
+  @apply mb-5 mt-1;
+}
+
+.developer-task-detail-title {
+  @apply m-0 text-2xl font-bold leading-[1.3] text-[#172033];
+}
+
+.developer-task-detail-meta {
+  @apply mt-2 flex flex-wrap items-center gap-2 text-[10px] text-[#788296];
+}
+
+.developer-detail-status {
+  @apply rounded-full bg-red-50 px-2 py-1 text-[9px] font-bold text-red-600;
+}
+
+.developer-priority {
+  @apply inline-block rounded-full px-2 py-1 text-[9px] font-bold;
+}
+
+.developer-priority.priority-low {
+  @apply bg-gray-100 text-gray-600;
+}
+
+.developer-priority.priority-medium {
+  @apply bg-orange-50 text-orange-600;
+}
+
+.developer-priority.priority-high {
+  @apply bg-red-50 text-red-600;
+}
+
+.developer-priority.priority-critical {
+  @apply bg-red-100 text-red-600;
+}
+
+.developer-task-detail-layout {
+  @apply grid grid-cols-[minmax(0,1.7fr)_minmax(260px,0.9fr)] items-start gap-4;
+}
+
+.developer-task-detail-main,
+.developer-task-detail-side {
+  @apply min-w-0;
+}
+
+.developer-detail-card {
+  @apply mb-3 overflow-hidden rounded-lg border border-gray-200 bg-white;
+}
+
+.developer-detail-card:last-child {
+  @apply mb-0;
+}
+
+.developer-detail-card-header {
+  @apply flex items-start justify-between gap-3 border-b border-gray-200 px-4 py-3 text-[11px] font-bold text-[#263044];
+}
+
+.developer-detail-card-body {
+  @apply p-4 text-[10px] leading-[1.6] text-[#657087];
+}
+
+.developer-detail-card-body p {
+  @apply mb-2;
+}
+
+.developer-detail-card-body p:last-child {
+  @apply mb-0;
+}
+
+.developer-detail-small {
+  @apply mt-1 text-[9px] font-normal text-[#8791a3];
+}
+
+.developer-criteria-item {
+  @apply mb-2 flex items-start gap-2;
+}
+
+.developer-criteria-item:last-child {
+  @apply mb-0;
+}
+
+.developer-criteria-icon {
+  @apply flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold;
+}
+
+.developer-criteria-icon.success {
+  @apply bg-emerald-50 text-emerald-600;
+}
+
+.developer-criteria-icon.error {
+  @apply bg-red-50 text-red-600;
+}
+
+.developer-submission-box {
+  @apply flex items-center gap-2.5 rounded-md bg-[#f8f9fb] p-3;
+}
+
+.developer-submission-icon {
+  @apply flex h-7 w-7 shrink-0 items-center justify-center rounded bg-[#172033] text-[8px] font-bold text-white;
+}
+
+.developer-submission-title {
+  @apply m-0 text-[10px] font-bold text-[#5146e5];
+}
+
+.developer-submission-description {
+  @apply mt-2.5 text-[10px] leading-[1.6] text-[#657087];
+}
+
+.developer-comment {
+  @apply flex items-start gap-2.5 rounded-md bg-[#f8f9fb] p-2.5;
+}
+
+.developer-comment-avatar {
+  @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eeedff] text-[8px] font-bold text-[#5146e5];
+}
+
+.developer-comment-meta {
+  @apply mb-1 flex items-center gap-1.5;
+}
+
+.developer-comment-meta strong {
+  @apply text-[10px] text-[#263044];
+}
+
+.developer-comment-meta span {
+  @apply text-[9px] text-[#9aa2b0];
+}
+
+.developer-comment p {
+  @apply m-0 text-[10px] leading-[1.5] text-[#657087];
+}
+
+.developer-review-status {
+  @apply shrink-0 rounded-full bg-red-50 px-2 py-1 text-[9px] font-bold text-red-600;
+}
+
+.developer-score-row {
+  @apply mb-1 flex items-center justify-between gap-2 text-[10px] text-[#566074];
+}
+
+.developer-score-row strong {
+  @apply text-[10px] text-[#263044];
+}
+
+.developer-score-bar {
+  @apply mb-2.5 h-1 w-full overflow-hidden rounded-full bg-[#edf0f4];
+}
+
+.developer-score-bar div {
+  @apply h-full rounded-full bg-[#5146e5];
+}
+
+.developer-feedback-text {
+  @apply mt-3 border-t border-gray-200 pt-3 text-[10px] leading-[1.6] text-[#657087];
+}
+
+.developer-start-work-button {
+  @apply mt-3 w-full cursor-pointer rounded-md border-0 bg-[#5146e5] px-3 py-2.5 text-[10px] font-semibold text-white transition hover:bg-[#4338ca];
+}
+
+.developer-activity-item {
+  @apply relative flex items-start gap-2 pb-3;
+}
+
+.developer-activity-item:last-child {
+  @apply pb-0;
+}
+
+.developer-activity-dot {
+  @apply relative z-10 mt-1 h-2 w-2 shrink-0 rounded-full bg-[#5146e5];
+}
+
+.developer-activity-dot.error {
+  @apply bg-red-500;
+}
+
+.developer-activity-item div {
+  @apply flex flex-col gap-0.5;
+}
+
+.developer-activity-item strong {
+  @apply text-[10px] text-[#263044];
+}
+
+.developer-activity-item span {
+  @apply text-[9px] text-[#9aa2b0];
+}
+
+@media (max-width: 1000px) {
+  .developer-task-detail-layout {
+    @apply grid-cols-1;
+  }
+
+  .developer-task-detail-side {
+    @apply grid grid-cols-2 gap-3;
+  }
+
+  .developer-task-detail-side .developer-detail-card {
+    @apply mb-0;
+  }
+}
+
+@media (max-width: 700px) {
+  .developer-task-detail-layout {
+    @apply block;
+  }
+
+  .developer-task-detail-side {
+    @apply block;
+  }
+
+  .developer-task-detail-side .developer-detail-card {
+    @apply mb-3;
+  }
+
+  .developer-task-detail-title {
+    @apply text-xl;
+  }
+
+  .developer-task-detail-meta {
+    @apply flex-col items-start;
+  }
+}
