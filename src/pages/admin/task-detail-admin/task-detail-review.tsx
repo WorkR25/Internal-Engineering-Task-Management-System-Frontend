@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Sidebar from "@/components/admin-components/layout/sidebar";
+import "./task-detail-review.css"; // <-- Import the new stylesheet
+
 const task = {
   title: "Implement idempotent payment webhook handler",
   project: "Task Board / Payments Platform",
@@ -32,30 +34,12 @@ const submission = {
 };
 
 const scores = [
-  {
-    label: "Requirement Analysis",
-    score: 8,
-  },
-  {
-    label: "Code Quality",
-    score: 7,
-  },
-  {
-    label: "Code Correctness",
-    score: 9,
-  },
-  {
-    label: "Testing",
-    score: 8,
-  },
-  {
-    label: "Delivery Timing",
-    score: 6,
-  },
-  {
-    label: "PR / Commit Quality",
-    score: 8,
-  },
+  { label: "Requirement Analysis", score: 8 },
+  { label: "Code Quality", score: 7 },
+  { label: "Code Correctness", score: 9 },
+  { label: "Testing", score: 8 },
+  { label: "Delivery Timing", score: 6 },
+  { label: "PR / Commit Quality", score: 8 },
 ];
 
 const comments = [
@@ -63,124 +47,76 @@ const comments = [
     initials: "AG",
     name: "Arijit Ganguly",
     time: "3 days ago",
-    message:
-      "First attempt looked good overall — please also add a test for the case where the retry arrives after the TTL has expired.",
+    message: "First attempt looked good overall — please also add a test for the case where the retry arrives after the TTL has expired.",
   },
   {
     initials: "SD",
     name: "Sahil Das",
     time: "2 hours ago",
-    message:
-      "Done — added the expired-TTL replay case in the latest submission, should be covered now.",
+    message: "Done — added the expired-TTL replay case in the latest submission, should be covered now.",
   },
 ];
 
 const activity = [
-  {
-    title: "Assigned to Sahil Das",
-    time: "Nov 20, 9:14 AM",
-    type: "normal",
-  },
-  {
-    title: "Work started",
-    time: "Nov 20, 11:02 AM",
-    type: "normal",
-  },
-  {
-    title: "Submitted · Attempt 1",
-    time: "Nov 22, 4:40 PM",
-    type: "normal",
-  },
-  {
-    title: "Changes requested",
-    time: "Nov 23, 10:15 AM",
-    type: "danger",
-  },
-  {
-    title: "Work resumed",
-    time: "Nov 23, 1:30 PM",
-    type: "normal",
-  },
-  {
-    title: "Submitted · Attempt 2",
-    time: "Today, 2 hours ago",
-    type: "normal",
-  },
+  { title: "Assigned to Sahil Das", time: "Nov 20, 9:14 AM", type: "normal" },
+  { title: "Work started", time: "Nov 20, 11:02 AM", type: "normal" },
+  { title: "Submitted · Attempt 1", time: "Nov 22, 4:40 PM", type: "normal" },
+  { title: "Changes requested", time: "Nov 23, 10:15 AM", type: "danger" },
+  { title: "Work resumed", time: "Nov 23, 1:30 PM", type: "normal" },
+  { title: "Submitted · Attempt 2", time: "Today, 2 hours ago", type: "normal" },
 ];
 
 export default function TaskDetailReview() {
   const [reviewStatus, setReviewStatus] = useState("");
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc] text-gray-900">
+    <div className="task-detail-container">
       <Sidebar 
-      activePage="task-detail-review"
-      onPageChange={() => {}}
+        activePage="task-detail-review"
+        onPageChange={() => {}}
       />
 
-      <main className="ml-52 min-h-screen">
-        <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+      <main className="main-content">
+        
+        {/* Header */}
+        <header className="page-header">
           <div>
-            <p className="text-[10px] font-medium text-gray-400">
-              {task.project}
-            </p>
-
-            <h1 className="mt-1 text-sm font-semibold text-gray-900">
-              {task.title}
-            </h1>
+            <p className="header-project">{task.project}</p>
+            <h1 className="header-title">{task.title}</h1>
           </div>
-
-          <div className="flex items-center gap-3">
-            <span className="rounded-full bg-gray-100 px-3 py-1 text-[9px] font-semibold text-gray-600">
-              ADMIN
-            </span>
-
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5]">
-              AG
-            </div>
+          <div className="admin-badge-wrapper">
+            <span className="admin-badge">ADMIN</span>
+            <div className="admin-avatar">AG</div>
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1250px] px-6 py-6">
-          <div className="grid gap-5 lg:grid-cols-[1.7fr_1fr]">
-            <div className="space-y-5">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full bg-blue-50 px-3 py-1 text-[9px] font-semibold text-blue-600">
-                  {task.status}
-                </span>
-
-                <span className="rounded-full bg-red-50 px-3 py-1 text-[9px] font-semibold text-red-500">
-                  {task.priority}
-                </span>
-
-                <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-semibold text-[#5146e5]">
-                    {task.developerInitials}
-                  </div>
-
-                  <span className="text-[10px] font-medium text-gray-700">
-                    {task.developer}
-                  </span>
+        {/* Layout */}
+        <div className="content-wrapper">
+          <div className="two-col-grid">
+            
+            {/* LEFT COLUMN */}
+            <div className="left-col-stack">
+              
+              <div className="meta-bar">
+                <span className="badge-status">{task.status}</span>
+                <span className="badge-priority">{task.priority}</span>
+                
+                <div className="dev-info">
+                  <div className="dev-avatar-small">{task.developerInitials}</div>
+                  <span className="dev-name">{task.developer}</span>
                 </div>
-
-                <span className="text-[10px] text-gray-400">
-                  Deadline {task.deadline}
-                </span>
-
-                <span className="text-[10px] text-gray-400">
-                  {task.attempt}
-                </span>
+                
+                <span className="meta-text">Deadline {task.deadline}</span>
+                <span className="meta-text">{task.attempt}</span>
               </div>
 
-              <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-                <div className="border-b border-gray-200 px-5 py-4">
-                  <h2 className="text-xs font-semibold text-gray-900">
-                    Description
-                  </h2>
+              {/* Description */}
+              <section className="card-panel">
+                <div className="card-header">
+                  <h2 className="card-title">Description</h2>
                 </div>
-
-                <div className="px-5 py-5">
-                  <p className="text-[11px] leading-5 text-gray-600">
+                <div className="card-body">
+                  <p className="card-text">
                     The payment gateway retries webhook deliveries on timeout,
                     which currently causes duplicate charge-processing events
                     downstream. Add an idempotency layer to the webhook handler
@@ -190,115 +126,64 @@ export default function TaskDetailReview() {
                 </div>
               </section>
 
-              <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-                <div className="border-b border-gray-200 px-5 py-4">
-                  <h2 className="text-xs font-semibold text-gray-900">
-                    Acceptance Criteria
-                  </h2>
+              {/* Acceptance Criteria */}
+              <section className="card-panel">
+                <div className="card-header">
+                  <h2 className="card-title">Acceptance Criteria</h2>
                 </div>
-
-                <div className="space-y-3 px-5 py-5">
+                <div className="card-body space-y-3">
                   {requirements.map((requirement, index) => (
-                    <div
-                      key={requirement}
-                      className="flex items-start gap-3"
-                    >
-                      <div
-                        className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] ${
-                          index < 3
-                            ? "bg-emerald-50 text-emerald-600"
-                            : "bg-gray-100 text-gray-400"
-                        }`}
-                      >
+                    <div key={requirement} className="requirement-item">
+                      <div className={index < 3 ? "check-icon-active" : "check-icon-inactive"}>
                         ✓
                       </div>
-
-                      <p className="text-[10px] leading-4 text-gray-600">
-                        {requirement}
-                      </p>
+                      <p className="card-text !mt-0">{requirement}</p>
                     </div>
                   ))}
                 </div>
               </section>
 
-              <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-                <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+              {/* Submission Details */}
+              <section className="card-panel">
+                <div className="card-header-flex">
                   <div>
-                    <h2 className="text-xs font-semibold text-gray-900">
-                      Submission — Attempt 2
-                    </h2>
-
-                    <p className="mt-1 text-[10px] text-gray-400">
-                      Submitted by {submission.submittedBy} ·{" "}
-                      {submission.submittedTime}
+                    <h2 className="card-title">Submission — Attempt 2</h2>
+                    <p className="card-subtitle">
+                      Submitted by {submission.submittedBy} · {submission.submittedTime}
                     </p>
                   </div>
-
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-[9px] font-semibold text-gray-500">
-                    {submission.status}
-                  </span>
+                  <span className="admin-badge">{submission.status}</span>
                 </div>
-
-                <div className="px-5 py-4">
-                  <div className="rounded-lg bg-gray-50 px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-900 text-[10px] font-semibold text-white">
-                        PR
-                      </div>
-
+                <div className="card-body">
+                  <div className="pr-block">
+                    <div className="pr-block-inner">
+                      <div className="pr-badge">PR</div>
                       <div>
-                        <p className="text-[10px] font-semibold text-[#5146e5]">
-                          {submission.branch} · {submission.pullRequest}
-                        </p>
-
-                        <p className="mt-0.5 text-[9px] text-gray-400">
-                          {submission.url}
-                        </p>
+                        <p className="pr-branch">{submission.branch} · {submission.pullRequest}</p>
+                        <p className="pr-url">{submission.url}</p>
                       </div>
                     </div>
                   </div>
-
-                  <p className="mt-4 text-[10px] leading-5 text-gray-600">
-                    &quot;{submission.description}&quot;
-                  </p>
+                  <p className="card-text">"{submission.description}"</p>
                 </div>
               </section>
 
-              <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-                <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
-                  <h2 className="text-xs font-semibold text-gray-900">
-                    Comments
-                  </h2>
-
-                  <span className="text-[10px] text-gray-400">
-                    {comments.length}
-                  </span>
+              {/* Comments */}
+              <section className="card-panel">
+                <div className="card-header-flex">
+                  <h2 className="card-title">Comments</h2>
+                  <span className="meta-text">{comments.length}</span>
                 </div>
-
-                <div className="space-y-4 px-5 py-4">
+                <div className="card-body">
                   {comments.map((comment) => (
-                    <div
-                      key={`${comment.name}-${comment.time}`}
-                      className="flex gap-3"
-                    >
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-semibold text-[#5146e5]">
-                        {comment.initials}
-                      </div>
-
-                      <div className="min-w-0 flex-1 rounded-lg bg-gray-50 px-4 py-3">
-                        <p className="text-[10px] text-gray-700">
-                          <span className="font-semibold">
-                            {comment.name}
-                          </span>
-
-                          <span className="ml-2 text-[9px] text-gray-400">
-                            {comment.time}
-                          </span>
+                    <div key={`${comment.name}-${comment.time}`} className="comment-item">
+                      <div className="comment-avatar">{comment.initials}</div>
+                      <div className="comment-box">
+                        <p className="comment-header">
+                          <span className="comment-author">{comment.name}</span>
+                          <span className="comment-time">{comment.time}</span>
                         </p>
-
-                        <p className="mt-2 text-[10px] leading-4 text-gray-600">
-                          {comment.message}
-                        </p>
+                        <p className="card-text !mt-2">{comment.message}</p>
                       </div>
                     </div>
                   ))}
@@ -306,66 +191,51 @@ export default function TaskDetailReview() {
               </section>
             </div>
 
-            <div className="space-y-5">
-              <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-                <div className="border-b border-gray-200 px-5 py-4">
-                  <h2 className="text-xs font-semibold text-gray-900">
-                    Review Submission
-                  </h2>
-
-                  <p className="mt-1 text-[10px] text-gray-400">
-                    Attempt 2 · {task.developer}
-                  </p>
+            {/* RIGHT COLUMN */}
+            <div className="right-col-stack">
+              
+              {/* Review Submission Box (Figma accurately implemented) */}
+              <section className="card-panel">
+                <div className="card-header">
+                  <h2 className="card-title">Review Submission</h2>
+                  <p className="card-subtitle">Attempt 2 · {task.developer}</p>
                 </div>
 
-                <div className="px-5 py-5">
-                  <div className="space-y-4">
+                <div className="card-body">
+                  
+                  {/* Inline Score Layout */}
+                  <div className="scores-wrapper">
                     {scores.map((item) => (
-                      <div key={item.label}>
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-medium text-gray-700">
-                            {item.label}
-                          </span>
-
-                          <span className="text-[10px] font-semibold text-gray-700">
-                            {item.score}/10
-                          </span>
-                        </div>
-
-                        <div className="mt-2 h-1 rounded-full bg-gray-100">
+                      <div key={item.label} className="score-row">
+                        <span className="score-label">{item.label}</span>
+                        <div className="score-track">
                           <div
-                            className="h-1 rounded-full bg-[#5146e5]"
-                            style={{
-                              width: `${item.score * 10}%`,
-                            }}
+                            className={`score-fill ${item.score <= 6 ? 'bg-orange-500' : 'bg-[#5146e5]'}`}
+                            style={{ width: `${item.score * 10}%` }}
                           />
                         </div>
+                        <span className="score-value">{item.score}/10</span>
                       </div>
                     ))}
                   </div>
 
+                  {/* Feedback Box */}
                   <div className="mt-6">
-                    <p className="mb-2 text-[10px] font-semibold text-gray-700">
-                      Feedback
-                    </p>
-
-                    <div className="rounded-lg border border-gray-200 px-3 py-3">
-                      <p className="text-[10px] leading-4 text-gray-600">
-                        Looks solid — idempotency store implementation is
-                        clean. Left two minor comments on the TTL edge case.
+                    <span className="feedback-label">Feedback</span>
+                    <div className="feedback-box">
+                      <p className="card-text !mt-0">
+                        Looks solid — idempotency store implementation is clean. 
+                        Left two minor comments on the TTL edge case.
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-5 flex gap-2">
+                  {/* Redesigned Actions matching Figma */}
+                  <div className="action-buttons-wrapper">
                     <button
                       type="button"
                       onClick={() => setReviewStatus("approved")}
-                      className={`flex-1 rounded-md px-3 py-2 text-[10px] font-semibold text-white ${
-                        reviewStatus === "approved"
-                          ? "bg-emerald-700"
-                          : "bg-emerald-500 hover:bg-emerald-600"
-                      }`}
+                      className="btn-approve"
                     >
                       Approve
                     </button>
@@ -373,18 +243,14 @@ export default function TaskDetailReview() {
                     <button
                       type="button"
                       onClick={() => setReviewStatus("changes")}
-                      className={`flex-1 rounded-md border px-3 py-2 text-[10px] font-semibold ${
-                        reviewStatus === "changes"
-                          ? "border-red-500 bg-red-50 text-red-600"
-                          : "border-red-300 text-red-500 hover:bg-red-50"
-                      }`}
+                      className="btn-reject"
                     >
                       Request Changes
                     </button>
                   </div>
 
                   {reviewStatus && (
-                    <p className="mt-3 text-center text-[10px] text-gray-500">
+                    <p className="mt-4 text-center text-[10px] text-gray-500">
                       {reviewStatus === "approved"
                         ? "Submission marked for approval."
                         : "Changes requested for this submission."}
@@ -393,46 +259,29 @@ export default function TaskDetailReview() {
                 </div>
               </section>
 
-              <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-                <div className="border-b border-gray-200 px-5 py-4">
-                  <h2 className="text-xs font-semibold text-gray-900">
-                    Activity History
-                  </h2>
+              {/* Activity History */}
+              <section className="card-panel">
+                <div className="card-header">
+                  <h2 className="card-title">Activity History</h2>
                 </div>
-
-                <div className="px-5 py-5">
-                  <div className="space-y-5">
+                <div className="card-body pl-6">
+                  <div>
                     {activity.map((item, index) => (
-                      <div
-                        key={`${item.title}-${item.time}`}
-                        className="relative flex gap-3"
-                      >
+                      <div key={`${item.title}-${item.time}`} className="timeline-item">
                         {index < activity.length - 1 && (
-                          <div className="absolute left-[4px] top-3 h-8 w-px bg-gray-200" />
+                          <div className="timeline-line" />
                         )}
-
-                        <div
-                          className={`relative mt-1 h-2 w-2 shrink-0 rounded-full ${
-                            item.type === "danger"
-                              ? "bg-red-500"
-                              : "bg-[#5146e5]"
-                          }`}
-                        />
-
+                        <div className={item.type === "danger" ? "timeline-dot-danger" : "timeline-dot-normal"} />
                         <div>
-                          <p className="text-[10px] font-semibold text-gray-700">
-                            {item.title}
-                          </p>
-
-                          <p className="mt-1 text-[9px] text-gray-400">
-                            {item.time}
-                          </p>
+                          <p className="timeline-title">{item.title}</p>
+                          <p className="timeline-time">{item.time}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
               </section>
+
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Sidebar from "@/components/admin-components/layout/sidebar";
+import "./performance.css"; // <-- Import the new stylesheet
 
 type Metric = {
   label: string;
@@ -235,17 +236,13 @@ export default function Performance() {
                 </button>
               </div>
 
-              <span className="rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-semibold text-gray-600">
-                ADMIN
-              </span>
-
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#5146e5] text-[10px] font-semibold text-white">
-                AG
-              </div>
+              <span className="admin-badge">ADMIN</span>
+              <div className="admin-avatar">AG</div>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {/* Metrics Grid */}
+          <div className="metrics-grid">
             {metrics.map((metric) => (
               <div key={metric.label} className="rounded-xl border border-gray-200 bg-white p-5">
                 <p className="text-xs font-medium text-gray-500">{metric.label}</p>
