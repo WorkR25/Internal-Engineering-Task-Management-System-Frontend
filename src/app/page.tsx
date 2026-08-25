@@ -1,10 +1,17 @@
-"use client";
+// // "use client";
 
-import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
+// // import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
+
+// // export default function Home() {
+// //   return <Dashboard />;
+// }
+
+import MyTask from "@/pages/developer/my-task/my-task";
 
 export default function Home() {
-  return <Dashboard />;
+  return <MyTask />;
 }
+
 // // import Dashboard from "../pages/dashboard";
 
 // export default function Home() {

@@ -1,0 +1,328 @@
+.developer-my-task-page {
+  min-height: 100vh;
+  background: #f8f9fc;
+  color: #172033;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.developer-my-task-content {
+  margin-left: 240px;
+  min-height: 100vh;
+  padding: 32px;
+}
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.developer-my-task-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #dfe3ea;
+}
+
+.developer-my-task-title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #172033;
+}
+
+.developer-my-task-subtitle {
+  margin: 7px 0 0;
+  font-size: 13px;
+  color: #647087;
+}
+
+.developer-my-task-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.developer-role-badge {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f1edff;
+  color: #5146e5;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.developer-user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #eeedff;
+  color: #5146e5;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* =========================
+   BOARD
+========================= */
+
+.developer-my-task-board {
+  margin-top: 22px;
+  overflow: hidden;
+  border: 1px solid #dfe3ea;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.developer-my-task-board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e4e7ed;
+}
+
+.developer-my-task-board-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #172033;
+}
+
+.developer-my-task-board-subtitle {
+  margin: 4px 0 0;
+  font-size: 10px;
+  color: #8791a3;
+}
+
+/* =========================
+   FILTERS
+========================= */
+
+.developer-project-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #fafbfc;
+  border-bottom: 1px solid #e4e7ed;
+}
+
+.developer-project-filter {
+  border: 1px solid #dfe3ea;
+  border-radius: 5px;
+  background: #ffffff;
+  padding: 6px 11px;
+  font-size: 9px;
+  font-weight: 500;
+  color: #5f697a;
+  cursor: pointer;
+}
+
+.developer-project-filter:hover {
+  background: #f5f6f8;
+}
+
+.developer-project-filter-active {
+  border-color: #5146e5;
+  background: #eeedff;
+  color: #5146e5;
+}
+
+/* =========================
+   KANBAN
+========================= */
+
+.developer-kanban-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding: 20px;
+}
+
+.developer-kanban {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  gap: 12px;
+  min-width: 850px;
+}
+
+/* =========================
+   COLUMN
+========================= */
+
+.developer-task-column {
+  min-width: 0;
+}
+
+.developer-task-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.developer-task-column-title {
+  font-size: 9px;
+  font-weight: 700;
+  color: #566074;
+}
+
+.developer-task-column-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #f1f3f6;
+  color: #7b8494;
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.developer-task-column-content {
+  min-height: 100px;
+}
+
+/* =========================
+   EMPTY COLUMN
+========================= */
+
+.developer-task-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: 12px;
+  border: 1px dashed #dfe3ea;
+  border-radius: 7px;
+  color: #a0a8b6;
+  font-size: 9px;
+  text-align: center;
+}
+
+/* =========================
+   TASK CARD
+========================= */
+
+.developer-task-card {
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid #dfe3ea;
+  border-radius: 7px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(20, 30, 50, 0.03);
+}
+
+.developer-task-card:hover {
+  border-color: #cfd4df;
+}
+
+.developer-task-card-title {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #263044;
+}
+
+.developer-task-card-priority {
+  margin-top: 8px;
+}
+
+.developer-priority {
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 999px;
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.developer-priority.priority-low {
+  background: #f1f3f5;
+  color: #667085;
+}
+
+.developer-priority.priority-medium {
+  background: #fff1df;
+  color: #d97706;
+}
+
+.developer-priority.priority-high {
+  background: #ffe8e8;
+  color: #dc2626;
+}
+
+.developer-priority.priority-critical {
+  background: #ffe1e1;
+  color: #dc2626;
+}
+
+.developer-task-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.developer-task-project {
+  min-width: 0;
+  overflow: hidden;
+  color: #788296;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.developer-task-date {
+  flex-shrink: 0;
+  color: #8a93a3;
+  font-size: 8px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .developer-my-task-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .developer-my-task-header {
+    gap: 20px;
+  }
+
+  .developer-kanban {
+    min-width: 850px;
+  }
+}
+
+@media (max-width: 600px) {
+  .developer-my-task-content {
+    padding: 15px;
+  }
+
+  .developer-my-task-title {
+    font-size: 22px;
+  }
+
+  .developer-my-task-header {
+    flex-direction: column;
+  }
+
+  .developer-my-task-user {
+    align-self: flex-start;
+  }
+}
