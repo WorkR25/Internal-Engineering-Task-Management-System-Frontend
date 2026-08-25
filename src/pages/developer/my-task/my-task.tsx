@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Sidebar from "../../../components/developer-components/sidebar/sidebar";
+import TaskDetail from "../../../components/developer-components/my-task/task-detail";
 import "./my-task.css";
 
 type Task = {
@@ -51,9 +53,19 @@ const tasks = {
   ],
 };
 
-function TaskCard({ task }: { task: Task }) {
+function TaskCard({
+  task,
+  onClick,
+}: {
+  task: Task;
+  onClick: () => void;
+}) {
   return (
-    <div className={`developer-task-card priority-${task.priority.toLowerCase()}`}>
+    <button
+      type="button"
+      onClick={onClick}
+      className="developer-task-card"
+    >
       <h3 className="developer-task-card-title">
         {task.title}
       </h3>
@@ -79,20 +91,24 @@ function TaskCard({ task }: { task: Task }) {
               : ""}
         </span>
       </div>
-    </div>
+    </button>
   );
 }
 
 function TaskColumn({
   title,
   tasks,
+  onTaskClick,
 }: {
   title: string;
   tasks: Task[];
+  onTaskClick: (task: Task) => void;
 }) {
   return (
     <div className="developer-task-column">
+
       <div className="developer-task-column-header">
+
         <span className="developer-task-column-title">
           {title}
         </span>
@@ -100,39 +116,78 @@ function TaskColumn({
         <span className="developer-task-column-count">
           {tasks.length}
         </span>
+
       </div>
 
       <div className="developer-task-column-content">
+
         {tasks.length === 0 ? (
+
           <div className="developer-task-empty">
             Nothing in progress
           </div>
+
         ) : (
+
           tasks.map((task) => (
+
             <TaskCard
               key={task.title}
               task={task}
+              onClick={() => onTaskClick(task)}
             />
+
           ))
+
         )}
+
       </div>
+
     </div>
   );
 }
 
 export default function MyTask() {
+
+  const [selectedTask, setSelectedTask] =
+    useState<Task | null>(null);
+
+  if (selectedTask) {
+    return (
+      <main className="developer-my-task-page">
+
+        <Sidebar
+          activePage="my-tasks"
+          onPageChange={() => {}}
+        />
+
+        <section className="developer-my-task-content">
+
+          <TaskDetail
+            task={selectedTask}
+            onBack={() => setSelectedTask(null)}
+          />
+
+        </section>
+
+      </main>
+    );
+  }
+
   return (
     <main className="developer-my-task-page">
 
-      {/* SIDEBAR */}
-      <Sidebar activePage="my-tasks" />
+      <Sidebar
+        activePage="my-tasks"
+        onPageChange={() => {}}
+      />
 
-      {/* MAIN CONTENT */}
       <section className="developer-my-task-content">
 
-        {/* PAGE HEADER */}
         <header className="developer-my-task-header">
+
           <div>
+
             <h1 className="developer-my-task-title">
               My Tasks
             </h1>
@@ -140,9 +195,11 @@ export default function MyTask() {
             <p className="developer-my-task-subtitle">
               Developer&apos;s personal Kanban — assigned tasks only.
             </p>
+
           </div>
 
           <div className="developer-my-task-user">
+
             <span className="developer-role-badge">
               DEVELOPER
             </span>
@@ -150,15 +207,17 @@ export default function MyTask() {
             <div className="developer-user-avatar">
               KV
             </div>
+
           </div>
+
         </header>
 
-        {/* TASK BOARD */}
         <section className="developer-my-task-board">
 
-          {/* BOARD HEADER */}
           <div className="developer-my-task-board-header">
+
             <div>
+
               <h2 className="developer-my-task-board-title">
                 My Tasks
               </h2>
@@ -166,10 +225,11 @@ export default function MyTask() {
               <p className="developer-my-task-board-subtitle">
                 4 tasks assigned to you, across 2 projects
               </p>
+
             </div>
+
           </div>
 
-          {/* PROJECT FILTERS */}
           <div className="developer-project-filters">
 
             <button
@@ -195,7 +255,6 @@ export default function MyTask() {
 
           </div>
 
-          {/* KANBAN */}
           <div className="developer-kanban-wrapper">
 
             <div className="developer-kanban">
@@ -203,26 +262,31 @@ export default function MyTask() {
               <TaskColumn
                 title="TO DO"
                 tasks={tasks.todo}
+                onTaskClick={setSelectedTask}
               />
 
               <TaskColumn
                 title="IN PROGRESS"
                 tasks={tasks.inProgress}
+                onTaskClick={setSelectedTask}
               />
 
               <TaskColumn
                 title="IN REVIEW"
                 tasks={tasks.inReview}
+                onTaskClick={setSelectedTask}
               />
 
               <TaskColumn
                 title="CHANGES REQUESTED"
                 tasks={tasks.changesRequested}
+                onTaskClick={setSelectedTask}
               />
 
               <TaskColumn
                 title="COMPLETED"
                 tasks={tasks.completed}
+                onTaskClick={setSelectedTask}
               />
 
             </div>
