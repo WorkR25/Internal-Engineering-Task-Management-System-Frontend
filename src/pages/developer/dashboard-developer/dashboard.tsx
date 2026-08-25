@@ -1,232 +1,222 @@
 "use client";
 
-import Sidebar from "@/components/developer-components/sidebar/sidebar";
 import "./dashboard.css";
+import Sidebar from "@/components/developer-components/sidebar/sidebar";
 
 const tasks = [
   {
-    title: "Add rate limiting to /auth/signin",
+    task: "Implement payment webhook handler",
     project: "Payments Platform",
-    status: "TODO",
-    deadline: "Dec 2, 2026",
+    priority: "HIGH",
+    deadline: "Dec 4, 2026",
   },
   {
-    title: "Add pagination to GET /tasks",
+    task: "Add pagination to GET /tasks",
     project: "Payments Platform",
-    status: "IN_REVIEW",
-    deadline: "Dec 1, 2026",
+    priority: "MEDIUM",
+    deadline: "Dec 6, 2026",
   },
   {
-    title: "Refactor review scoring service",
-    project: "Payments Platform",
-    status: "CHANGES_REQUESTED",
-    deadline: "Dec 5, 2026",
+    task: "Fix N+1 query on dashboard",
+    project: "Internal Admin Console",
+    priority: "HIGH",
+    deadline: "Dec 3, 2026",
   },
   {
-    title: "Set up Sequelize migrations",
-    project: "Payments Platform",
-    status: "COMPLETED",
-    deadline: "Nov 18, 2026",
+    task: "Refactor webhook retry logic",
+    project: "Notification Service",
+    priority: "MEDIUM",
+    deadline: "Dec 7, 2026",
+  },
+];
+
+const projects = [
+  {
+    initials: "PP",
+    name: "Payments Platform",
+    details: "9 open tasks · Dec 12, 2026",
+    status: "ACTIVE",
+  },
+  {
+    initials: "NS",
+    name: "Notification Service",
+    details: "6 open tasks · Nov 30, 2026",
+    status: "ACTIVE",
+  },
+  {
+    initials: "IA",
+    name: "Internal Admin Console",
+    details: "4 open tasks · Jan 15, 2027",
+    status: "PLANNING",
+  },
+  {
+    initials: "MA",
+    name: "Mobile API Gateway",
+    details: "11 open tasks · Dec 20, 2026",
+    status: "ACTIVE",
   },
 ];
 
 export default function Dashboard() {
   return (
-    <main className="developer-dashboard">
-      <Sidebar activePage="dashboard" />
+    <div className="developer-dashboard">
+      <Sidebar
+        activePage="dashboard"
+        onPageChange={() => {}}
+      />
 
-      <section className="developer-dashboard-main">
+      <main className="developer-dashboard-main">
         <header className="developer-dashboard-header">
           <div>
-            <h1 className="developer-dashboard-header-title">
-              Dashboard
-            </h1>
-
-            <p className="developer-dashboard-header-subtitle">
-              Welcome back, Karan — here's what's on your plate
-            </p>
+            <h1>Dashboard</h1>
+            <p>Welcome back — here's your engineering overview</p>
           </div>
 
-          <div className="developer-dashboard-header-user">
+          <div className="developer-dashboard-user">
             <span className="developer-dashboard-role">
               DEVELOPER
             </span>
 
-            <div className="developer-dashboard-avatar">
+            <span className="developer-dashboard-avatar">
               KV
-            </div>
+            </span>
           </div>
         </header>
 
         <div className="developer-dashboard-content">
-          <div className="developer-dashboard-stat-grid">
-            <div className="developer-dashboard-stat-card">
-              <p className="developer-dashboard-stat-label">
-                Open Tasks
-              </p>
 
-              <p className="developer-dashboard-stat-value">
-                4
-              </p>
-
-              <p className="developer-dashboard-stat-description">
-                Across 2 projects
-              </p>
-            </div>
+          {/* STATS */}
+          <section className="developer-dashboard-stats">
 
             <div className="developer-dashboard-stat-card">
-              <p className="developer-dashboard-stat-label">
-                In Review
-              </p>
-
-              <p className="developer-dashboard-stat-value">
-                1
-              </p>
-
-              <p className="developer-dashboard-stat-description">
-                Awaiting Admin decision
-              </p>
-            </div>
-
-            <div className="developer-dashboard-stat-card">
-              <p className="developer-dashboard-stat-label">
-                Needs Changes
-              </p>
-
-              <p className="developer-dashboard-stat-value">
-                1
-              </p>
-
-              <p className="developer-dashboard-stat-description red">
-                Action needed
-              </p>
-            </div>
-
-            <div className="developer-dashboard-stat-card">
-              <p className="developer-dashboard-stat-label">
-                Avg Review Score
-              </p>
-
-              <p className="developer-dashboard-stat-value">
-                88%
-              </p>
-
-              <p className="developer-dashboard-stat-description green">
-                +2% vs last month
-              </p>
-            </div>
-          </div>
-
-          <section className="developer-dashboard-action">
-            <div className="developer-dashboard-action-header">
-              <div>
-                <h2 className="developer-dashboard-action-title">
-                  Needs Your Action
-                </h2>
-
-                <p className="developer-dashboard-action-subtitle">
-                  Changes were requested — restart work to resubmit
-                </p>
-              </div>
-
-              <span className="developer-dashboard-action-count">
-                1
+              <p>ASSIGNED TASKS</p>
+              <h2>8</h2>
+              <span className="developer-dashboard-stat-success">
+                3 completed this sprint
               </span>
             </div>
 
-            <div className="developer-dashboard-action-content">
-              <div>
-                <p className="developer-dashboard-task-title">
-                  Refactor review scoring service
-                </p>
-
-                <p className="developer-dashboard-task-meta">
-                  Payments Platform · feedback left 3 days ago · deadline Dec 5, 2026
-                </p>
-              </div>
-
-              <div className="developer-dashboard-action-buttons">
-                <button
-                  type="button"
-                  className="developer-dashboard-button developer-dashboard-button-secondary"
-                >
-                  View Feedback
-                </button>
-
-                <button
-                  type="button"
-                  className="developer-dashboard-button developer-dashboard-button-primary"
-                >
-                  Start Work
-                </button>
-              </div>
+            <div className="developer-dashboard-stat-card">
+              <p>IN PROGRESS</p>
+              <h2>3</h2>
+              <span>Across 2 projects</span>
             </div>
+
+            <div className="developer-dashboard-stat-card">
+              <p>IN REVIEW</p>
+              <h2>2</h2>
+              <span className="developer-dashboard-stat-danger">
+                Awaiting review
+              </span>
+            </div>
+
+            <div className="developer-dashboard-stat-card">
+              <p>ON-TIME DELIVERY</p>
+              <h2>94%</h2>
+              <span className="developer-dashboard-stat-success">
+                +3% vs last sprint
+              </span>
+            </div>
+
           </section>
 
-          <section className="developer-dashboard-my-tasks">
-            <div className="developer-dashboard-section-header">
-              <div>
-                <h2 className="developer-dashboard-section-title">
-                  My Tasks
-                </h2>
+          {/* MAIN CONTENT */}
+          <section className="developer-dashboard-grid">
 
-                <p className="developer-dashboard-section-subtitle">
-                  Sorted by deadline
-                </p>
+            {/* MY TASKS */}
+            <div className="developer-dashboard-card">
+              <div className="developer-dashboard-card-header">
+                <div>
+                  <h2>My Tasks</h2>
+                  <p>Your currently assigned tasks</p>
+                </div>
+
+                <button type="button">
+                  View all
+                </button>
               </div>
 
-              <button
-                type="button"
-                className="developer-dashboard-view-all"
-              >
-                View all
-              </button>
-            </div>
+              <div className="developer-dashboard-table">
 
-            <div className="developer-dashboard-table-header">
-              <span>Task</span>
-              <span>Project</span>
-              <span>Status</span>
-              <span>Deadline</span>
-            </div>
+                <div className="developer-dashboard-table-header">
+                  <span>TASK</span>
+                  <span>PROJECT</span>
+                  <span>PRIORITY</span>
+                  <span>DEADLINE</span>
+                </div>
 
-            {tasks.map((task) => (
-              <div
-                key={task.title}
-                className="developer-dashboard-table-row"
-              >
-                <span className="developer-dashboard-table-task">
-                  {task.title}
-                </span>
-
-                <span className="developer-dashboard-table-project">
-                  {task.project}
-                </span>
-
-                <span>
-                  <span
-                    className={`developer-dashboard-status ${
-                      task.status === "TODO"
-                        ? "todo"
-                        : task.status === "IN_REVIEW"
-                          ? "review"
-                          : task.status === "CHANGES_REQUESTED"
-                            ? "changes"
-                            : "completed"
-                    }`}
+                {tasks.map((task) => (
+                  <div
+                    key={task.task}
+                    className="developer-dashboard-table-row"
                   >
-                    {task.status}
-                  </span>
-                </span>
+                    <span className="developer-dashboard-task-name">
+                      {task.task}
+                    </span>
 
-                <span className="developer-dashboard-table-deadline">
-                  {task.deadline}
-                </span>
+                    <span>
+                      {task.project}
+                    </span>
+
+                    <span>
+                      <span
+                        className={`developer-dashboard-priority developer-dashboard-priority-${task.priority.toLowerCase()}`}
+                      >
+                        {task.priority}
+                      </span>
+                    </span>
+
+                    <span>
+                      {task.deadline}
+                    </span>
+                  </div>
+                ))}
+
               </div>
-            ))}
+            </div>
+
+            {/* PROJECTS */}
+            <div className="developer-dashboard-card">
+              <div className="developer-dashboard-card-header">
+                <div>
+                  <h2>Projects</h2>
+                  <p>Projects you are currently working on</p>
+                </div>
+              </div>
+
+              <div className="developer-dashboard-project-list">
+                {projects.map((project) => (
+                  <div
+                    key={project.name}
+                    className="developer-dashboard-project"
+                  >
+                    <div className="developer-dashboard-project-info">
+
+                      <div className="developer-dashboard-project-avatar">
+                        {project.initials}
+                      </div>
+
+                      <div>
+                        <p>{project.name}</p>
+                        <span>{project.details}</span>
+                      </div>
+
+                    </div>
+
+                    <span
+                      className={`developer-dashboard-project-status developer-dashboard-project-status-${project.status.toLowerCase()}`}
+                    >
+                      {project.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </section>
+
         </div>
-      </section>
-    </main>
+      </main>
+    </div>
   );
 }
