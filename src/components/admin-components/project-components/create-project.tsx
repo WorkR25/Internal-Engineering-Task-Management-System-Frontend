@@ -1,140 +1,144 @@
 "use client";
 
 import { useState } from "react";
+import "../create-project.css"; // <-- Import the new stylesheet
 
 export default function CreateProject() {
+    // State management for form fields
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState("");
     const [targetEndDate, setTargetEndDate] = useState("");
+    
+    // API Integration Handler
+    const handleCreateProject = async () => {
+        // Prepare the payload mapping your local state to the expected API schema
+        const payload = {
+            name: projectName,
+            description,
+            startDate,
+            targetEndDate,
+        };
+
+        try {
+            // [API ENDPOINT LOCATION]
+            // Example: POST /api/v1/projects
+            // const response = await fetch('/api/v1/projects', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(payload)
+            // });
+            
+            // if (!response.ok) throw new Error("Failed to create project");
+            
+            // Handle success (e.g., show a toast notification, redirect, or close modal)
+            console.log("Submitting payload:", payload);
+        } catch (error) {
+            // Handle error (e.g., display error message to the user)
+            console.error(error);
+        }
+    };
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-white">
-            <div className="w-full max-w-[360px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
-                {/* Header */}
-                <div className="border-b border-gray-200 px-5 py-4">
-                    <div className="flex items-start justify-between">
+        <main className="create-project-main">
+            <div className="modal-container">
+                
+                {/* Header Section */}
+                <div className="modal-header">
+                    <div className="modal-header-flex">
                         <div>
-                            <h1 className="text-sm font-bold text-gray-900">
-                                Create Project
-                            </h1>
-
-                            <p className="mt-0.5 text-[10px] text-gray-500">
+                            <h1 className="modal-title">Create Project</h1>
+                            <p className="modal-subtitle">
                                 New projects start in PLANNING status
                             </p>
                         </div>
-
-                        <button
-                            type="button"
-                            className="text-sm text-gray-400 hover:text-gray-600"
-                        >
+                        <button type="button" className="btn-close">
                             ×
                         </button>
                     </div>
                 </div>
 
-                {/* Form */}
-                <div className="px-5 py-4">
-                    {/* Project Name */}
-                    <div className="mb-4">
-                        <label
-                            htmlFor="projectName"
-                            className="mb-1.5 block text-[10px] font-semibold text-gray-700"
-                        >
+                {/* Form Body Section */}
+                <div className="form-body">
+                    
+                    {/* Project Name Field */}
+                    <div className="form-group">
+                        <label htmlFor="projectName" className="form-label">
                             Project Name
                         </label>
-
                         <input
                             id="projectName"
                             type="text"
                             value={projectName}
                             onChange={(e) => setProjectName(e.target.value)}
                             placeholder="Analytics Pipeline v2"
-                            className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-800 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100"
+                            className="form-input"
                         />
                     </div>
 
-                    {/* Description */}
-                    <div className="mb-4">
-                        <label
-                            htmlFor="description"
-                            className="mb-1.5 block text-[10px] font-semibold text-gray-700"
-                        >
+                    {/* Description Field */}
+                    <div className="form-group">
+                        <label htmlFor="description" className="form-label">
                             Description
                         </label>
-
                         <textarea
                             id="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Rebuild the nightly analytics aggregation pipeline to support real-time developer performance snapshots."
                             rows={3}
-                            className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-800 outline-none placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100"
+                            className="form-textarea"
                         />
                     </div>
 
-                    {/* Dates */}
-                    <div className="grid grid-cols-2 gap-3">
+                    {/* Dates Configuration (Start & End) */}
+                    <div className="dates-grid">
                         <div>
-                            <label
-                                htmlFor="startDate"
-                                className="mb-1.5 block text-[10px] font-semibold text-gray-700"
-                            >
+                            <label htmlFor="startDate" className="form-label">
                                 Start Date
                             </label>
-
                             <input
                                 id="startDate"
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-800 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100"
+                                className="form-input"
                             />
                         </div>
-
                         <div>
-                            <label
-                                htmlFor="targetEndDate"
-                                className="mb-1.5 block text-[10px] font-semibold text-gray-700"
-                            >
+                            <label htmlFor="targetEndDate" className="form-label">
                                 Target End Date
                             </label>
-
                             <input
                                 id="targetEndDate"
                                 type="date"
                                 value={targetEndDate}
-                                onChange={(e) =>
-                                    setTargetEndDate(e.target.value)
-                                }
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-800 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100"
+                                onChange={(e) => setTargetEndDate(e.target.value)}
+                                className="form-input"
                             />
                         </div>
                     </div>
                 </div>
 
-                {/* Footer */}
-                <div className="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-5 py-3">
-                    <p className="text-[9px] text-gray-400">
+                {/* Footer / Actions Section */}
+                <div className="modal-footer">
+                    <p className="footer-hint">
                         You&apos;ll add team members after creating
                     </p>
-
-                    <div className="flex gap-2">
-                        <button
-                            type="button"
-                            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-[10px] font-semibold text-gray-600 hover:bg-gray-50"
-                        >
+                    <div className="footer-actions">
+                        <button type="button" className="btn-cancel">
                             Cancel
                         </button>
-
-                        <button
-                            type="button"
-                            className="rounded-md bg-indigo-600 px-3 py-1.5 text-[10px] font-semibold text-white hover:bg-indigo-700"
+                        <button 
+                            type="button" 
+                            onClick={handleCreateProject}
+                            className="btn-submit"
                         >
                             Create Project
                         </button>
                     </div>
                 </div>
+                
             </div>
         </main>
     );
