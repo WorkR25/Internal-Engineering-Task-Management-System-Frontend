@@ -1,0 +1,198 @@
+@reference "../../../app/globals.css";
+
+.developer-dashboard {
+  @apply min-h-screen bg-[#f8f9fc] text-gray-900;
+}
+
+.developer-dashboard-main {
+  @apply ml-56 min-h-screen;
+}
+
+.developer-dashboard-header {
+  @apply flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6;
+}
+
+.developer-dashboard-header h1 {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.developer-dashboard-header p {
+  @apply mt-0.5 text-[10px] text-gray-500;
+}
+
+.developer-dashboard-user {
+  @apply flex items-center gap-3;
+}
+
+.developer-dashboard-role {
+  @apply rounded-full bg-[#f4f1ff] px-3 py-1 text-[9px] font-medium text-[#5146e5];
+}
+
+.developer-dashboard-avatar {
+  @apply flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5];
+}
+
+.developer-dashboard-content {
+  @apply px-6 py-5;
+}
+
+.developer-dashboard-stats {
+  @apply grid grid-cols-4 gap-4;
+}
+
+.developer-dashboard-stat-card {
+  @apply rounded-lg border border-gray-200 bg-white px-4 py-4;
+}
+
+.developer-dashboard-stat-card p {
+  @apply text-[9px] font-medium text-gray-500;
+}
+
+.developer-dashboard-stat-card h2 {
+  @apply mt-2 text-2xl font-semibold text-gray-900;
+}
+
+.developer-dashboard-stat-card span {
+  @apply mt-1 block text-[10px] text-gray-500;
+}
+
+.developer-dashboard-stat-success {
+  @apply text-emerald-600;
+}
+
+.developer-dashboard-stat-danger {
+  @apply text-red-500;
+}
+
+.developer-dashboard-grid {
+  @apply mt-5 grid grid-cols-[minmax(0,1.65fr)_minmax(300px,1fr)] gap-5;
+}
+
+.developer-dashboard-card {
+  @apply overflow-hidden rounded-lg border border-gray-200 bg-white;
+}
+
+.developer-dashboard-card-header {
+  @apply flex items-center justify-between border-b border-gray-200 px-4 py-4;
+}
+
+.developer-dashboard-card-header h2 {
+  @apply text-sm font-semibold text-gray-900;
+}
+
+.developer-dashboard-card-header p {
+  @apply mt-0.5 text-[10px] text-gray-500;
+}
+
+.developer-dashboard-card-header button {
+  @apply rounded-md border border-gray-300 bg-white px-3 py-1.5 text-[10px] font-medium text-gray-600 transition hover:bg-gray-50;
+}
+
+.developer-dashboard-table {
+  @apply w-full;
+}
+
+.developer-dashboard-table-header {
+  @apply grid grid-cols-[2fr_1.15fr_0.75fr_0.9fr] border-b border-gray-200 bg-gray-50 px-4 py-2.5;
+}
+
+.developer-dashboard-table-header span {
+  @apply text-[9px] font-medium text-gray-500;
+}
+
+.developer-dashboard-table-row {
+  @apply grid grid-cols-[2fr_1.15fr_0.75fr_0.9fr] items-center border-b border-gray-100 px-4 py-4 last:border-b-0;
+}
+
+.developer-dashboard-table-row > span {
+  @apply text-[10px] text-gray-600;
+}
+
+.developer-dashboard-task-name {
+  @apply font-medium text-gray-800;
+}
+
+.developer-dashboard-priority {
+  @apply inline-flex rounded-full px-2 py-1 text-[8px] font-medium;
+}
+
+.developer-dashboard-priority-high {
+  @apply bg-red-50 text-red-500;
+}
+
+.developer-dashboard-priority-medium {
+  @apply bg-amber-50 text-amber-600;
+}
+
+.developer-dashboard-project-list {
+  @apply divide-y divide-gray-100;
+}
+
+.developer-dashboard-project {
+  @apply flex items-center justify-between px-4 py-4;
+}
+
+.developer-dashboard-project-info {
+  @apply flex items-center gap-3;
+}
+
+.developer-dashboard-project-avatar {
+  @apply flex h-9 w-9 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-semibold text-[#5146e5];
+}
+
+.developer-dashboard-project-info p {
+  @apply text-[11px] font-medium text-gray-800;
+}
+
+.developer-dashboard-project-info span {
+  @apply mt-0.5 block text-[9px] text-gray-500;
+}
+
+.developer-dashboard-project-status {
+  @apply rounded-full px-2.5 py-1 text-[8px] font-medium;
+}
+
+.developer-dashboard-project-status-active {
+  @apply bg-blue-50 text-blue-600;
+}
+
+.developer-dashboard-project-status-planning {
+  @apply bg-gray-100 text-gray-600;
+}
+
+@media (max-width: 1100px) {
+  .developer-dashboard-stats {
+    @apply grid-cols-2;
+  }
+
+  .developer-dashboard-grid {
+    @apply grid-cols-1;
+  }
+}
+
+@media (max-width: 768px) {
+  .developer-dashboard-main {
+    @apply ml-0;
+  }
+
+  .developer-dashboard-content {
+    @apply px-4;
+  }
+
+  .developer-dashboard-stats {
+    @apply grid-cols-1;
+  }
+
+  .developer-dashboard-table {
+    @apply overflow-x-auto;
+  }
+
+  .developer-dashboard-table-header,
+  .developer-dashboard-table-row {
+    @apply min-w-[700px];
+  }
+
+  .developer-dashboard-header {
+    @apply px-4;
+  }
+}
