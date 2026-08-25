@@ -1,5 +1,7 @@
 "use client";
 
+import "./reviews-queue.css";
+
 type Review = {
   title: string;
   project: string;
@@ -62,53 +64,53 @@ const reviews: Review[] = [
 
 export default function ReviewsQueue() {
   return (
-    <section className="p-7">
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+    <section className="reviews-page">
+      <div className="reviews-card">
 
         {/* HEADER */}
-        <div className="border-b border-gray-200 px-5 py-4">
-          <h1 className="text-lg font-semibold text-gray-900">
+        <div className="reviews-header">
+          <h1 className="reviews-title">
             Reviews
           </h1>
 
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="reviews-subtitle">
             6 submissions awaiting a decision, across all projects
           </p>
         </div>
 
         {/* FILTERS */}
-        <div className="flex items-center gap-2 border-b border-gray-200 px-5 py-3">
+        <div className="reviews-filters">
           <button
             type="button"
-            className="rounded-md bg-[#5146e5] px-3 py-1.5 text-[10px] font-medium text-white"
+            className="filter-button filter-button-active"
           >
             All Projects
           </button>
 
           <button
             type="button"
-            className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-[10px] font-medium text-gray-600"
+            className="filter-button"
           >
             Payments Platform
           </button>
 
           <button
             type="button"
-            className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-[10px] font-medium text-gray-600"
+            className="filter-button"
           >
             Notification Service
           </button>
 
           <button
             type="button"
-            className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-[10px] font-medium text-gray-600"
+            className="filter-button"
           >
             Mobile API Gateway
           </button>
         </div>
 
         {/* TABLE HEADER */}
-        <div className="grid grid-cols-[2fr_1.2fr_1.1fr_0.8fr_1fr_0.8fr_0.7fr] border-b border-gray-200 px-5 py-3 text-[9px] font-semibold text-gray-500">
+        <div className="reviews-table-header">
           <span>TASK</span>
           <span>PROJECT</span>
           <span>DEVELOPER</span>
@@ -122,53 +124,53 @@ export default function ReviewsQueue() {
         {reviews.map((review) => (
           <div
             key={review.title}
-            className="grid grid-cols-[2fr_1.2fr_1.1fr_0.8fr_1fr_0.8fr_0.7fr] items-center border-b border-gray-100 px-5 py-3.5 last:border-0"
+            className="reviews-table-row"
           >
             {/* TASK */}
-            <div className="min-w-0 pr-3">
-              <p className="truncate text-xs font-medium text-gray-800">
+            <div className="review-task">
+              <p className="review-task-title">
                 {review.title}
               </p>
             </div>
 
             {/* PROJECT */}
-            <span className="text-[10px] text-gray-600">
+            <span className="review-project">
               {review.project}
             </span>
 
             {/* DEVELOPER */}
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#eeedff] text-[8px] font-semibold text-[#5146e5]">
+            <div className="review-developer">
+              <div className="developer-avatar">
                 {review.developer
                   .split(" ")
                   .map((name) => name[0])
                   .join("")}
               </div>
 
-              <span className="truncate text-[10px] text-gray-600">
+              <span className="developer-name">
                 {review.developer}
               </span>
             </div>
 
             {/* ATTEMPT */}
-            <span className="text-[10px] text-gray-600">
+            <span className="review-attempt">
               {review.attempt}
             </span>
 
             {/* SUBMITTED */}
-            <span className="text-[10px] text-gray-500">
+            <span className="review-submitted">
               {review.submitted}
             </span>
 
             {/* PRIORITY */}
             <span>
               <span
-                className={`rounded-full px-2 py-1 text-[9px] font-semibold ${
+                className={`priority-badge ${
                   review.priority === "HIGH"
-                    ? "bg-red-50 text-red-600"
+                    ? "priority-high"
                     : review.priority === "MEDIUM"
-                      ? "bg-orange-50 text-orange-600"
-                      : "bg-gray-100 text-gray-600"
+                      ? "priority-medium"
+                      : "priority-low"
                 }`}
               >
                 {review.priority}
@@ -178,7 +180,7 @@ export default function ReviewsQueue() {
             {/* REVIEW BUTTON */}
             <button
               type="button"
-              className="rounded-md bg-[#5146e5] px-2.5 py-1.5 text-[9px] font-medium text-white hover:bg-indigo-700"
+              className="review-button"
             >
               Review
             </button>

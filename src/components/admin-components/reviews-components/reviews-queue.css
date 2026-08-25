@@ -1,0 +1,152 @@
+@reference "../../../app/globals.css";
+
+.reviews-page {
+  @apply p-7;
+}
+
+.reviews-card {
+  @apply overflow-hidden rounded-xl border border-gray-200 bg-white;
+}
+
+/* Header */
+
+.reviews-header {
+  @apply border-b border-gray-200 px-5 py-4;
+}
+
+.reviews-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.reviews-subtitle {
+  @apply mt-1 text-xs text-gray-400;
+}
+
+/* Filters */
+
+.reviews-filters {
+  @apply flex items-center gap-2 border-b border-gray-200 px-5 py-3;
+}
+
+.filter-button {
+  @apply rounded-md border border-gray-200 bg-white px-3 py-1.5 text-[10px] font-medium text-gray-600;
+}
+
+.filter-button:hover {
+  @apply bg-gray-50;
+}
+
+.filter-button-active {
+  @apply border-[#5146e5] bg-[#5146e5] text-white;
+}
+
+.filter-button-active:hover {
+  @apply bg-[#4338ca];
+}
+
+/* Table */
+
+.reviews-table-header {
+  @apply grid grid-cols-[2fr_1.2fr_1.1fr_0.8fr_1fr_0.8fr_0.7fr] border-b border-gray-200 px-5 py-3 text-[9px] font-semibold text-gray-500;
+}
+
+.reviews-table-row {
+  @apply grid grid-cols-[2fr_1.2fr_1.1fr_0.8fr_1fr_0.8fr_0.7fr] items-center border-b border-gray-100 px-5 py-3.5 last:border-0;
+}
+
+/* Task */
+
+.review-task {
+  @apply min-w-0 pr-3;
+}
+
+.review-task-title {
+  @apply truncate text-xs font-medium text-gray-800;
+}
+
+/* Project */
+
+.review-project {
+  @apply text-[10px] text-gray-600;
+}
+
+/* Developer */
+
+.review-developer {
+  @apply flex items-center gap-2;
+}
+
+.developer-avatar {
+  @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#eeedff] text-[8px] font-semibold text-[#5146e5];
+}
+
+.developer-name {
+  @apply truncate text-[10px] text-gray-600;
+}
+
+/* Attempt */
+
+.review-attempt {
+  @apply text-[10px] text-gray-600;
+}
+
+/* Submitted */
+
+.review-submitted {
+  @apply text-[10px] text-gray-500;
+}
+
+/* Priority */
+
+.priority-badge {
+  @apply rounded-full px-2 py-1 text-[9px] font-semibold;
+}
+
+.priority-high {
+  @apply bg-red-50 text-red-600;
+}
+
+.priority-medium {
+  @apply bg-orange-50 text-orange-600;
+}
+
+.priority-low {
+  @apply bg-gray-100 text-gray-600;
+}
+
+/* Review Button */
+
+.review-button {
+  @apply rounded-md bg-[#5146e5] px-2.5 py-1.5 text-[9px] font-medium text-white;
+}
+
+.review-button:hover {
+  @apply bg-indigo-700;
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+  .reviews-page {
+    @apply p-5;
+  }
+
+  .reviews-card {
+    @apply overflow-x-auto;
+  }
+
+  .reviews-table-header,
+  .reviews-table-row {
+    @apply min-w-[900px];
+  }
+}
+
+@media (max-width: 768px) {
+  .reviews-page {
+    @apply p-4;
+  }
+
+  .reviews-filters {
+    @apply flex-wrap;
+  }
+}

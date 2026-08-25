@@ -1,0 +1,121 @@
+@reference "../../../app/globals.css";
+
+.reassign-task-container {
+  @apply min-h-screen bg-[#f8f9fc] px-4 py-4;
+}
+
+.reassign-task-wrapper {
+  @apply mx-auto w-full max-w-lg;
+}
+
+.reassign-task-card {
+  @apply rounded-xl border border-gray-200 bg-white;
+}
+
+.reassign-task-header {
+  @apply flex items-start justify-between border-b border-gray-200 px-5 py-4;
+}
+
+.reassign-task-header h1 {
+  @apply text-base font-semibold text-gray-900;
+}
+
+.reassign-task-header p {
+  @apply mt-1 text-[11px] text-gray-500;
+}
+
+.reassign-task-close {
+  @apply flex h-7 w-7 items-center justify-center rounded-full text-lg leading-none text-gray-400 hover:bg-gray-100 hover:text-gray-700;
+}
+
+.reassign-task-body {
+  @apply px-5 py-4;
+}
+
+.reassign-task-current {
+  @apply flex items-start justify-between gap-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5;
+}
+
+.reassign-task-current-info {
+  @apply min-w-0;
+}
+
+.reassign-task-current-info p {
+  @apply text-xs font-medium text-gray-900;
+}
+
+.reassign-task-current-info span {
+  @apply mt-1 block text-[10px] text-gray-500;
+}
+
+.reassign-task-status {
+  @apply whitespace-nowrap rounded-full bg-blue-50 px-2 py-1 text-[8px] font-semibold text-blue-600;
+}
+
+.reassign-task-section {
+  @apply mt-3;
+}
+
+.reassign-task-label {
+  @apply text-[11px] font-semibold text-gray-700;
+}
+
+.reassign-task-label span {
+  @apply font-normal text-gray-400;
+}
+
+.reassign-task-developers {
+  @apply mt-1.5 space-y-1.5;
+}
+
+.reassign-task-developer {
+  @apply flex cursor-pointer items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-3 py-2 transition hover:bg-gray-50;
+}
+
+.reassign-task-developer-selected {
+  @apply border-[#5146e5] bg-[#eeedff];
+}
+
+.reassign-task-developer input {
+  @apply h-3.5 w-3.5 accent-[#5146e5];
+}
+
+.reassign-task-avatar {
+  @apply flex h-7 w-7 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-semibold text-[#5146e5];
+}
+
+.reassign-task-developer-info {
+  @apply flex-1;
+}
+
+.reassign-task-developer-info p {
+  @apply text-[11px] font-semibold text-gray-900;
+}
+
+.reassign-task-developer-info span {
+  @apply mt-0.5 block text-[9px] text-gray-500;
+}
+
+.reassign-task-section select {
+  @apply mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[10px] text-gray-700 outline-none focus:border-[#5146e5];
+}
+
+.reassign-task-note-badge {
+  @apply mt-1.5 inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-[9px] font-medium text-gray-500;
+}
+
+.reassign-task-section textarea {
+  @apply mt-1.5 w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-[10px] text-gray-700 outline-none placeholder:text-gray-400 focus:border-[#5146e5];
+}
+
+.reassign-task-footer {
+  @apply flex items-center justify-end gap-2 border-t border-gray-200 px-5 py-3;
+}
+
+.reassign-task-cancel {
+  @apply rounded-lg border border-gray-300 bg-white px-4 py-1.5 text-[10px] font-semibold text-gray-700 hover:bg-gray-50;
+}
+
+.reassign-task-submit {
+  @apply rounded-lg bg-[#5146e5] px-4 py-1.5 text-[10px] font-semibold text-white hover:bg-[#453bd1];
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import "./reassign-task.css";
 
 type Developer = {
   initials: string;
@@ -47,22 +48,14 @@ export default function ReassignTask({ onClose }: ReassignTaskProps) {
   const [reason, setReason] = useState("");
   const [note, setNote] = useState("");
 
-  const isFormValid =
-    selectedDeveloper.trim() !== "" &&
-    reason.trim() !== "" &&
-    note.trim() !== "";
-
   return (
-    <div className="min-h-screen bg-[#f8f9fc] px-4 py-4">
-      <div className="mx-auto w-full max-w-lg">
-        <div className="rounded-xl border border-gray-200 bg-white">
-          <div className="flex items-start justify-between border-b border-gray-200 px-5 py-4">
+    <div className="reassign-task-container">
+      <div className="reassign-task-wrapper">
+        <div className="reassign-task-card">
+          <div className="reassign-task-header">
             <div>
-              <h1 className="text-base font-semibold text-gray-900">
-                Reassign Task
-              </h1>
-
-              <p className="mt-1 text-[11px] text-gray-500">
+              <h1>Reassign Task</h1>
+              <p>
                 Closes the current assignment and opens a new one — history is
                 preserved
               </p>
@@ -72,44 +65,39 @@ export default function ReassignTask({ onClose }: ReassignTaskProps) {
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="flex h-7 w-7 items-center justify-center rounded-full text-lg leading-none text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+              className="reassign-task-close"
             >
               ×
             </button>
           </div>
 
-          <div className="px-5 py-4">
-            <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-medium text-gray-900">
-                    Add pagination to GET /tasks
-                  </p>
-
-                  <p className="mt-1 text-[10px] text-gray-500">
-                    Currently assigned to Karan Verma · Payments Platform
-                  </p>
-                </div>
-
-                <span className="whitespace-nowrap rounded-full bg-blue-50 px-2 py-1 text-[8px] font-semibold text-blue-600">
-                  IN_PROGRESS
+          <div className="reassign-task-body">
+            <div className="reassign-task-current">
+              <div className="reassign-task-current-info">
+                <p>Add pagination to GET /tasks</p>
+                <span>
+                  Currently assigned to Karan Verma · Payments Platform
                 </span>
               </div>
+
+              <span className="reassign-task-status">
+                IN_PROGRESS
+              </span>
             </div>
 
-            <div className="mt-3">
-              <p className="text-[11px] font-semibold text-gray-700">
+            <div className="reassign-task-section">
+              <p className="reassign-task-label">
                 Reassign to
               </p>
 
-              <div className="mt-1.5 space-y-1.5">
+              <div className="reassign-task-developers">
                 {developers.map((developer) => (
                   <label
                     key={developer.name}
-                    className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2 transition ${
+                    className={`reassign-task-developer ${
                       selectedDeveloper === developer.name
-                        ? "border-[#5146e5] bg-[#eeedff]"
-                        : "border-gray-200 bg-white hover:bg-gray-50"
+                        ? "reassign-task-developer-selected"
+                        : ""
                     }`}
                   >
                     <input
@@ -120,32 +108,27 @@ export default function ReassignTask({ onClose }: ReassignTaskProps) {
                       onChange={(event) =>
                         setSelectedDeveloper(event.target.value)
                       }
-                      className="h-3.5 w-3.5 accent-[#5146e5]"
                     />
 
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-semibold text-[#5146e5]">
+                    <div className="reassign-task-avatar">
                       {developer.initials}
                     </div>
 
-                    <div className="flex-1">
-                      <p className="text-[11px] font-semibold text-gray-900">
-                        {developer.name}
-                      </p>
-
-                      <p className="mt-0.5 text-[9px] text-gray-500">
-                        {developer.role} · {developer.activeTasks} active
-                        tasks
-                      </p>
+                    <div className="reassign-task-developer-info">
+                      <p>{developer.name}</p>
+                      <span>
+                        {developer.role} · {developer.activeTasks} active tasks
+                      </span>
                     </div>
                   </label>
                 ))}
               </div>
             </div>
 
-            <div className="mt-3">
+            <div className="reassign-task-section">
               <label
                 htmlFor="reason"
-                className="text-[11px] font-semibold text-gray-700"
+                className="reassign-task-label"
               >
                 Reason
               </label>
@@ -154,7 +137,6 @@ export default function ReassignTask({ onClose }: ReassignTaskProps) {
                 id="reason"
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
-                className="mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[10px] text-gray-700 outline-none focus:border-[#5146e5]"
               >
                 <option value="" disabled>
                   Select a reason
@@ -167,18 +149,18 @@ export default function ReassignTask({ onClose }: ReassignTaskProps) {
                 ))}
               </select>
 
-              <span className="mt-1.5 inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-[9px] font-medium text-gray-500">
+              <span className="reassign-task-note-badge">
                 Does not affect performance
               </span>
             </div>
 
-            <div className="mt-3">
+            <div className="reassign-task-section">
               <label
                 htmlFor="note"
-                className="text-[11px] font-semibold text-gray-700"
+                className="reassign-task-label"
               >
                 Note{" "}
-                <span className="font-normal text-gray-400">
+                <span>
                   (optional)
                 </span>
               </label>
@@ -189,28 +171,22 @@ export default function ReassignTask({ onClose }: ReassignTaskProps) {
                 onChange={(event) => setNote(event.target.value)}
                 rows={2}
                 placeholder="Karan is on approved leave from Dec 3–10. Moving this to Neha to keep the sprint on track."
-                className="mt-1.5 w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-[10px] text-gray-700 outline-none placeholder:text-gray-400 focus:border-[#5146e5]"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 border-t border-gray-200 px-5 py-3">
+          <div className="reassign-task-footer">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-1.5 text-[10px] font-semibold text-gray-700 hover:bg-gray-50"
+              className="reassign-task-cancel"
             >
               Cancel
             </button>
 
             <button
               type="button"
-              disabled={!isFormValid}
-              className={`rounded-lg px-4 py-1.5 text-[10px] font-semibold text-white ${
-                isFormValid
-                  ? "bg-[#5146e5] hover:bg-[#453bd1]"
-                  : "cursor-not-allowed bg-gray-300"
-              }`}
+              className="reassign-task-submit"
             >
               Reassign Task
             </button>
