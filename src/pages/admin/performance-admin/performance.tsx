@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Sidebar from "@/components/admin-components/layout/sidebar";
+import "./performance.css"; // <-- Import the new stylesheet
 
 type Metric = {
   label: string;
@@ -11,94 +12,48 @@ type Metric = {
 };
 
 const metrics: Metric[] = [
-  {
-    label: "ON-TIME DELIVERY",
-    value: "92%",
-    change: "+4% vs last sprint",
-    positive: true,
-  },
-  {
-    label: "AVG REVIEW SCORE",
-    value: "8.6",
-    change: "+0.4 vs last sprint",
-    positive: true,
-  },
-  {
-    label: "TASK COMPLETION",
-    value: "87%",
-    change: "+6% vs last sprint",
-    positive: true,
-  },
-  {
-    label: "REWORK RATE",
-    value: "13%",
-    change: "-3% vs last sprint",
-    positive: true,
-  },
+  { label: "ON-TIME DELIVERY", value: "92%", change: "+4% vs last sprint", positive: true },
+  { label: "AVG REVIEW SCORE", value: "8.6", change: "+0.4 vs last sprint", positive: true },
+  { label: "TASK COMPLETION", value: "87%", change: "+6% vs last sprint", positive: true },
+  { label: "REWORK RATE", value: "13%", change: "-3% vs last sprint", positive: true },
 ];
 
 const developers = [
-  {
-    initials: "RS",
-    name: "Rhea Sen",
-    completed: 18,
-    score: "9.2",
-    delivery: "96%",
-  },
-  {
-    initials: "KV",
-    name: "Karan Verma",
-    completed: 16,
-    score: "8.9",
-    delivery: "94%",
-  },
-  {
-    initials: "NP",
-    name: "Neha Patil",
-    completed: 15,
-    score: "8.7",
-    delivery: "91%",
-  },
-  {
-    initials: "SD",
-    name: "Sahil Das",
-    completed: 14,
-    score: "8.4",
-    delivery: "88%",
-  },
+  { initials: "RS", name: "Rhea Sen", completed: 18, score: "9.2", delivery: "96%" },
+  { initials: "KV", name: "Karan Verma", completed: 16, score: "8.9", delivery: "94%" },
+  { initials: "NP", name: "Neha Patil", completed: 15, score: "8.7", delivery: "91%" },
+  { initials: "SD", name: "Sahil Das", completed: 14, score: "8.4", delivery: "88%" },
 ];
 
 export default function Performance() {
   const [selectedPeriod, setSelectedPeriod] = useState("This Sprint");
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc]">
+    <div className="performance-container">
       <Sidebar
         activePage="performance"
         onPageChange={() => {}}
       />
 
-      <main className="ml-56 min-h-screen bg-[#f8f9fc] p-6">
-        <div className="mx-auto max-w-[1400px]">
+      <main className="main-section">
+        <div className="content-wrapper">
 
-          <div className="mb-6 flex items-center justify-between">
+          {/* Header Section */}
+          <div className="performance-header">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+              <h1 className="header-title">
                 Performance
               </h1>
-
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="header-subtitle">
                 Engineering performance overview across all projects
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="header-actions">
               <select
                 value={selectedPeriod}
-                onChange={(event) =>
-                  setSelectedPeriod(event.target.value)
-                }
-                className="rounded-md border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600 outline-none"
+                onChange={(event) => setSelectedPeriod(event.target.value)}
+                className="period-select"
               >
                 <option>This Sprint</option>
                 <option>Last Sprint</option>
@@ -106,58 +61,37 @@ export default function Performance() {
                 <option>Last Month</option>
               </select>
 
-              <span className="rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-semibold text-gray-600">
-                ADMIN
-              </span>
-
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#5146e5] text-[10px] font-semibold text-white">
-                AG
-              </div>
+              <span className="admin-badge">ADMIN</span>
+              <div className="admin-avatar">AG</div>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {/* Metrics Grid */}
+          <div className="metrics-grid">
             {metrics.map((metric) => (
-              <div
-                key={metric.label}
-                className="rounded-xl border border-gray-200 bg-white p-5"
-              >
-                <p className="text-xs font-medium text-gray-500">
-                  {metric.label}
-                </p>
-
-                <p className="mt-2 text-2xl font-semibold text-gray-900">
-                  {metric.value}
-                </p>
-
-                <p
-                  className={`mt-1 text-xs ${
-                    metric.positive
-                      ? "text-emerald-600"
-                      : "text-red-500"
-                  }`}
-                >
+              <div key={metric.label} className="metric-card">
+                <p className="metric-label">{metric.label}</p>
+                <p className="metric-value">{metric.value}</p>
+                <p className={metric.positive ? "metric-change-positive" : "metric-change-negative"}>
                   {metric.change}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-5 grid gap-5 xl:grid-cols-[1.7fr_1fr]">
-            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-              <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+          {/* Bottom Split Layout */}
+          <div className="bottom-split-layout">
+            
+            {/* Developer Performance Table */}
+            <section className="section-card">
+              <div className="section-header">
                 <div>
-                  <h2 className="text-sm font-semibold text-gray-900">
-                    Developer Performance
-                  </h2>
-
-                  <p className="mt-1 text-xs text-gray-400">
-                    Performance summary for the selected period
-                  </p>
+                  <h2 className="section-title">Developer Performance</h2>
+                  <p className="section-subtitle">Performance summary for the selected period</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-[2fr_1fr_1fr_1fr] border-b border-gray-200 px-5 py-3 text-[10px] font-medium text-gray-500">
+              <div className="table-header-row">
                 <span>DEVELOPER</span>
                 <span>COMPLETED</span>
                 <span>AVG SCORE</span>
@@ -165,167 +99,103 @@ export default function Performance() {
               </div>
 
               {developers.map((developer) => (
-                <div
-                  key={developer.name}
-                  className="grid grid-cols-[2fr_1fr_1fr_1fr] items-center border-b border-gray-100 px-5 py-3.5 last:border-0"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5]">
+                <div key={developer.name} className="table-row">
+                  <div className="dev-info-wrapper">
+                    <div className="dev-avatar">
                       {developer.initials}
                     </div>
-
-                    <span className="text-xs font-medium text-gray-800">
+                    <span className="dev-name">
                       {developer.name}
                     </span>
                   </div>
 
-                  <span className="text-xs text-gray-700">
-                    {developer.completed}
-                  </span>
-
-                  <span className="text-xs font-medium text-gray-700">
-                    {developer.score}
-                  </span>
-
-                  <span className="text-xs text-emerald-600">
-                    {developer.delivery}
-                  </span>
+                  <span className="table-text-normal">{developer.completed}</span>
+                  <span className="table-text-bold">{developer.score}</span>
+                  <span className="table-text-success">{developer.delivery}</span>
                 </div>
               ))}
             </section>
 
-            <section className="rounded-xl border border-gray-200 bg-white p-5">
-              <div className="mb-5">
-                <h2 className="text-sm font-semibold text-gray-900">
-                  Performance Overview
-                </h2>
-
-                <p className="mt-1 text-xs text-gray-400">
-                  Current engineering team metrics
-                </p>
+            {/* Performance Overview Bars */}
+            <section className="overview-card">
+              <div className="overview-header">
+                <h2 className="section-title">Performance Overview</h2>
+                <p className="section-subtitle">Current engineering team metrics</p>
               </div>
 
-              <div className="space-y-5">
+              <div className="overview-list">
+                
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">
-                      Task Completion
-                    </span>
-
-                    <span className="text-xs font-semibold text-gray-800">
-                      87%
-                    </span>
+                  <div className="bar-header">
+                    <span className="bar-label">Task Completion</span>
+                    <span className="bar-value">87%</span>
                   </div>
-
-                  <div className="h-2 rounded-full bg-gray-100">
-                    <div className="h-2 w-[87%] rounded-full bg-[#5146e5]" />
+                  <div className="progress-track">
+                    <div className="progress-fill w-[87%]" />
                   </div>
                 </div>
 
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">
-                      On-Time Delivery
-                    </span>
-
-                    <span className="text-xs font-semibold text-gray-800">
-                      92%
-                    </span>
+                  <div className="bar-header">
+                    <span className="bar-label">On-Time Delivery</span>
+                    <span className="bar-value">92%</span>
                   </div>
-
-                  <div className="h-2 rounded-full bg-gray-100">
-                    <div className="h-2 w-[92%] rounded-full bg-[#5146e5]" />
+                  <div className="progress-track">
+                    <div className="progress-fill w-[92%]" />
                   </div>
                 </div>
 
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">
-                      Review Quality
-                    </span>
-
-                    <span className="text-xs font-semibold text-gray-800">
-                      86%
-                    </span>
+                  <div className="bar-header">
+                    <span className="bar-label">Review Quality</span>
+                    <span className="bar-value">86%</span>
                   </div>
-
-                  <div className="h-2 rounded-full bg-gray-100">
-                    <div className="h-2 w-[86%] rounded-full bg-[#5146e5]" />
+                  <div className="progress-track">
+                    <div className="progress-fill w-[86%]" />
                   </div>
                 </div>
 
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">
-                      Rework Control
-                    </span>
-
-                    <span className="text-xs font-semibold text-gray-800">
-                      87%
-                    </span>
+                  <div className="bar-header">
+                    <span className="bar-label">Rework Control</span>
+                    <span className="bar-value">87%</span>
                   </div>
-
-                  <div className="h-2 rounded-full bg-gray-100">
-                    <div className="h-2 w-[87%] rounded-full bg-[#5146e5]" />
+                  <div className="progress-track">
+                    <div className="progress-fill w-[87%]" />
                   </div>
                 </div>
+
               </div>
             </section>
           </div>
 
-          <section className="mt-5 rounded-xl border border-gray-200 bg-white p-5">
+          {/* Review Insights Bottom Card */}
+          <section className="insights-card">
             <div>
-              <h2 className="text-sm font-semibold text-gray-900">
-                Review Insights
-              </h2>
-
-              <p className="mt-1 text-xs text-gray-400">
-                Summary of recent review activity
-              </p>
+              <h2 className="section-title">Review Insights</h2>
+              <p className="section-subtitle">Summary of recent review activity</p>
             </div>
 
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg bg-gray-50 p-4">
-                <p className="text-[10px] font-medium text-gray-500">
-                  REVIEWS COMPLETED
-                </p>
-
-                <p className="mt-2 text-xl font-semibold text-gray-900">
-                  42
-                </p>
-
-                <p className="mt-1 text-[10px] text-emerald-600">
-                  +8 this sprint
-                </p>
+            <div className="insights-grid">
+              
+              <div className="insight-item">
+                <p className="insight-label">REVIEWS COMPLETED</p>
+                <p className="insight-value">42</p>
+                <p className="insight-change-positive">+8 this sprint</p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-4">
-                <p className="text-[10px] font-medium text-gray-500">
-                  AVERAGE REVIEW TIME
-                </p>
-
-                <p className="mt-2 text-xl font-semibold text-gray-900">
-                  3.2h
-                </p>
-
-                <p className="mt-1 text-[10px] text-emerald-600">
-                  18% faster
-                </p>
+              <div className="insight-item">
+                <p className="insight-label">AVERAGE REVIEW TIME</p>
+                <p className="insight-value">3.2h</p>
+                <p className="insight-change-positive">18% faster</p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-4">
-                <p className="text-[10px] font-medium text-gray-500">
-                  CHANGES REQUESTED
-                </p>
-
-                <p className="mt-2 text-xl font-semibold text-gray-900">
-                  13%
-                </p>
-
-                <p className="mt-1 text-[10px] text-emerald-600">
-                  -3% this sprint
-                </p>
+              <div className="insight-item">
+                <p className="insight-label">CHANGES REQUESTED</p>
+                <p className="insight-value">13%</p>
+                <p className="insight-change-positive">-3% this sprint</p>
               </div>
+
             </div>
           </section>
 
