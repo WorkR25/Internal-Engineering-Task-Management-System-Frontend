@@ -1,0 +1,152 @@
+/* Must be included for Tailwind v4 to resolve global utilities */
+@reference "../../app/globals.css";
+
+.team-container {
+  @apply flex min-h-screen bg-[#f8f9fc] font-sans;
+}
+
+.main-content {
+  @apply flex-1 bg-white p-8 ml-56;
+}
+
+/* Header Section */
+.header-section {
+  @apply flex justify-between items-center mb-8;
+}
+
+.page-title {
+  @apply text-3xl font-bold text-gray-900 mb-1 tracking-tight;
+}
+
+.page-subtitle {
+  @apply text-sm text-gray-500;
+}
+
+.header-actions {
+  @apply flex items-center space-x-6;
+}
+
+.btn-primary {
+  @apply bg-[#4f46e5] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm;
+}
+
+.admin-badge-wrapper {
+  @apply flex items-center space-x-3 border-l border-gray-200 pl-6;
+}
+
+.admin-role-text {
+  @apply text-xs font-bold text-gray-500 uppercase tracking-widest;
+}
+
+.admin-avatar {
+  @apply w-9 h-9 rounded-full bg-indigo-50 text-[#4f46e5] flex items-center justify-center text-sm font-bold border border-indigo-100;
+}
+
+/* Filters */
+.filters-wrapper {
+  @apply flex space-x-3 mb-6;
+}
+
+.filter-btn-active {
+  @apply px-5 py-1.5 rounded-full border border-[#4f46e5] bg-indigo-50/50 text-[#4f46e5] text-sm font-semibold;
+}
+
+.filter-btn-inactive {
+  @apply px-5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors;
+}
+
+/* Table */
+.table-container {
+  @apply bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden;
+}
+
+.team-table {
+  @apply w-full text-left border-collapse;
+}
+
+.table-head-row {
+  @apply border-b border-gray-200 bg-gray-50/50;
+}
+
+.table-head-cell {
+  @apply py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider;
+}
+
+.table-body {
+  @apply divide-y divide-gray-100;
+}
+
+.table-row {
+  @apply hover:bg-gray-50/50 transition-colors;
+}
+
+.table-cell {
+  @apply py-4 px-6;
+}
+
+.table-cell-right {
+  @apply py-4 px-6 text-right;
+}
+
+/* Developer Info Cells */
+.dev-info-wrapper {
+  @apply flex items-center space-x-4;
+}
+
+.dev-avatar {
+  @apply w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold;
+}
+
+.avatar-active {
+  @apply bg-indigo-50 text-[#4f46e5];
+}
+
+.avatar-inactive {
+  @apply bg-gray-100 text-gray-400;
+}
+
+.dev-name {
+  @apply text-sm font-bold;
+}
+
+.name-active {
+  @apply text-gray-900;
+}
+
+.name-inactive {
+  @apply text-gray-500;
+}
+
+.dev-email {
+  @apply text-xs text-gray-400;
+}
+
+/* Status Badges */
+.status-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider;
+}
+
+.status-active {
+  @apply bg-green-50 text-green-600;
+}
+
+.status-inactive {
+  @apply bg-gray-100 text-gray-400;
+}
+
+/* Data Cells */
+.tasks-cell {
+  @apply py-4 px-6 text-sm text-gray-600;
+}
+
+.score-cell {
+  @apply py-4 px-6 text-sm font-bold text-gray-900;
+}
+
+.joined-cell {
+  @apply py-4 px-6 text-sm text-gray-500;
+}
+
+.btn-secondary {
+  @apply px-5 py-1.5 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors;
+}
