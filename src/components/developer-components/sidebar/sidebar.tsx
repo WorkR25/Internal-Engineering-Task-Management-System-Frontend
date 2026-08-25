@@ -32,7 +32,7 @@ export default function Sidebar({
     {
       label: "Performance",
       id: "performance",
-      href: "#",
+      href: "/developer/performance-developer/performance",
     },
   ];
 

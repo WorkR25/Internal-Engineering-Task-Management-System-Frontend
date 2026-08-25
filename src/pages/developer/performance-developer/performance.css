@@ -1,0 +1,263 @@
+/* Must be included for Tailwind v4 to resolve global utilities */
+
+@reference "../../../app/globals.css";
+
+/* Main Container */
+
+.performance-container {
+  @apply flex min-h-screen bg-[#f8f9fc] font-sans;
+}
+
+.main-content {
+  @apply flex-1 bg-white ml-56 p-6;
+}
+
+/* Header */
+
+.performance-header {
+  @apply flex justify-between items-center border-b border-gray-200 pb-5 mb-5;
+}
+
+.page-title {
+  @apply text-xl font-bold text-gray-900;
+}
+
+.page-subtitle {
+  @apply text-xs text-gray-400 mt-1;
+}
+
+.header-profile {
+  @apply flex items-center gap-3;
+}
+
+.developer-badge {
+  @apply text-[9px] font-bold text-[#4f46e5] bg-indigo-50 px-3 py-1 rounded-full tracking-wider;
+}
+
+.profile-avatar {
+  @apply w-7 h-7 rounded-full bg-indigo-50 text-[#4f46e5] flex items-center justify-center text-[10px] font-bold;
+}
+
+/* KPI Cards */
+
+.kpi-grid {
+  @apply grid grid-cols-4 gap-3 mb-4;
+}
+
+.kpi-card {
+  @apply bg-white border border-gray-200 rounded-xl p-4 shadow-sm;
+}
+
+.kpi-label {
+  @apply text-[9px] font-bold text-gray-500 tracking-wider;
+}
+
+.kpi-value {
+  @apply text-2xl font-bold text-gray-900 mt-1;
+}
+
+.kpi-change {
+  @apply text-[10px] mt-1;
+}
+
+.kpi-change.positive {
+  @apply text-green-600;
+}
+
+.kpi-change.neutral {
+  @apply text-gray-500;
+}
+
+.kpi-change.negative {
+  @apply text-red-500;
+}
+
+/* Charts */
+
+.charts-grid {
+  @apply grid grid-cols-[1.55fr_1fr] gap-4 mb-4;
+}
+
+.panel {
+  @apply bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden;
+}
+
+.panel-header {
+  @apply px-4 py-3 border-b border-gray-100;
+}
+
+.panel-header h2 {
+  @apply text-xs font-bold text-gray-900;
+}
+
+.panel-header p {
+  @apply text-[9px] text-gray-400 mt-0.5;
+}
+
+/* Trend Chart */
+
+.trend-panel {
+  @apply min-h-[260px];
+}
+
+.chart-area {
+  @apply flex px-5 pt-5 pb-3;
+}
+
+.chart-y-labels {
+  @apply flex flex-col justify-between h-36 text-[8px] text-gray-300 pr-3;
+}
+
+.chart {
+  @apply relative flex-1 h-44;
+}
+
+.chart-grid-line {
+  @apply absolute left-0 right-0 border-t border-gray-100;
+}
+
+.line-1 {
+  top: 0;
+}
+
+.line-2 {
+  top: 33%;
+}
+
+.line-3 {
+  top: 66%;
+}
+
+.line-4 {
+  bottom: 16px;
+}
+
+.trend-svg {
+  @apply absolute left-0 top-0 w-full h-36;
+}
+
+.chart-fill {
+  fill: rgba(79, 70, 229, 0.08);
+}
+
+.chart-line {
+  fill: none;
+  stroke: #4f46e5;
+  stroke-width: 3;
+}
+
+.chart-dot {
+  fill: #4f46e5;
+}
+
+.chart-x-labels {
+  @apply absolute bottom-0 left-0 right-0 flex justify-between text-[8px] text-gray-300;
+}
+
+/* Dimension */
+
+.dimension-panel {
+  @apply min-h-[260px];
+}
+
+.dimension-list {
+  @apply px-4 py-4 space-y-3;
+}
+
+.dimension-row {
+  @apply grid grid-cols-[105px_1fr_25px] items-center gap-2 text-[9px] text-gray-600;
+}
+
+.dimension-row strong {
+  @apply text-[9px] text-gray-800 text-right;
+}
+
+.dimension-bar {
+  @apply h-1 bg-gray-100 rounded-full overflow-hidden;
+}
+
+.dimension-bar div {
+  @apply h-full bg-[#4f46e5] rounded-full;
+}
+
+/* Recent Reviews */
+
+.reviews-panel {
+  @apply mb-4;
+}
+
+.table-wrapper {
+  @apply overflow-x-auto;
+}
+
+.reviews-table {
+  @apply w-full border-collapse;
+}
+
+.reviews-table thead {
+  @apply border-b border-gray-200;
+}
+
+.reviews-table th {
+  @apply px-4 py-2 text-left text-[8px] font-bold text-gray-400 tracking-wider;
+}
+
+.reviews-table td {
+  @apply px-4 py-3 text-[9px] text-gray-600 border-b border-gray-100;
+}
+
+.reviews-table tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+.reviews-table tbody tr {
+  @apply hover:bg-gray-50 transition-colors;
+}
+
+.reviews-table .task-name {
+  @apply font-semibold text-gray-900;
+}
+
+.reviews-table .score {
+  @apply font-bold text-gray-800;
+}
+
+/* Status Badges */
+
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-1 rounded-full text-[8px] font-bold;
+}
+
+.status-badge.pending {
+  @apply bg-gray-100 text-gray-500;
+}
+
+.status-badge.approved {
+  @apply bg-green-50 text-green-600;
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+  .kpi-grid {
+    @apply grid-cols-2;
+  }
+
+  .charts-grid {
+    @apply grid-cols-1;
+  }
+}
+
+@media (max-width: 640px) {
+  .main-content {
+    @apply ml-0 p-4;
+  }
+
+  .kpi-grid {
+    @apply grid-cols-1;
+  }
+
+  .performance-header {
+    @apply flex-col items-start gap-3;
+  }
+}
