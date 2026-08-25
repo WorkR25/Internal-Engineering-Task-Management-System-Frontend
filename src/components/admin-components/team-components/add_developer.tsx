@@ -1,41 +1,38 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import "./add_developer.css";
 
 interface AddDeveloperModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function AddDeveloperModal({ isOpen, onClose }: AddDeveloperModalProps) {
+export default function AddDeveloperModal({
+  isOpen,
+  onClose,
+}: AddDeveloperModalProps) {
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // ADD THIS EFFECT
   useEffect(() => {
     if (isOpen) {
-      // Lock the scroll when modal opens
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      // Restore the scroll when modal closes
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
-    // Cleanup function in case the component unmounts unexpectedly
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
-
 
   if (!isOpen) return null;
 
   const handleCreateAccount = () => {
     // TODO: Integrate your POST /api/v1/auth/signup API call here
-    
-    // Simulate successful API call
+
     setIsSuccess(true);
-    
-    // Automatically close the modal and reset state after 3 seconds
+
     setTimeout(() => {
       setIsSuccess(false);
       onClose();
@@ -48,98 +45,149 @@ export default function AddDeveloperModal({ isOpen, onClose }: AddDeveloperModal
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
-        
+    <div className="add-developer-overlay">
+      <div className="add-developer-modal">
         {/* Modal Header */}
-        <div className="flex justify-between items-start p-6 border-b border-gray-100">
+        <div className="add-developer-header">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Add Developer</h2>
-            <p className="text-sm text-gray-500 mt-1">There is no public sign-up — accounts are created by Admin only</p>
+            <h2 className="add-developer-title">Add Developer</h2>
+
+            <p className="add-developer-subtitle">
+              There is no public sign-up — accounts are created by Admin only
+            </p>
           </div>
-          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+
+          <button
+            onClick={handleClose}
+            className="add-developer-close-button"
+          >
+            <svg
+              className="close-icon"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
         {/* Success View OR Form View */}
         {isSuccess ? (
-          <div className="p-8 flex flex-col items-center justify-center space-y-4 my-6">
-            <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          <div className="success-container">
+            <div className="success-icon-container">
+              <svg
+                className="success-icon"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={3}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-900">Account Created Successfully!</h3>
-            <p className="text-sm text-gray-500 text-center">
+
+            <h3 className="success-title">
+              Account Created Successfully!
+            </h3>
+
+            <p className="success-message">
               The developer can now sign in using the temporary password.
             </p>
           </div>
         ) : (
           <>
             {/* Modal Body */}
-            <div className="p-6 space-y-5">
+            <div className="add-developer-body">
               <div>
-                <label className="block text-sm font-semibold text-black mb-1.5">Full Name</label>
-                <input 
-                  type="text" 
-                  placeholder="Priyanka Iyer" 
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent outline-none text-sm text-black transition-all" 
+                <label className="form-label">Full Name</label>
+
+                <input
+                  type="text"
+                  placeholder="Priyanka Iyer"
+                  className="form-input"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-black mb-1.5">Email</label>
-                <input 
-                  type="email" 
-                  placeholder="priyanka.iyer@company.com" 
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent outline-none text-sm text-black transition-all" 
+                <label className="form-label">Email</label>
+
+                <input
+                  type="email"
+                  placeholder="priyanka.iyer@company.com"
+                  className="form-input"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-1.5">Temporary Password</label>
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    value="Tr8•kL2•pQm9" 
-                    readOnly 
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 text-sm outline-none font-mono" 
+                <label className="password-label">
+                  Temporary Password
+                </label>
+
+                <div className="password-container">
+                  <input
+                    type="text"
+                    value="Tr8•kL2•pQm9"
+                    readOnly
+                    className="password-input"
                   />
-                  <span className="absolute right-3 top-2.5 text-xs font-bold bg-[#eef2f6] text-gray-600 px-2 py-0.5 rounded">
+
+                  <span className="auto-generated-badge">
                     Auto-generated
                   </span>
                 </div>
               </div>
 
               {/* Info Box */}
-              <div className="flex items-start bg-gray-50 p-4 rounded-lg border border-gray-100">
-                <svg className="w-5 h-5 text-gray-400 mr-3 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="info-box">
+                <svg
+                  className="info-icon"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  The Developer must change this password on first sign-in. It won't be shown again after this account is created — share it securely.
+
+                <p className="info-text">
+                  The Developer must change this password on first sign-in. It
+                  won't be shown again after this account is created — share it
+                  securely.
                 </p>
               </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="flex items-center justify-between p-6 bg-gray-50/80 border-t border-gray-100">
-              <div className="text-xs text-gray-400 font-medium">
+            <div className="add-developer-footer">
+              <div className="role-status">
                 Role: DEVELOPER · Status: Active
               </div>
-              <div className="flex space-x-3">
-                <button 
-                  onClick={handleClose} 
-                  className="px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+
+              <div className="footer-buttons">
+                <button
+                  onClick={handleClose}
+                  className="cancel-button"
                 >
                   Cancel
                 </button>
-                <button 
+
+                <button
                   onClick={handleCreateAccount}
-                  className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#4f46e5] hover:bg-indigo-700 shadow-sm transition-colors"
+                  className="create-account-button"
                 >
                   Create Account
                 </button>
@@ -147,7 +195,6 @@ export default function AddDeveloperModal({ isOpen, onClose }: AddDeveloperModal
             </div>
           </>
         )}
-        
       </div>
     </div>
   );
