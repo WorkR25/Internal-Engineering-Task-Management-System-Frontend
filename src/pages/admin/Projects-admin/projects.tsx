@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/layout/sidebar';
+import Sidebar from '@/components/admin-components/layout/sidebar';
 import './projects.css'; // <-- Import the new stylesheet
-import AddProjectMemberModal from '@/components/project-member/add-member';
+import AddProjectMemberModal from '@/components/admin-components/project-member-components/add-member';
+
 // Mock data based on the provided UI design
 const members = [
   { initials: 'KV', name: 'Karan Verma', focus: 'Backend', joined: 'Jan 14, 2026' },

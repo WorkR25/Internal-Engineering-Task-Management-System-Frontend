@@ -1,5 +1,5 @@
 /* Must be included for Tailwind v4 to resolve global utilities */
-@reference "../../app/globals.css";
+@reference "../../../app/globals.css";
 
 .projects-container {
   @apply flex min-h-screen bg-white font-sans;

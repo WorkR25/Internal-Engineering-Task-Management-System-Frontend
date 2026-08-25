@@ -33,32 +33,32 @@ export default function Sidebar({
     {
       label: "Task Board",
       id: "task-board",
-      href: "/task-board",
+      href: "/admin/task-board-admin/task-board",
     },
     {
       label: "Task Detail Review",
       id: "task-detail-review",
-      href: "/task-detail-review",
+      href: "/admin/task-detail-admin/task-detail-review",
     },
     {
       label: "Reviews",
       id: "reviews",
-      href: "/reviews",
+      href: "/admin/reviews-admin/reviews",
     },
     {
       label: "Team",
       id: "team",
-      href: "/Team/team",
+      href: "/admin/team-admin/team",
     },
     {
       label: "Performance",
       id: "performance",
-      href: "/performance",
+      href: "/admin/performance-admin/performance",
     },
     {
       label: "Projects",
       id: "projects", 
-      href: "/Projects/projects",
+      href: "/admin/Projects-admin/projects",
     },
 
   ];

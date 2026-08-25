@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/layout/sidebar';
-import AddDeveloperModal from '@/components/team/add_developer';
+import Sidebar from '@/components/admin-components/layout/sidebar';
+import AddDeveloperModal from '@/components/admin-components/team-components/add_developer';
 import './team.css'; // <-- Import the new stylesheet
 
 // Mock data based on the provided UI design
