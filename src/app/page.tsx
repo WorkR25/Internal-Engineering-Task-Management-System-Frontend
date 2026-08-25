@@ -63,8 +63,8 @@ import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
 //    return <Performance />;
 //  }
 
-import SubmitForReview from "@/components/developer-components/submit-for-review/submit-for-review";
+// import SubmitForReview from "@/components/developer-components/submit-for-review/submit-for-review";
 
-export default function Page() {
-  return <SubmitForReview />;
-}
+// export default function Page() {
+//   return <SubmitForReview />;
+// }
