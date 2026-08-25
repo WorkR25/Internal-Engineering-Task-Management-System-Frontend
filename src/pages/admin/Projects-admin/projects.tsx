@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/layout/sidebar';
+import Sidebar from '@/components/admin-components/layout/sidebar';
 import './projects.css'; // <-- Import the new stylesheet
 
 // Mock data based on the provided UI design

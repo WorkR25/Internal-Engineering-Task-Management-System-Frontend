@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/components/layout/sidebar";
+import Sidebar from "@/components/admin-components/layout/sidebar";
 const task = {
   title: "Implement idempotent payment webhook handler",
   project: "Task Board / Payments Platform",

@@ -1,7 +1,7 @@
 "use client";
 
-import Sidebar from "../components/layout/sidebar";
-import ReviewsQueue from "../components/reviews/reviews-queue";
+import Sidebar from "@/components/admin-components/layout/sidebar";
+import ReviewsQueue from "@/components/admin-components/reviews-components/reviews-queue";
 
 export default function Reviews() {
   return (

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "../components/layout/sidebar";
-import CreateTask from "../components/task-board/create-task";
+import Sidebar from "../../../components/admin-components/layout/sidebar";
+import CreateTask from "../../../components/admin-components/task-components/create-task";
 
 const tasks = {
   todo: [

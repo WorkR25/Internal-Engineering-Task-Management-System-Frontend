@@ -1,5 +1,5 @@
 "use client";
-import Sidebar from "../components/layout/sidebar";
+import Sidebar from "../../../components/admin-components/layout/sidebar";
 
 const projects = [
   {
