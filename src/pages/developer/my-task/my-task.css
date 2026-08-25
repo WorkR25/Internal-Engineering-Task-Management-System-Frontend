@@ -5,19 +5,14 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* =========================
-   MAIN CONTENT
-========================= */
-
 .developer-my-task-content {
   margin-left: 240px;
+  width: calc(100% - 240px);
   min-height: 100vh;
+  box-sizing: border-box;
   padding: 32px;
+  overflow-x: hidden;
 }
-
-/* =========================
-   PAGE HEADER
-========================= */
 
 .developer-my-task-header {
   display: flex;
@@ -70,12 +65,11 @@
   font-weight: 700;
 }
 
-/* =========================
-   BOARD
-========================= */
-
 .developer-my-task-board {
+  width: 100%;
+  max-width: 100%;
   margin-top: 22px;
+  box-sizing: border-box;
   overflow: hidden;
   border: 1px solid #dfe3ea;
   border-radius: 8px;
@@ -103,10 +97,6 @@
   color: #8791a3;
 }
 
-/* =========================
-   FILTERS
-========================= */
-
 .developer-project-filters {
   display: flex;
   align-items: center;
@@ -114,9 +104,11 @@
   padding: 12px 20px;
   background: #fafbfc;
   border-bottom: 1px solid #e4e7ed;
+  overflow-x: auto;
 }
 
 .developer-project-filter {
+  flex-shrink: 0;
   border: 1px solid #dfe3ea;
   border-radius: 5px;
   background: #ffffff;
@@ -137,13 +129,12 @@
   color: #5146e5;
 }
 
-/* =========================
-   KANBAN
-========================= */
-
 .developer-kanban-wrapper {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
+  overflow-y: hidden;
   padding: 20px;
 }
 
@@ -153,10 +144,6 @@
   gap: 12px;
   min-width: 850px;
 }
-
-/* =========================
-   COLUMN
-========================= */
 
 .developer-task-column {
   min-width: 0;
@@ -193,10 +180,6 @@
   min-height: 100px;
 }
 
-/* =========================
-   EMPTY COLUMN
-========================= */
-
 .developer-task-empty {
   display: flex;
   align-items: center;
@@ -209,10 +192,6 @@
   font-size: 9px;
   text-align: center;
 }
-
-/* =========================
-   TASK CARD
-========================= */
 
 .developer-task-card {
   margin-bottom: 10px;
@@ -290,13 +269,10 @@
   font-size: 8px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-
 @media (max-width: 900px) {
   .developer-my-task-content {
-    margin-left: 0;
+    margin-left: 240px;
+    width: calc(100% - 240px);
     padding: 20px;
   }
 
@@ -311,6 +287,8 @@
 
 @media (max-width: 600px) {
   .developer-my-task-content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
     padding: 15px;
   }
 
