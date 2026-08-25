@@ -1,309 +1,169 @@
+@reference "../../../app/globals.css";
+
 .developer-my-task-page {
-  min-height: 100vh;
-  background: #f8f9fc;
-  color: #172033;
-  font-family: Arial, Helvetica, sans-serif;
+  @apply min-h-screen bg-[#f8f9fc] text-gray-900;
 }
 
 .developer-my-task-content {
-  margin-left: 240px;
-  width: calc(100% - 240px);
-  min-height: 100vh;
-  box-sizing: border-box;
-  padding: 32px;
-  overflow-x: hidden;
+  @apply ml-60 min-h-screen w-[calc(100%-240px)] box-border overflow-x-hidden p-8;
 }
 
 .developer-my-task-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #dfe3ea;
+  @apply flex items-start justify-between border-b border-gray-200 pb-6;
 }
 
 .developer-my-task-title {
-  margin: 0;
-  font-size: 28px;
-  line-height: 1.2;
-  font-weight: 700;
-  color: #172033;
+  @apply m-0 text-[28px] font-bold leading-[1.2] text-[#172033];
 }
 
 .developer-my-task-subtitle {
-  margin: 7px 0 0;
-  font-size: 13px;
-  color: #647087;
+  @apply mt-1.5 text-[13px] text-[#647087];
 }
 
 .developer-my-task-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  @apply flex items-center gap-2.5;
 }
 
 .developer-role-badge {
-  padding: 5px 9px;
-  border-radius: 999px;
-  background: #f1edff;
-  color: #5146e5;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
+  @apply rounded-full bg-[#f1edff] px-2 py-1 text-[9px] font-bold tracking-[0.3px] text-[#5146e5];
 }
 
 .developer-user-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #eeedff;
-  color: #5146e5;
-  font-size: 10px;
-  font-weight: 700;
+  @apply flex h-[30px] w-[30px] items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-bold text-[#5146e5];
 }
 
 .developer-my-task-board {
-  width: 100%;
-  max-width: 100%;
-  margin-top: 22px;
-  box-sizing: border-box;
-  overflow: hidden;
-  border: 1px solid #dfe3ea;
-  border-radius: 8px;
-  background: #ffffff;
+  @apply mt-[22px] w-full max-w-full overflow-hidden rounded-lg border border-gray-200 bg-white;
 }
 
 .developer-my-task-board-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e4e7ed;
+  @apply flex items-center justify-between border-b border-gray-200 px-5 py-4;
 }
 
 .developer-my-task-board-title {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: #172033;
+  @apply m-0 text-sm font-bold text-[#172033];
 }
 
 .developer-my-task-board-subtitle {
-  margin: 4px 0 0;
-  font-size: 10px;
-  color: #8791a3;
+  @apply mt-1 text-[10px] text-[#8791a3];
 }
 
 .developer-project-filters {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: #fafbfc;
-  border-bottom: 1px solid #e4e7ed;
-  overflow-x: auto;
+  @apply flex items-center gap-2 overflow-x-auto border-b border-gray-200 bg-gray-50 px-5 py-3;
 }
 
 .developer-project-filter {
-  flex-shrink: 0;
-  border: 1px solid #dfe3ea;
-  border-radius: 5px;
-  background: #ffffff;
-  padding: 6px 11px;
-  font-size: 9px;
-  font-weight: 500;
-  color: #5f697a;
-  cursor: pointer;
-}
-
-.developer-project-filter:hover {
-  background: #f5f6f8;
+  @apply shrink-0 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-[9px] font-medium text-[#5f697a] transition hover:bg-gray-100;
 }
 
 .developer-project-filter-active {
-  border-color: #5146e5;
-  background: #eeedff;
-  color: #5146e5;
+  @apply border-[#5146e5] bg-[#eeedff] text-[#5146e5];
 }
 
 .developer-kanban-wrapper {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 20px;
+  @apply box-border w-full max-w-full overflow-x-auto overflow-y-hidden p-5;
 }
 
 .developer-kanban {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(150px, 1fr));
-  gap: 12px;
-  min-width: 850px;
+  @apply grid min-w-[850px] grid-cols-5 gap-3;
 }
 
 .developer-task-column {
-  min-width: 0;
+  @apply min-w-0;
 }
 
 .developer-task-column-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  @apply mb-2.5 flex items-center justify-between;
 }
 
 .developer-task-column-title {
-  font-size: 9px;
-  font-weight: 700;
-  color: #566074;
+  @apply text-[9px] font-bold text-[#566074];
 }
 
 .developer-task-column-count {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 17px;
-  height: 17px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: #f1f3f6;
-  color: #7b8494;
-  font-size: 8px;
-  font-weight: 600;
+  @apply flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-[#f1f3f6] px-1 text-[8px] font-semibold text-[#7b8494];
 }
 
 .developer-task-column-content {
-  min-height: 100px;
+  @apply min-h-[100px];
 }
 
 .developer-task-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72px;
-  padding: 12px;
-  border: 1px dashed #dfe3ea;
-  border-radius: 7px;
-  color: #a0a8b6;
-  font-size: 9px;
-  text-align: center;
+  @apply flex min-h-[72px] items-center justify-center rounded-md border border-dashed border-gray-200 p-3 text-center text-[9px] text-[#a0a8b6];
 }
 
 .developer-task-card {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 12px;
-  border: 1px solid #dfe3ea;
-  border-radius: 7px;
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(20, 30, 50, 0.03);
-  text-align: left;
-  cursor: pointer;
-}
-
-.developer-task-card:hover {
-  border-color: #cfd4df;
+  @apply mb-2.5 block w-full cursor-pointer rounded-md border border-gray-200 bg-white p-3 text-left shadow-sm transition hover:border-gray-300;
 }
 
 .developer-task-card-title {
-  margin: 0;
-  font-size: 10px;
-  line-height: 1.4;
-  font-weight: 700;
-  color: #263044;
+  @apply m-0 text-[10px] font-bold leading-[1.4] text-[#263044];
 }
 
 .developer-task-card-priority {
-  margin-top: 8px;
+  @apply mt-2;
 }
 
 .developer-priority {
-  display: inline-block;
-  padding: 3px 6px;
-  border-radius: 999px;
-  font-size: 7px;
-  font-weight: 700;
+  @apply inline-block rounded-full px-1.5 py-0.5 text-[7px] font-bold;
 }
 
 .developer-priority.priority-low {
-  background: #f1f3f5;
-  color: #667085;
+  @apply bg-gray-100 text-gray-500;
 }
 
 .developer-priority.priority-medium {
-  background: #fff1df;
-  color: #d97706;
+  @apply bg-orange-50 text-orange-600;
 }
 
 .developer-priority.priority-high {
-  background: #ffe8e8;
-  color: #dc2626;
+  @apply bg-red-50 text-red-600;
 }
 
 .developer-priority.priority-critical {
-  background: #ffe1e1;
-  color: #dc2626;
+  @apply bg-red-100 text-red-600;
 }
 
 .developer-task-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 10px;
+  @apply mt-2.5 flex items-center justify-between gap-2;
 }
 
 .developer-task-project {
-  min-width: 0;
-  overflow: hidden;
-  color: #788296;
-  font-size: 8px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[8px] text-[#788296];
 }
 
 .developer-task-date {
-  flex-shrink: 0;
-  color: #8a93a3;
-  font-size: 8px;
+  @apply shrink-0 text-[8px] text-[#8a93a3];
 }
 
 @media (max-width: 900px) {
   .developer-my-task-content {
-    margin-left: 240px;
-    width: calc(100% - 240px);
-    padding: 20px;
+    @apply ml-60 w-[calc(100%-240px)] p-5;
   }
 
   .developer-my-task-header {
-    gap: 20px;
+    @apply gap-5;
   }
 
   .developer-kanban {
-    min-width: 850px;
+    @apply min-w-[850px];
   }
 }
 
 @media (max-width: 600px) {
   .developer-my-task-content {
-    margin-left: 240px;
-    width: calc(100% - 240px);
-    padding: 15px;
+    @apply ml-60 w-[calc(100%-240px)] p-[15px];
   }
 
   .developer-my-task-title {
-    font-size: 22px;
+    @apply text-[22px];
   }
 
   .developer-my-task-header {
-    flex-direction: column;
+    @apply flex-col;
   }
 
   .developer-my-task-user {
-    align-self: flex-start;
+    @apply self-start;
   }
 }
