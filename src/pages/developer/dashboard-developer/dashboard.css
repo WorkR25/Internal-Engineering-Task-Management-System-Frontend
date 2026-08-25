@@ -9,51 +9,51 @@
 }
 
 .developer-dashboard-header {
-  @apply flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6;
+  @apply flex h-12 items-center justify-between border-b border-gray-200 bg-white px-5;
 }
 
 .developer-dashboard-header h1 {
-  @apply text-lg font-semibold text-gray-900;
+  @apply text-sm font-semibold text-gray-900;
 }
 
 .developer-dashboard-header p {
-  @apply mt-0.5 text-[10px] text-gray-500;
+  @apply mt-0.5 text-[9px] text-gray-500;
 }
 
 .developer-dashboard-user {
-  @apply flex items-center gap-3;
+  @apply flex items-center gap-2;
 }
 
 .developer-dashboard-role {
-  @apply rounded-full bg-[#f4f1ff] px-3 py-1 text-[9px] font-medium text-[#5146e5];
+  @apply rounded-full bg-[#f4f1ff] px-2.5 py-1 text-[8px] font-medium text-[#5146e5];
 }
 
 .developer-dashboard-avatar {
-  @apply flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5];
+  @apply flex h-7 w-7 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-semibold text-[#5146e5];
 }
 
 .developer-dashboard-content {
-  @apply px-6 py-5;
+  @apply px-5 py-5;
 }
 
 .developer-dashboard-stats {
-  @apply grid grid-cols-4 gap-4;
+  @apply grid grid-cols-4 gap-3;
 }
 
 .developer-dashboard-stat-card {
-  @apply rounded-lg border border-gray-200 bg-white px-4 py-4;
+  @apply rounded-lg border border-gray-200 bg-white px-3.5 py-3;
 }
 
 .developer-dashboard-stat-card p {
-  @apply text-[9px] font-medium text-gray-500;
+  @apply text-[8px] font-medium text-gray-500;
 }
 
 .developer-dashboard-stat-card h2 {
-  @apply mt-2 text-2xl font-semibold text-gray-900;
+  @apply mt-1 text-xl font-semibold text-gray-900;
 }
 
 .developer-dashboard-stat-card span {
-  @apply mt-1 block text-[10px] text-gray-500;
+  @apply mt-0.5 block text-[8px] text-gray-500;
 }
 
 .developer-dashboard-stat-success {
@@ -64,28 +64,68 @@
   @apply text-red-500;
 }
 
-.developer-dashboard-grid {
-  @apply mt-5 grid grid-cols-[minmax(0,1.65fr)_minmax(300px,1fr)] gap-5;
+.developer-dashboard-action {
+  @apply mt-3 overflow-hidden rounded-lg border border-red-300 bg-white;
+}
+
+.developer-dashboard-action-header {
+  @apply flex items-center justify-between border-b border-gray-200 px-3.5 py-2.5;
+}
+
+.developer-dashboard-action-header h2 {
+  @apply text-[10px] font-semibold text-gray-900;
+}
+
+.developer-dashboard-action-header p {
+  @apply mt-0.5 text-[8px] text-gray-500;
+}
+
+.developer-dashboard-action-count {
+  @apply flex h-4 w-4 items-center justify-center rounded-full bg-red-50 text-[7px] font-medium text-red-500;
+}
+
+.developer-dashboard-action-body {
+  @apply flex items-center justify-between px-3.5 py-2.5;
+}
+
+.developer-dashboard-action-body h3 {
+  @apply text-[9px] font-semibold text-gray-800;
+}
+
+.developer-dashboard-action-body p {
+  @apply mt-0.5 text-[8px] text-gray-500;
+}
+
+.developer-dashboard-action-buttons {
+  @apply flex items-center gap-2;
+}
+
+.developer-dashboard-action-buttons button {
+  @apply rounded-md border border-gray-300 bg-white px-3 py-1.5 text-[8px] font-medium text-gray-600 transition hover:bg-gray-50;
+}
+
+.developer-dashboard-action-buttons button:last-child {
+  @apply border-[#5146e5] bg-[#5146e5] text-white hover:bg-[#453bd1];
 }
 
 .developer-dashboard-card {
-  @apply overflow-hidden rounded-lg border border-gray-200 bg-white;
+  @apply mt-5 overflow-hidden rounded-lg border border-gray-200 bg-white;
 }
 
 .developer-dashboard-card-header {
-  @apply flex items-center justify-between border-b border-gray-200 px-4 py-4;
+  @apply flex items-center justify-between border-b border-gray-200 px-3.5 py-2.5;
 }
 
 .developer-dashboard-card-header h2 {
-  @apply text-sm font-semibold text-gray-900;
+  @apply text-[10px] font-semibold text-gray-900;
 }
 
 .developer-dashboard-card-header p {
-  @apply mt-0.5 text-[10px] text-gray-500;
+  @apply mt-0.5 text-[8px] text-gray-500;
 }
 
 .developer-dashboard-card-header button {
-  @apply rounded-md border border-gray-300 bg-white px-3 py-1.5 text-[10px] font-medium text-gray-600 transition hover:bg-gray-50;
+  @apply rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[8px] font-medium text-gray-600 transition hover:bg-gray-50;
 }
 
 .developer-dashboard-table {
@@ -93,80 +133,52 @@
 }
 
 .developer-dashboard-table-header {
-  @apply grid grid-cols-[2fr_1.15fr_0.75fr_0.9fr] border-b border-gray-200 bg-gray-50 px-4 py-2.5;
+  @apply grid grid-cols-[2fr_1.3fr_0.9fr_0.8fr] border-b border-gray-200 bg-gray-50 px-3.5 py-2;
 }
 
 .developer-dashboard-table-header span {
-  @apply text-[9px] font-medium text-gray-500;
+  @apply text-[8px] font-medium uppercase text-gray-500;
 }
 
 .developer-dashboard-table-row {
-  @apply grid grid-cols-[2fr_1.15fr_0.75fr_0.9fr] items-center border-b border-gray-100 px-4 py-4 last:border-b-0;
+  @apply grid grid-cols-[2fr_1.3fr_0.9fr_0.8fr] items-center border-b border-gray-100 px-3.5 py-2.5;
+}
+
+.developer-dashboard-table-row:last-child {
+  @apply border-b-0;
 }
 
 .developer-dashboard-table-row > span {
-  @apply text-[10px] text-gray-600;
+  @apply text-[8px] text-gray-600;
 }
 
 .developer-dashboard-task-name {
   @apply font-medium text-gray-800;
 }
 
-.developer-dashboard-priority {
-  @apply inline-flex rounded-full px-2 py-1 text-[8px] font-medium;
+.developer-dashboard-status {
+  @apply inline-flex rounded-full px-2 py-0.5 text-[7px] font-medium;
 }
 
-.developer-dashboard-priority-high {
-  @apply bg-red-50 text-red-500;
-}
-
-.developer-dashboard-priority-medium {
-  @apply bg-amber-50 text-amber-600;
-}
-
-.developer-dashboard-project-list {
-  @apply divide-y divide-gray-100;
-}
-
-.developer-dashboard-project {
-  @apply flex items-center justify-between px-4 py-4;
-}
-
-.developer-dashboard-project-info {
-  @apply flex items-center gap-3;
-}
-
-.developer-dashboard-project-avatar {
-  @apply flex h-9 w-9 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-semibold text-[#5146e5];
-}
-
-.developer-dashboard-project-info p {
-  @apply text-[11px] font-medium text-gray-800;
-}
-
-.developer-dashboard-project-info span {
-  @apply mt-0.5 block text-[9px] text-gray-500;
-}
-
-.developer-dashboard-project-status {
-  @apply rounded-full px-2.5 py-1 text-[8px] font-medium;
-}
-
-.developer-dashboard-project-status-active {
-  @apply bg-blue-50 text-blue-600;
-}
-
-.developer-dashboard-project-status-planning {
+.developer-dashboard-status-todo {
   @apply bg-gray-100 text-gray-600;
 }
 
-@media (max-width: 1100px) {
+.developer-dashboard-status-in_review {
+  @apply bg-blue-50 text-blue-600;
+}
+
+.developer-dashboard-status-changes_requested {
+  @apply bg-red-50 text-red-500;
+}
+
+.developer-dashboard-status-completed {
+  @apply bg-emerald-50 text-emerald-600;
+}
+
+@media (max-width: 1000px) {
   .developer-dashboard-stats {
     @apply grid-cols-2;
-  }
-
-  .developer-dashboard-grid {
-    @apply grid-cols-1;
   }
 }
 
@@ -176,11 +188,15 @@
   }
 
   .developer-dashboard-content {
-    @apply px-4;
+    @apply px-3;
   }
 
   .developer-dashboard-stats {
     @apply grid-cols-1;
+  }
+
+  .developer-dashboard-action-body {
+    @apply flex-col items-start gap-3;
   }
 
   .developer-dashboard-table {
@@ -193,6 +209,6 @@
   }
 
   .developer-dashboard-header {
-    @apply px-4;
+    @apply px-3;
   }
 }

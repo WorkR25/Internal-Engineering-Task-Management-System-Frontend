@@ -1,0 +1,242 @@
+/* Adjust path to globals.css as needed for your folder structure */
+@reference "../../../app/globals.css";
+
+.task-detail-container {
+  @apply min-h-screen bg-[#f8f9fc] text-gray-900 font-sans;
+}
+
+.main-content {
+  @apply ml-52 min-h-screen;
+}
+
+/* Header */
+.page-header {
+  @apply flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4;
+}
+
+.header-project {
+  @apply text-[10px] font-medium text-gray-400;
+}
+
+.header-title {
+  @apply mt-1 text-sm font-semibold text-gray-900;
+}
+
+.admin-badge-wrapper {
+  @apply flex items-center gap-3;
+}
+
+.admin-badge {
+  @apply rounded-full bg-gray-100 px-3 py-1 text-[9px] font-semibold text-gray-600;
+}
+
+.admin-avatar {
+  @apply flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5];
+}
+
+/* Layout */
+.content-wrapper {
+  @apply mx-auto max-w-[1250px] px-6 py-6;
+}
+
+.two-col-grid {
+  @apply grid gap-5 lg:grid-cols-[1.7fr_1fr];
+}
+
+.left-col-stack {
+  @apply space-y-5;
+}
+
+.right-col-stack {
+  @apply space-y-5;
+}
+
+/* Meta Bar (Status, Priority, Dev) */
+.meta-bar {
+  @apply flex flex-wrap items-center gap-3;
+}
+
+.badge-status {
+  @apply rounded-full bg-blue-50 px-3 py-1 text-[9px] font-semibold text-blue-600 uppercase;
+}
+
+.badge-priority {
+  @apply rounded-full bg-red-50 px-3 py-1 text-[9px] font-semibold text-red-500 uppercase;
+}
+
+.dev-info {
+  @apply flex items-center gap-2;
+}
+
+.dev-avatar-small {
+  @apply flex h-7 w-7 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-semibold text-[#5146e5];
+}
+
+.dev-name {
+  @apply text-[10px] font-medium text-gray-700;
+}
+
+.meta-text {
+  @apply text-[10px] text-gray-400;
+}
+
+/* Generic Card Styles */
+.card-panel {
+  @apply overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm;
+}
+
+.card-header {
+  @apply border-b border-gray-200 px-5 py-4;
+}
+
+.card-header-flex {
+  @apply flex items-center justify-between border-b border-gray-200 px-5 py-4;
+}
+
+.card-title {
+  @apply text-xs font-bold text-gray-900;
+}
+
+.card-subtitle {
+  @apply mt-1 text-[10px] text-gray-500;
+}
+
+.card-body {
+  @apply px-5 py-5;
+}
+
+.card-text {
+  @apply text-[11px] leading-5 text-gray-600;
+}
+
+/* Checkmarks list */
+.requirement-item {
+  @apply flex items-start gap-3;
+}
+
+.check-icon-active {
+  @apply flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] bg-emerald-50 text-emerald-600;
+}
+
+.check-icon-inactive {
+  @apply flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] bg-gray-100 text-gray-400;
+}
+
+/* PR Info Block */
+.pr-block {
+  @apply rounded-lg bg-gray-50 px-4 py-3 mb-4;
+}
+
+.pr-block-inner {
+  @apply flex items-center gap-3;
+}
+
+.pr-badge {
+  @apply flex h-8 w-8 items-center justify-center rounded-md bg-gray-900 text-[10px] font-bold text-white;
+}
+
+.pr-branch {
+  @apply text-[10px] font-semibold text-[#5146e5];
+}
+
+.pr-url {
+  @apply mt-0.5 text-[9px] text-gray-400;
+}
+
+/* Comments */
+.comment-item {
+  @apply flex gap-3 mb-4 last:mb-0;
+}
+
+.comment-avatar {
+  @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eeedff] text-[9px] font-bold text-[#5146e5];
+}
+
+.comment-box {
+  @apply min-w-0 flex-1 rounded-lg bg-gray-50 px-4 py-3;
+}
+
+.comment-header {
+  @apply text-[10px] text-gray-700;
+}
+
+.comment-author {
+  @apply font-bold;
+}
+
+.comment-time {
+  @apply ml-2 text-[9px] text-gray-400;
+}
+
+/* --- RIGHT COLUMN SPECIFICS (From Figma) --- */
+
+/* Scores Layout */
+.scores-wrapper {
+  @apply space-y-3.5 mb-6;
+}
+
+.score-row {
+  @apply flex items-center gap-4;
+}
+
+.score-label {
+  @apply w-[130px] text-[11px] text-gray-600 font-medium;
+}
+
+.score-track {
+  @apply flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden;
+}
+
+.score-fill {
+  @apply h-full rounded-full transition-all duration-300;
+}
+
+.score-value {
+  @apply w-8 text-right text-[11px] font-bold text-gray-900;
+}
+
+/* Feedback & Buttons */
+.feedback-label {
+  @apply text-[11px] font-bold text-gray-900 mb-2 block;
+}
+
+.feedback-box {
+  @apply rounded-lg border border-gray-200 px-4 py-3 bg-white;
+}
+
+.action-buttons-wrapper {
+  @apply mt-5 flex gap-3;
+}
+
+.btn-approve {
+  @apply flex-1 rounded-lg bg-[#10b981] px-4 py-2.5 text-[11px] font-bold text-white hover:bg-[#059669] transition-colors shadow-sm;
+}
+
+.btn-reject {
+  @apply flex-1 rounded-lg border border-[#ef4444] bg-white px-4 py-2.5 text-[11px] font-bold text-[#ef4444] hover:bg-red-50 transition-colors;
+}
+
+/* Activity Timeline */
+.timeline-item {
+  @apply relative flex gap-4 pb-5 last:pb-0;
+}
+
+.timeline-line {
+  @apply absolute left-[3px] top-4 bottom-[-8px] w-[2px] bg-gray-100;
+}
+
+.timeline-dot-normal {
+  @apply relative mt-1 h-2 w-2 shrink-0 rounded-full bg-[#5146e5] z-10;
+}
+
+.timeline-dot-danger {
+  @apply relative mt-1 h-2 w-2 shrink-0 rounded-full bg-red-500 z-10;
+}
+
+.timeline-title {
+  @apply text-[11px] font-bold text-gray-900;
+}
+
+.timeline-time {
+  @apply mt-1 text-[9px] text-gray-500;
+}
