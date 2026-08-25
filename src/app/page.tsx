@@ -45,16 +45,16 @@
 //  export default function Home() {
 //    return <Dashboard />;
 //  }
-import ReassignTask from "@/components/admin-components/task-assign-components/reassign-task";
-export default function Page() {
-  return <ReassignTask />;
-}
-
-// import Dashboard from "@/pages/developer/dashboard-developer/dashboard";
-
+// import ReassignTask from "@/components/admin-components/task-assign-components/reassign-task";
 // export default function Page() {
-//   return <Dashboard />;
+//   return <ReassignTask />;
 // }
+
+import Dashboard from "@/pages/developer/dashboard-developer/dashboard";
+
+export default function Page() {
+  return <Dashboard />;
+}
 
 
 //  import Performance from "@/pages/developer/performance-developer/performance";
