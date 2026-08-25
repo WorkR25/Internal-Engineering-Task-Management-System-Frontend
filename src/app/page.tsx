@@ -41,20 +41,20 @@
 //     return <CreateRole />;
 // }
 //
-import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
- export default function Home() {
-   return <Dashboard />;
- }
+// import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
+//  export default function Home() {
+//    return <Dashboard />;
+//  }
 // import ReassignTask from "@/components/task-detail-review/reassign-task";
 // export default function Page() {
 //   return <ReassignTask />;
 // }
 
-// import Dashboard from "@/pages/developer/dashboard-developer/dashboard";
+import Dashboard from "@/pages/developer/dashboard-developer/dashboard";
 
-// export default function Page() {
-//   return <Dashboard />;
-// }
+export default function Page() {
+  return <Dashboard />;
+}
 
 
 //  import Performance from "@/pages/developer/performance-developer/performance";
@@ -63,8 +63,8 @@ import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
 //    return <Performance />;
 //  }
 
-import SubmitForReview from "@/components/developer-components/submit-for-review/submit-for-review";
+// import SubmitForReview from "@/components/developer-components/submit-for-review/submit-for-review";
 
-export default function Page() {
-  return <SubmitForReview />;
-}
+// export default function Page() {
+//   return <SubmitForReview />;
+// }
