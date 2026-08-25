@@ -45,10 +45,10 @@ export default function Home() {
 //  export default function Home() {
 //    return <Dashboard />;
 //  }
-// import ReassignTask from "@/components/task-detail-review/reassign-task";
-// export default function Page() {
-//   return <ReassignTask />;
-// }
+import ReassignTask from "@/components/admin-components/task-assign-components/reassign-task";
+export default function Page() {
+  return <ReassignTask />;
+}
 
 // import Dashboard from "@/pages/developer/dashboard-developer/dashboard";
 
