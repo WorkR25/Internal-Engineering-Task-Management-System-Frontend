@@ -28,7 +28,7 @@ export default function AddDeveloperModal({ isOpen, onClose }: AddDeveloperModal
         {/* Modal Body */}
         <div className="p-6 space-y-5">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1.5">Full Name</label>
+            <label className="block text-sm font-semibold black-900 mb-1.5">Full Name</label>
             <input 
               type="text" 
               placeholder="Priyanka Iyer" 
@@ -37,7 +37,7 @@ export default function AddDeveloperModal({ isOpen, onClose }: AddDeveloperModal
           </div>
           
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1.5">Email</label>
+            <label className="block text-sm font-semibold black-900 mb-1.5">Email</label>
             <input 
               type="email" 
               placeholder="priyanka.iyer@company.com" 
