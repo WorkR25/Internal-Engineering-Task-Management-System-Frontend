@@ -164,7 +164,7 @@ export default function TaskDetailReview() {
                       </div>
                     </div>
                   </div>
-                  <p className="card-text">"{submission.description}"</p>
+                  <p className="card-text">&quot;{submission.description}&quot;</p>
                 </div>
               </section>
 

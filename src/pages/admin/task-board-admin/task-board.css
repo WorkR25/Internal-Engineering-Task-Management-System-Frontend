@@ -1,135 +1,102 @@
-/* Adjust path to globals.css as needed for your folder structure */
 @reference "../../../app/globals.css";
-
 .board-container {
   @apply min-h-screen bg-[#f8f9fc] text-gray-900;
 }
-
 .board-main {
   @apply ml-56 min-h-screen;
 }
-
 .board-wrapper {
-  @apply mx-auto max-w-[1600px] px-6 py-6;
+  @apply p-7;
 }
-
 /* Header */
 .board-header {
   @apply mb-6 flex items-center justify-between;
 }
-
 .header-title {
   @apply text-2xl font-bold tracking-tight;
 }
-
 .header-subtitle {
   @apply mt-1 text-xs text-gray-500;
 }
-
 .header-actions {
   @apply flex items-center gap-3;
 }
-
 .btn-new-task {
   @apply rounded-md bg-[#5146e5] px-4 py-2 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 transition-colors;
 }
-
 .admin-badge {
   @apply rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-semibold text-gray-600;
 }
-
 .admin-avatar {
   @apply flex h-8 w-8 items-center justify-center rounded-full bg-[#5146e5] text-[10px] font-semibold text-white;
 }
-
 /* Filters */
 .filters-wrapper {
   @apply mb-6 flex items-center gap-2;
 }
-
 .btn-filter-active {
   @apply rounded-md bg-[#5146e5] px-3 py-2 text-[10px] font-medium text-white transition-colors;
 }
-
 .btn-filter-inactive {
   @apply rounded-md border border-gray-200 bg-white px-3 py-2 text-[10px] font-medium text-gray-600 hover:bg-gray-50 transition-colors;
 }
-
 /* Kanban Board Layout */
 .kanban-scroll-area {
   @apply overflow-x-auto;
 }
-
 .kanban-container {
   @apply flex min-w-[1150px] gap-5;
 }
-
 /* Kanban Column */
 .kanban-column {
   @apply min-w-[220px] flex-1;
 }
-
 .column-header {
   @apply mb-3 flex items-center gap-2;
 }
-
 .column-title {
   @apply text-xs font-semibold text-gray-700;
 }
-
 .column-badge {
   @apply rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500;
 }
-
 .column-task-list {
   @apply space-y-3;
 }
-
 /* Task Card */
 .task-card {
   @apply rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md cursor-pointer;
 }
-
 .task-title {
   @apply text-sm font-semibold leading-5 text-gray-900;
 }
-
 .task-meta {
   @apply mt-3 flex items-center justify-between gap-2;
 }
-
 .priority-badge-base {
   @apply rounded px-2 py-1 text-[10px] font-semibold;
 }
-
 .priority-critical {
   @apply bg-red-100 text-red-600;
 }
-
 .priority-high {
   @apply bg-orange-100 text-orange-600;
 }
-
 .priority-medium {
   @apply bg-yellow-100 text-yellow-700;
 }
-
 .priority-low {
   @apply bg-gray-100 text-gray-600;
 }
-
 .task-deadline {
   @apply text-xs text-gray-500;
 }
-
 .task-dev-wrapper {
   @apply mt-4 flex items-center gap-2;
 }
-
 .task-dev-avatar {
   @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-[10px] font-semibold text-gray-700;
 }
-
 .task-dev-name {
   @apply text-xs text-gray-600;
 }
