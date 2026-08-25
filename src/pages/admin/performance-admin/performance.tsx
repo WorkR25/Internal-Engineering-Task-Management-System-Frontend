@@ -162,17 +162,20 @@ function TrendChart({ data }: { data: { sprint: string; value: number }[] }) {
 
   return (
     <svg width="100%" viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
-      {[0, 1, 2, 3].map((row) => (
-        <line
-          key={row}
-          x1={padX}
-          x2={width - padX}
-          y1={(row * (height - padY - 20)) / 3 + 10}
-          y2={(row * (height - padY - 20)) / 3 + 10}
-          stroke="#eef0f5"
-          strokeWidth={1}
-        />
-      ))}
+      <defs>
+        <linearGradient id="trend-area-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#5146e5" stopOpacity="0.16" />
+          <stop offset="100%" stopColor="#5146e5" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+
+      <line x1={padX} x2={padX} y1={10} y2={height - padY} stroke="#e5e7eb" strokeWidth={1} />
+      <line x1={padX} x2={width - padX} y1={height - padY} y2={height - padY} stroke="#e5e7eb" strokeWidth={1} />
+
+      <path
+        d={`${d} L ${points[points.length - 1].x} ${height - padY} L ${points[0].x} ${height - padY} Z`}
+        fill="url(#trend-area-fill)"
+      />
 
       <path d={d} stroke="#5146e5" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
 

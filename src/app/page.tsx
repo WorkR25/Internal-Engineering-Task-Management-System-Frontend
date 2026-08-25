@@ -50,11 +50,11 @@
 //   return <ReassignTask />;
 // }
 
-import Dashboard from "@/pages/developer/dashboard-developer/dashboard";
+// import Dashboard from "@/pages/developer/dashboard-developer/dashboard";
 
-export default function Page() {
-  return <Dashboard />;
-}
+// export default function Page() {
+//   return <Dashboard />;
+// }
 
 
 //  import Performance from "@/pages/developer/performance-developer/performance";
@@ -62,3 +62,9 @@ export default function Page() {
 //  export default function Page() {
 //    return <Performance />;
 //  }
+
+import SubmitForReview from "@/components/developer-components/submit-for-review/submit-for-review";
+
+export default function Page() {
+  return <SubmitForReview />;
+}
