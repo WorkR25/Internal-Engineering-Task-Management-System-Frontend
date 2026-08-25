@@ -7,104 +7,230 @@ type Metric = {
   label: string;
   value: string;
   change: string;
-  positive: boolean;
+  tone: "positive" | "negative" | "neutral";
+};
+
+type Developer = {
+  initials: string;
+  name: string;
+  avgScore: number;
+  onTime: number;
+  completion: number;
+  reassignment: number;
+  trend: number[];
+  trendTone: "positive" | "negative" | "neutral";
 };
 
 const metrics: Metric[] = [
   {
-    label: "ON-TIME DELIVERY",
-    value: "92%",
-    change: "+4% vs last sprint",
-    positive: true,
-  },
-  {
     label: "AVG REVIEW SCORE",
-    value: "8.6",
-    change: "+0.4 vs last sprint",
-    positive: true,
-  },
-  {
-    label: "TASK COMPLETION",
     value: "87%",
-    change: "+6% vs last sprint",
-    positive: true,
+    change: "+3% vs last month",
+    tone: "positive",
   },
   {
-    label: "REWORK RATE",
-    value: "13%",
-    change: "-3% vs last sprint",
-    positive: true,
+    label: "ON-TIME DELIVERY",
+    value: "91%",
+    change: "+2% vs last month",
+    tone: "positive",
+  },
+  {
+    label: "COMPLETION RATE",
+    value: "96%",
+    change: "Steady",
+    tone: "neutral",
+  },
+  {
+    label: "CHANGE REQUEST RATE",
+    value: "12%",
+    change: "-4% vs last month",
+    tone: "positive",
   },
 ];
 
-const developers = [
+const sprintTrend = [
+  { sprint: "Sprint 14", value: 78 },
+  { sprint: "Sprint 15", value: 81 },
+  { sprint: "Sprint 16", value: 82 },
+  { sprint: "Sprint 17", value: 85 },
+  { sprint: "Sprint 18", value: 83 },
+  { sprint: "Sprint 19", value: 87 },
+];
+
+const developers: Developer[] = [
   {
-    initials: "RS",
-    name: "Rhea Sen",
-    completed: 18,
-    score: "9.2",
-    delivery: "96%",
+    initials: "SD",
+    name: "Sahil Das",
+    avgScore: 91,
+    onTime: 95,
+    completion: 98,
+    reassignment: 2,
+    trend: [70, 74, 78, 82, 87, 91],
+    trendTone: "positive",
   },
   {
     initials: "KV",
     name: "Karan Verma",
-    completed: 16,
-    score: "8.9",
-    delivery: "94%",
+    avgScore: 88,
+    onTime: 90,
+    completion: 96,
+    reassignment: 4,
+    trend: [76, 78, 80, 83, 85, 88],
+    trendTone: "positive",
   },
   {
     initials: "NP",
     name: "Neha Patil",
-    completed: 15,
-    score: "8.7",
-    delivery: "91%",
+    avgScore: 85,
+    onTime: 88,
+    completion: 94,
+    reassignment: 6,
+    trend: [84, 85, 83, 86, 84, 85],
+    trendTone: "neutral",
   },
   {
-    initials: "SD",
-    name: "Sahil Das",
-    completed: 14,
-    score: "8.4",
-    delivery: "88%",
+    initials: "RS",
+    name: "Rhea Sen",
+    avgScore: 82,
+    onTime: 84,
+    completion: 90,
+    reassignment: 8,
+    trend: [88, 86, 85, 83, 82, 82],
+    trendTone: "negative",
+  },
+  {
+    initials: "AT",
+    name: "Aman Thakur",
+    avgScore: 76,
+    onTime: 79,
+    completion: 85,
+    reassignment: 14,
+    trend: [90, 87, 83, 80, 78, 76],
+    trendTone: "negative",
   },
 ];
 
-export default function Performance() {
-  const [selectedPeriod, setSelectedPeriod] = useState("This Sprint");
+const toneText: Record<Metric["tone"], string> = {
+  positive: "text-emerald-600",
+  negative: "text-red-500",
+  neutral: "text-gray-400",
+};
+
+const trendStroke: Record<Developer["trendTone"], string> = {
+  positive: "#10b981",
+  negative: "#ef4444",
+  neutral: "#9ca3af",
+};
+
+function buildPath(values: number[], width: number, height: number, pad = 4) {
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+
+  const points = values.map((value, index) => {
+    const x = (index / (values.length - 1)) * (width - pad * 2) + pad;
+    const y = height - pad - ((value - min) / range) * (height - pad * 2);
+    return { x, y };
+  });
+
+  const d = points
+    .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
+    .join(" ");
+
+  return { d, points };
+}
+
+function Sparkline({ values, tone }: { values: number[]; tone: Developer["trendTone"] }) {
+  const width = 64;
+  const height = 24;
+  const { d } = buildPath(values, width, height, 2);
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc]">
-      <Sidebar
-        activePage="performance"
-        onPageChange={() => {}}
-      />
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
+      <path d={d} stroke={trendStroke[tone]} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
-      <main className="ml-56 min-h-screen bg-[#f8f9fc] p-6">
-        <div className="mx-auto max-w-[1400px]">
+function TrendChart({ data }: { data: { sprint: string; value: number }[] }) {
+  const width = 700;
+  const height = 220;
+  const padX = 24;
+  const padY = 24;
+  const values = data.map((d) => d.value);
+  const { d, points } = buildPath(values, width, height - padY, padX);
 
+  return (
+    <svg width="100%" viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
+      {[0, 1, 2, 3].map((row) => (
+        <line
+          key={row}
+          x1={padX}
+          x2={width - padX}
+          y1={(row * (height - padY - 20)) / 3 + 10}
+          y2={(row * (height - padY - 20)) / 3 + 10}
+          stroke="#eef0f5"
+          strokeWidth={1}
+        />
+      ))}
+
+      <path d={d} stroke="#5146e5" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+
+      {points.map((point, index) => (
+        <circle key={index} cx={point.x} cy={point.y} r={4} fill="#5146e5" stroke="white" strokeWidth={2} />
+      ))}
+
+      {data.map((point, index) => (
+        <text
+          key={point.sprint}
+          x={points[index].x}
+          y={height - 2}
+          textAnchor="middle"
+          fontSize="10"
+          fill="#9ca3af"
+        >
+          {point.sprint}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+export default function Performance() {
+  const [view, setView] = useState<"my" | "team">("team");
+
+  return (
+    <div className="flex min-h-screen bg-[#f8f9fc]">
+      <Sidebar activePage="performance" onPageChange={() => {}} />
+
+      <main className="ml-56 min-w-0 flex-1 bg-[#f8f9fc] p-6">
+        <div className="w-full">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-                Performance
-              </h1>
-
-              <p className="mt-1 text-xs text-gray-500">
-                Engineering performance overview across all projects
-              </p>
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900">Performance</h1>
+              <p className="mt-1 text-xs text-gray-500">Team performance across all evaluated tasks</p>
             </div>
 
             <div className="flex items-center gap-3">
-              <select
-                value={selectedPeriod}
-                onChange={(event) =>
-                  setSelectedPeriod(event.target.value)
-                }
-                className="rounded-md border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600 outline-none"
-              >
-                <option>This Sprint</option>
-                <option>Last Sprint</option>
-                <option>This Month</option>
-                <option>Last Month</option>
-              </select>
+              <div className="flex items-center rounded-md bg-gray-100 p-1">
+                <button
+                  onClick={() => setView("my")}
+                  className={`rounded px-3 py-1.5 text-xs font-medium transition ${
+                    view === "my" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                  }`}
+                >
+                  My Performance
+                </button>
+
+                <button
+                  onClick={() => setView("team")}
+                  className={`rounded px-3 py-1.5 text-xs font-medium transition ${
+                    view === "team" ? "bg-[#5146e5] text-white" : "text-gray-500"
+                  }`}
+                >
+                  Team
+                </button>
+              </div>
 
               <span className="rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-semibold text-gray-600">
                 ADMIN
@@ -118,217 +244,69 @@ export default function Performance() {
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {metrics.map((metric) => (
-              <div
-                key={metric.label}
-                className="rounded-xl border border-gray-200 bg-white p-5"
-              >
-                <p className="text-xs font-medium text-gray-500">
-                  {metric.label}
-                </p>
-
-                <p className="mt-2 text-2xl font-semibold text-gray-900">
-                  {metric.value}
-                </p>
-
-                <p
-                  className={`mt-1 text-xs ${
-                    metric.positive
-                      ? "text-emerald-600"
-                      : "text-red-500"
-                  }`}
-                >
-                  {metric.change}
-                </p>
+              <div key={metric.label} className="rounded-xl border border-gray-200 bg-white p-5">
+                <p className="text-xs font-medium text-gray-500">{metric.label}</p>
+                <p className="mt-2 text-2xl font-semibold text-gray-900">{metric.value}</p>
+                <p className={`mt-1 text-xs ${toneText[metric.tone]}`}>{metric.change}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-5 grid gap-5 xl:grid-cols-[1.7fr_1fr]">
-            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-              <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
-                <div>
-                  <h2 className="text-sm font-semibold text-gray-900">
-                    Developer Performance
-                  </h2>
-
-                  <p className="mt-1 text-xs text-gray-400">
-                    Performance summary for the selected period
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-[2fr_1fr_1fr_1fr] border-b border-gray-200 px-5 py-3 text-[10px] font-medium text-gray-500">
-                <span>DEVELOPER</span>
-                <span>COMPLETED</span>
-                <span>AVG SCORE</span>
-                <span>ON-TIME</span>
-              </div>
-
-              {developers.map((developer) => (
-                <div
-                  key={developer.name}
-                  className="grid grid-cols-[2fr_1fr_1fr_1fr] items-center border-b border-gray-100 px-5 py-3.5 last:border-0"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5]">
-                      {developer.initials}
-                    </div>
-
-                    <span className="text-xs font-medium text-gray-800">
-                      {developer.name}
-                    </span>
-                  </div>
-
-                  <span className="text-xs text-gray-700">
-                    {developer.completed}
-                  </span>
-
-                  <span className="text-xs font-medium text-gray-700">
-                    {developer.score}
-                  </span>
-
-                  <span className="text-xs text-emerald-600">
-                    {developer.delivery}
-                  </span>
-                </div>
-              ))}
-            </section>
-
-            <section className="rounded-xl border border-gray-200 bg-white p-5">
-              <div className="mb-5">
-                <h2 className="text-sm font-semibold text-gray-900">
-                  Performance Overview
-                </h2>
-
-                <p className="mt-1 text-xs text-gray-400">
-                  Current engineering team metrics
-                </p>
-              </div>
-
-              <div className="space-y-5">
-                <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">
-                      Task Completion
-                    </span>
-
-                    <span className="text-xs font-semibold text-gray-800">
-                      87%
-                    </span>
-                  </div>
-
-                  <div className="h-2 rounded-full bg-gray-100">
-                    <div className="h-2 w-[87%] rounded-full bg-[#5146e5]" />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">
-                      On-Time Delivery
-                    </span>
-
-                    <span className="text-xs font-semibold text-gray-800">
-                      92%
-                    </span>
-                  </div>
-
-                  <div className="h-2 rounded-full bg-gray-100">
-                    <div className="h-2 w-[92%] rounded-full bg-[#5146e5]" />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">
-                      Review Quality
-                    </span>
-
-                    <span className="text-xs font-semibold text-gray-800">
-                      86%
-                    </span>
-                  </div>
-
-                  <div className="h-2 rounded-full bg-gray-100">
-                    <div className="h-2 w-[86%] rounded-full bg-[#5146e5]" />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">
-                      Rework Control
-                    </span>
-
-                    <span className="text-xs font-semibold text-gray-800">
-                      87%
-                    </span>
-                  </div>
-
-                  <div className="h-2 rounded-full bg-gray-100">
-                    <div className="h-2 w-[87%] rounded-full bg-[#5146e5]" />
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-
           <section className="mt-5 rounded-xl border border-gray-200 bg-white p-5">
             <div>
-              <h2 className="text-sm font-semibold text-gray-900">
-                Review Insights
-              </h2>
-
-              <p className="mt-1 text-xs text-gray-400">
-                Summary of recent review activity
-              </p>
+              <h2 className="text-sm font-semibold text-gray-900">Average Review Score — Trend</h2>
+              <p className="mt-1 text-xs text-gray-400">Last 6 sprints · derived from APPROVED submissions</p>
             </div>
 
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg bg-gray-50 p-4">
-                <p className="text-[10px] font-medium text-gray-500">
-                  REVIEWS COMPLETED
-                </p>
-
-                <p className="mt-2 text-xl font-semibold text-gray-900">
-                  42
-                </p>
-
-                <p className="mt-1 text-[10px] text-emerald-600">
-                  +8 this sprint
-                </p>
-              </div>
-
-              <div className="rounded-lg bg-gray-50 p-4">
-                <p className="text-[10px] font-medium text-gray-500">
-                  AVERAGE REVIEW TIME
-                </p>
-
-                <p className="mt-2 text-xl font-semibold text-gray-900">
-                  3.2h
-                </p>
-
-                <p className="mt-1 text-[10px] text-emerald-600">
-                  18% faster
-                </p>
-              </div>
-
-              <div className="rounded-lg bg-gray-50 p-4">
-                <p className="text-[10px] font-medium text-gray-500">
-                  CHANGES REQUESTED
-                </p>
-
-                <p className="mt-2 text-xl font-semibold text-gray-900">
-                  13%
-                </p>
-
-                <p className="mt-1 text-[10px] text-emerald-600">
-                  -3% this sprint
-                </p>
-              </div>
+            <div className="mt-4">
+              <TrendChart data={sprintTrend} />
             </div>
           </section>
 
+          <section className="mt-5 overflow-hidden rounded-xl border border-gray-200 bg-white">
+            <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+              <div>
+                <h2 className="text-sm font-semibold text-gray-900">Developer Comparison</h2>
+                <p className="mt-1 text-xs text-gray-400">
+                  {developers.length} active developers · date range: last 90 days
+                </p>
+              </div>
+
+              <button className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50">
+                Export CSV
+              </button>
+            </div>
+
+            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] border-b border-gray-200 px-5 py-3 text-[10px] font-medium text-gray-500">
+              <span>DEVELOPER</span>
+              <span>AVG SCORE</span>
+              <span>ON-TIME</span>
+              <span>COMPLETION</span>
+              <span>REASSIGNMENT</span>
+              <span>TREND</span>
+            </div>
+
+            {developers.map((developer) => (
+              <div
+                key={developer.name}
+                className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] items-center border-b border-gray-100 px-5 py-3.5 last:border-0"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eeedff] text-[10px] font-semibold text-[#5146e5]">
+                    {developer.initials}
+                  </div>
+                  <span className="text-xs font-medium text-gray-800">{developer.name}</span>
+                </div>
+
+                <span className="text-xs font-semibold text-gray-800">{developer.avgScore}%</span>
+                <span className="text-xs text-gray-700">{developer.onTime}%</span>
+                <span className="text-xs text-gray-700">{developer.completion}%</span>
+                <span className="text-xs text-gray-700">{developer.reassignment}%</span>
+
+                <Sparkline values={developer.trend} tone={developer.trendTone} />
+              </div>
+            ))}
+          </section>
         </div>
       </main>
     </div>
