@@ -1,10 +1,10 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/layout/sidebar';
 import './projects.css'; // <-- Import the new stylesheet
-
+import AddProjectMemberModal from '@/components/project-member/add-member';
 // Mock data based on the provided UI design
 const members = [
   { initials: 'KV', name: 'Karan Verma', focus: 'Backend', joined: 'Jan 14, 2026' },
@@ -23,7 +23,7 @@ const recentTasks = [
 
 export default function ProjectsPage() {
   const router = useRouter();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="projects-container">
       
@@ -52,7 +52,9 @@ export default function ProjectsPage() {
             <button className="btn-secondary">
               Edit Project
             </button>
-            <button className="btn-primary">
+            <button
+            onClick={() => setIsModalOpen(true)} 
+            className="btn-primary">
               + Add Member
             </button>
             
@@ -171,6 +173,9 @@ export default function ProjectsPage() {
           </div>
         </div>
       </div>
+        {/* Add Developer Modal Component */}
+        <AddProjectMemberModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+              
     </div>
   );
 }
