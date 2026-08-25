@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import "./create-task.css";
 
 type CreateTaskProps = {
   open: boolean;
@@ -16,8 +17,6 @@ export default function CreateTask({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Static for now.
-    // API will be connected here later.
     setSubmitted(true);
 
     setTimeout(() => {
@@ -31,24 +30,23 @@ export default function CreateTask({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 px-4">
+    <div className="create-task-overlay">
 
-      <div className="w-full max-w-[450px] rounded-xl bg-white shadow-xl">
+      <div className="create-task-modal">
 
         {submitted ? (
 
-          /* SUCCESS MESSAGE */
-          <div className="flex min-h-[300px] flex-col items-center justify-center px-6 text-center">
+          <div className="create-task-success">
 
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-3xl text-green-600">
+            <div className="create-task-success-icon">
               ✓
             </div>
 
-            <h2 className="mt-4 text-lg font-semibold text-gray-900">
+            <h2 className="create-task-success-title">
               Task submitted
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="create-task-success-text">
               Your new task has been submitted successfully.
             </p>
 
@@ -57,15 +55,15 @@ export default function CreateTask({
         ) : (
 
           <>
-            {/* HEADER */}
-            <div className="flex items-start justify-between border-b border-gray-100 px-6 py-4">
+
+            <div className="create-task-header">
 
               <div>
-                <h2 className="text-base font-semibold text-gray-900">
+                <h2 className="create-task-title">
                   New Task
                 </h2>
 
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="create-task-subtitle">
                   Create a new task for Payments Platform
                 </p>
               </div>
@@ -73,24 +71,22 @@ export default function CreateTask({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-lg text-gray-400 hover:text-gray-600"
+                className="create-task-close"
               >
                 ×
               </button>
 
             </div>
 
-            {/* FORM */}
             <form
               onSubmit={handleSubmit}
-              className="px-6 py-5"
+              className="create-task-form"
             >
 
-              <div className="space-y-4">
+              <div className="create-task-fields">
 
-                {/* TITLE */}
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+                  <label className="create-task-label">
                     Title
                   </label>
 
@@ -98,13 +94,12 @@ export default function CreateTask({
                     type="text"
                     required
                     placeholder="Enter task title"
-                    className="w-full rounded-md border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#5146e5]"
+                    className="create-task-input"
                   />
                 </div>
 
-                {/* DESCRIPTION */}
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+                  <label className="create-task-label">
                     Description
                   </label>
 
@@ -112,13 +107,12 @@ export default function CreateTask({
                     required
                     rows={3}
                     placeholder="Describe the task"
-                    className="w-full resize-none rounded-md border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#5146e5]"
+                    className="create-task-textarea"
                   />
                 </div>
 
-                {/* ACCEPTANCE CRITERIA */}
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+                  <label className="create-task-label">
                     Acceptance Criteria
                   </label>
 
@@ -126,22 +120,20 @@ export default function CreateTask({
                     required
                     rows={3}
                     placeholder="Enter acceptance criteria"
-                    className="w-full resize-none rounded-md border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#5146e5]"
+                    className="create-task-textarea"
                   />
                 </div>
 
-                {/* PRIORITY + DEADLINE */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="create-task-priority-deadline">
 
-                  {/* PRIORITY */}
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+                    <label className="create-task-label">
                       Priority
                     </label>
 
                     <select
                       defaultValue="HIGH"
-                      className="w-full rounded-md border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#5146e5]"
+                      className="create-task-input"
                     >
                       <option value="LOW">
                         Low
@@ -161,16 +153,15 @@ export default function CreateTask({
                     </select>
                   </div>
 
-                  {/* DEADLINE */}
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+                    <label className="create-task-label">
                       Deadline
                     </label>
 
                     <input
                       type="date"
                       required
-                      className="w-full rounded-md border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#5146e5]"
+                      className="create-task-input"
                     />
                   </div>
 
@@ -178,20 +169,19 @@ export default function CreateTask({
 
               </div>
 
-              {/* FOOTER */}
-              <div className="mt-6 flex justify-end gap-2 border-t border-gray-100 pt-4">
+              <div className="create-task-footer">
 
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                  className="create-task-cancel"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="submit"
-                  className="rounded-md bg-[#5146e5] px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+                  className="create-task-submit"
                 >
                   Create Task
                 </button>
@@ -199,6 +189,7 @@ export default function CreateTask({
               </div>
 
             </form>
+
           </>
         )}
 
