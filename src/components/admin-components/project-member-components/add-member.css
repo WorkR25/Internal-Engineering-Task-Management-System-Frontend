@@ -1,0 +1,147 @@
+/* Must be included for Tailwind v4 to resolve global utilities */
+@import '../../../app/globals.css';
+
+/* =========================
+   MODAL OVERLAY & CONTAINER
+========================== */
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-gray-900/40 p-5 backdrop-blur-sm;
+}
+
+.modal-container {
+  @apply flex w-full max-w-[385px] max-h-[calc(100vh-40px)] flex-col overflow-hidden rounded-[10px] border border-[#e4e6eb] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)];
+}
+
+/* =========================
+   HEADER
+========================== */
+.modal-header {
+  @apply flex shrink-0 items-start justify-between border-b border-[#e8e9ee] px-[17px] py-4;
+}
+
+.modal-title {
+  @apply m-0 text-[14px] font-medium text-[#172033];
+}
+
+.modal-subtitle {
+  @apply mt-1 text-[9px] leading-[13px] text-[#7b8495];
+}
+
+.btn-close {
+  @apply h-5 w-5 cursor-pointer border-none bg-transparent p-0 text-lg leading-none text-[#a0a7b4] hover:text-gray-600 transition-colors;
+}
+
+/* =========================
+   SEARCH & CONTENT AREA
+========================== */
+.search-container {
+  @apply shrink-0 px-[17px] pt-[15px] pb-0;
+}
+
+.search-input {
+  @apply h-[30px] w-full rounded-md border border-[#dfe3ea] bg-white px-[10px] text-[9px] text-[#273044] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100 transition-all;
+}
+
+.list-title {
+  @apply mx-[17px] mb-[7px] mt-[11px] shrink-0 text-[9px] font-semibold text-[#4d5667];
+}
+
+.developer-list {
+  @apply m-0 h-[180px] shrink-0 overflow-x-hidden overflow-y-auto px-[17px];
+  /* Tailwind doesn't have native scrollbar utilities yet, so we use raw CSS here */
+  scrollbar-width: thin;
+  scrollbar-color: #c7c9d1 transparent;
+}
+
+/* =========================
+   DEVELOPER CARDS
+========================== */
+.developer-card {
+  @apply mb-[6px] flex h-[43px] min-h-[43px] w-full shrink-0 cursor-pointer items-center justify-between rounded-[7px] border px-[10px] text-left transition-colors;
+}
+
+.card-selected {
+  @apply border-[#756ef0] bg-[#f8f7ff];
+}
+
+.card-unselected {
+  @apply border-[#e2e5eb] bg-white hover:bg-gray-50;
+}
+
+.developer-info {
+  @apply flex min-w-0 items-center gap-[9px] overflow-hidden;
+}
+
+.developer-initials {
+  @apply flex h-[23px] w-[23px] min-w-[23px] items-center justify-center rounded-full bg-[#efefff] text-[8px] font-bold text-[#5d57b7];
+}
+
+.developer-details {
+  @apply flex min-w-0 flex-col gap-[2px] overflow-hidden;
+}
+
+.developer-name {
+  @apply truncate text-[10px] font-semibold text-[#273044];
+}
+
+.developer-meta {
+  @apply truncate text-[8px] text-[#7b8495];
+}
+
+/* =========================
+   RADIO BUTTONS
+========================== */
+.radio-outer {
+  @apply ml-[8px] flex h-[13px] w-[13px] min-w-[13px] items-center justify-center rounded-full border-[1.5px];
+}
+
+.radio-selected {
+  @apply border-[#625be0];
+}
+
+.radio-unselected {
+  @apply border-[#d2d7df];
+}
+
+.radio-inner {
+  @apply h-[7px] w-[7px] rounded-full bg-[#625be0];
+}
+
+.no-results {
+  @apply p-[12px] text-center text-[9px] text-[#9aa1ae];
+}
+
+/* =========================
+   FOOTER & ALERTS
+========================== */
+.alert-success {
+  @apply mx-[17px] mt-[8px] mb-0 shrink-0 rounded-md border border-[#bbf7d0] bg-[#ecfdf3] px-[10px] py-[8px] text-[9px] font-semibold text-[#15803d];
+}
+
+.modal-footer {
+  @apply mt-[10px] flex shrink-0 items-center justify-between gap-[10px] border-t border-[#e8e9ee] px-[17px] py-[12px];
+}
+
+.already-members-text {
+  @apply max-w-[205px] text-[7px] leading-[10px] text-[#a0a7b4];
+}
+
+.footer-buttons {
+  @apply flex shrink-0 gap-[7px];
+}
+
+.btn-cancel {
+  @apply whitespace-nowrap rounded-md border border-[#dfe2e8] bg-white px-[11px] py-[7px] text-[9px] font-semibold text-[#606979] cursor-pointer hover:bg-gray-50 transition-colors;
+}
+
+.btn-submit {
+  @apply whitespace-nowrap rounded-md px-[11px] py-[7px] text-[9px] font-semibold text-white transition-colors border;
+}
+
+.btn-submit-active {
+  @apply cursor-pointer bg-[#5147d8] border-[#5147d8] hover:bg-indigo-700;
+}
+
+.btn-submit-disabled {
+  @apply cursor-default bg-[#9ca3af] border-[#9ca3af];
+}
