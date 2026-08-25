@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useState } from "react";
 
 const developers = [
@@ -20,19 +21,37 @@ const developers = [
     initials: "IM",
   },
 ];
+interface AddMemberProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-export default function AddMember() {
+export default function AddMember({ isOpen, onClose }: AddMemberProps) {
   const [selected, setSelected] = useState(1);
   const [search, setSearch] = useState("");
 
+  if (!isOpen) return null;
+
+  
   const filteredDevelopers = developers.filter((developer) =>
     developer.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
+    
+    <div 
+    style={{
+    position: "fixed",
+    inset: 0,
+    zIndex: 50,
+    backgroundColor: "rgba(17, 24, 39, 0.4)", // Semi-transparent dark overlay
+    backdropFilter: "blur(4px)", // This creates the actual blur effect
+  }}
+    >
+
     <div
       style={{
-        position: "fixed",
+        position: "absolute",
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
@@ -79,6 +98,7 @@ export default function AddMember() {
         </div>
 
         <button
+          onClick={onClose}
           style={{
             border: "none",
             background: "transparent",
@@ -286,6 +306,7 @@ export default function AddMember() {
           }}
         >
           <button
+            onClick={onClose}
             style={{
               padding: "7px 11px",
               borderRadius: "6px",
@@ -317,5 +338,6 @@ export default function AddMember() {
         </div>
       </div>
     </div>
+  </div>
   );
 }
