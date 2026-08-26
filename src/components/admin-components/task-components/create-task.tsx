@@ -1,7 +1,20 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import "./create-task.css";
+
+const createTaskSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").min(5, "Title must be at least 5 characters"),
+  description: z.string().trim().min(1, "Description is required").min(5, "Description must be at least 5 characters"),
+  acceptanceCriteria: z.string().min(1, "Acceptance criteria is required"),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
+  deadline: z.string().optional(),
+});
+
+type CreateTaskFormValues = z.infer<typeof createTaskSchema>;
 
 type CreateTaskProps = {
   open: boolean;
@@ -14,8 +27,19 @@ export default function CreateTask({
 }: CreateTaskProps) {
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateTaskFormValues>({
+    resolver: zodResolver(createTaskSchema),
+    defaultValues: {
+      priority: "HIGH",
+    },
+  });
+
+  const onSubmit = (data: CreateTaskFormValues) => {
+    console.log(data);
 
     setSubmitted(true);
 
@@ -79,7 +103,7 @@ export default function CreateTask({
             </div>
 
             <form
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmit(onSubmit)}
               className="create-task-form"
             >
 
@@ -92,10 +116,16 @@ export default function CreateTask({
 
                   <input
                     type="text"
-                    required
                     placeholder="Enter task title"
                     className="create-task-input"
+                    {...register("title")}
                   />
+
+                  {errors.title && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.title.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -104,11 +134,17 @@ export default function CreateTask({
                   </label>
 
                   <textarea
-                    required
                     rows={3}
                     placeholder="Describe the task"
                     className="create-task-textarea"
+                    {...register("description")}
                   />
+
+                  {errors.description && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.description.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -117,11 +153,17 @@ export default function CreateTask({
                   </label>
 
                   <textarea
-                    required
                     rows={3}
                     placeholder="Enter acceptance criteria"
                     className="create-task-textarea"
+                    {...register("acceptanceCriteria")}
                   />
+
+                  {errors.acceptanceCriteria && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.acceptanceCriteria.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="create-task-priority-deadline">
@@ -132,8 +174,8 @@ export default function CreateTask({
                     </label>
 
                     <select
-                      defaultValue="HIGH"
                       className="create-task-input"
+                      {...register("priority")}
                     >
                       <option value="LOW">
                         Low
@@ -151,6 +193,12 @@ export default function CreateTask({
                         Critical
                       </option>
                     </select>
+
+                    {errors.priority && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.priority.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -160,9 +208,15 @@ export default function CreateTask({
 
                     <input
                       type="date"
-                      required
                       className="create-task-input"
+                      {...register("deadline")}
                     />
+
+                    {errors.deadline && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.deadline.message}
+                      </p>
+                    )}
                   </div>
 
                 </div>
