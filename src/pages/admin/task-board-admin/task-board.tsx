@@ -3,12 +3,16 @@
 import { useState } from "react";
 import Sidebar from "../../../components/admin-components/layout/sidebar";
 import CreateTask from "../../../components/admin-components/task-components/create-task";
+
 import "./task-board.css"; // <-- Import the new stylesheet
+// 3. import AssignTask
+import AssignTask from "../../../components/admin-components/task-assign-components/assign-task";
+import ReassignTask from "../../../components/admin-components/task-assign-components/reassign-task";
 
 const tasks = {
-  todo: [
+   todo: [
     { title: "Add rate limiting to auth/signin", priority: "HIGH", developer: "Karan Verma", deadline: "Dec 2, 2026" },
-    { title: "Seed assignment reason", priority: "LOW", developer: "Nisha Patel", deadline: "Dec 5, 2026" },
+    { title: "Seed assignment reason", priority: "LOW", developer: null, deadline: "Dec 5, 2026" },
   ],
   inProgress: [
     { title: "Implement payment webhook handler", priority: "HIGH", developer: "Sahil Das", deadline: "Dec 4, 2026" },
@@ -30,13 +34,14 @@ const tasks = {
 type Task = {
   title: string;
   priority: string;
-  developer: string;
+  developer: string | null;
   deadline: string;
+  status: string;
 };
 
 // --- Subcomponents ---
 
-function TaskCard({ title, priority, developer, deadline }: Task) {
+function TaskCard({ title, priority, developer, deadline, onClick }: Task & { onClick?: () => void }) {
   const getPriorityClass = (level: string) => {
     switch (level) {
       case "CRITICAL": return "priority-critical";
@@ -47,7 +52,10 @@ function TaskCard({ title, priority, developer, deadline }: Task) {
   };
 
   return (
-    <div className="task-card">
+    <div 
+      className={`task-card ${onClick ? "task-card-clickable" : ""}`} 
+      onClick={onClick}>
+    
       <h3 className="task-title">{title}</h3>
 
       <div className="task-meta">
@@ -59,15 +67,17 @@ function TaskCard({ title, priority, developer, deadline }: Task) {
 
       <div className="task-dev-wrapper">
         <div className="task-dev-avatar">
-          {developer.split(" ").map((name) => name[0]).join("")}
+          {developer ? developer.split(" ").map((name) => name[0]).join("") : "?"}
         </div>
-        <span className="task-dev-name">{developer}</span>
+        <span className="task-dev-name">{developer ?? "Unassigned"}</span>
       </div>
     </div>
   );
 }
 
-function Column({ title, count, tasks }: { title: string; count: number; tasks: Task[] }) {
+function Column({ title, count, tasks, onTaskClick }: {
+  title: string; count: number; tasks: Task[]; onTaskClick?: (task: Task) => void;
+}) {
   return (
     <div className="kanban-column">
       <div className="column-header">
@@ -77,7 +87,16 @@ function Column({ title, count, tasks }: { title: string; count: number; tasks: 
 
       <div className="column-task-list">
         {tasks.map((task) => (
-          <TaskCard key={task.title} {...task} />
+          <TaskCard
+            key={task.title}
+            {...task}
+            onClick={
+              (title === "TODO" && !task.developer) ||
+              (title === "IN PROGRESS" && !!task.developer)
+                ? () => onTaskClick?.(task)
+                : undefined
+            }
+          />
         ))}
       </div>
     </div>
@@ -88,6 +107,9 @@ function Column({ title, count, tasks }: { title: string; count: number; tasks: 
 
 export default function TaskBoard() {
   const [showCreateTask, setShowCreateTask] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedReassignTask, setSelectedReassignTask] = useState<Task | null>(null);
+ 
 
   return (
     <div className="board-container">
@@ -140,8 +162,8 @@ export default function TaskBoard() {
           {/* TASK BOARD */}
           <div className="kanban-scroll-area">
             <div className="kanban-container">
-              <Column title="TODO" count={tasks.todo.length} tasks={tasks.todo} />
-              <Column title="IN PROGRESS" count={tasks.inProgress.length} tasks={tasks.inProgress} />
+              <Column title="TODO" count={tasks.todo.length} tasks={tasks.todo} onTaskClick={(task) => setSelectedTask(task)} />
+              <Column title="IN PROGRESS" count={tasks.inProgress.length} tasks={tasks.inProgress} onTaskClick={(task) => setSelectedReassignTask(task)} />
               <Column title="IN REVIEW" count={tasks.inReview.length} tasks={tasks.inReview} />
               <Column title="CHANGES REQUESTED" count={tasks.changesRequested.length} tasks={tasks.changesRequested} />
               <Column title="COMPLETED" count={tasks.completed.length} tasks={tasks.completed} />
@@ -155,6 +177,22 @@ export default function TaskBoard() {
       <CreateTask
         open={showCreateTask}
         onClose={() => setShowCreateTask(false)}
+      />
+
+      {/* Assign task modal */}
+
+      <AssignTask
+        open={selectedTask !== null}
+        task={selectedTask}
+        onClose={() => setSelectedTask(null)}
+      />
+
+      {/* Reassign task modal */}
+
+      <ReassignTask
+        open={selectedReassignTask !== null}
+        task={selectedReassignTask}
+        onClose={() => setSelectedReassignTask(null)}
       />
 
     </div>

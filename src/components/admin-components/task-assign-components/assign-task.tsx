@@ -10,8 +10,35 @@ const developers = [
   { id: 4, name: "Sahil Das", role: "Backend", tasks: 4, initials: "SD" },
 ];
 
-export default function AssignTask() {
+// 1. add Task type + props type, change the function signature
+type Task = {
+  title: string;
+  priority: string;
+  developer: string | null;
+  deadline: string;
+};
+
+type AssignTaskProps = {
+  open: boolean;
+  task: Task | null;
+  onClose: () => void;
+};
+
+export default function AssignTask({ open, task, onClose }: AssignTaskProps) {
   const [selected, setSelected] = useState<number | null>(null);
+  const [assigned, setAssigned] = useState(false);
+
+  if (!open || !task) return null;
+
+
+  const handleAssign = () => {
+    setAssigned(true);
+    setTimeout(() => {
+      setAssigned(false);
+      onClose();
+    }, 2200);
+  };
+
 
   return (
     <div className="assign-task-modal">
@@ -27,6 +54,7 @@ export default function AssignTask() {
         <button
           type="button"
           className="close-button"
+          onClick={onClose}
         >
           ×
         </button>
@@ -34,15 +62,15 @@ export default function AssignTask() {
 
       <div className="task-info">
         <div className="task-name">
-          Add rate limiting to /auth/signin
+          {task.title}
         </div>
 
         <div className="task-meta">
           <span>Payments Platform</span>
           <span>·</span>
-          <span>Due Dec 2, 2026</span>
+          <span>Due {task.deadline}</span>
 
-          <b className="priority-badge">MEDIUM</b>
+          <b className="priority-badge">{task.priority}</b>
 
           <b className="status-badge">TODO</b>
         </div>
@@ -97,20 +125,32 @@ export default function AssignTask() {
         </span>
 
         <div className="footer-actions">
-          <button
-            type="button"
-            className="cancel-button"
-          >
-            Cancel
-          </button>
+          {!assigned && (
+            <>
+              <button
+                type="button"
+                className="cancel-button"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
 
-          <button
-            type="button"
-            className="assign-button"
-          >
-            Assign Task
-          </button>
+              <button
+                type="button"
+                className="assign-button"
+                onClick={handleAssign}
+              >
+                Assign Task
+              </button>
+            </>
+          )}
+
         </div>
+          {assigned && (
+            <div className="assign-success-message">
+              <span>✓</span> Task Assigned successfully
+            </div>
+          )}
       </div>
     </div>
   );

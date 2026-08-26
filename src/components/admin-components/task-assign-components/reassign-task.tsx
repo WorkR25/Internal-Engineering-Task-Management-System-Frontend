@@ -39,14 +39,33 @@ const reasons = [
   "OTHER",
 ];
 
+type Task = {
+  title: string;
+  developer: string | null;
+  status: string;
+};
+
 interface ReassignTaskProps {
+  open: boolean;
+  task: Task | null;
   onClose: () => void;
 }
 
-export default function ReassignTask({ onClose }: ReassignTaskProps) {
+export default function ReassignTask({ open, task, onClose }: ReassignTaskProps) {
   const [selectedDeveloper, setSelectedDeveloper] = useState("");
   const [reason, setReason] = useState("");
   const [note, setNote] = useState("");
+  const [reassigned, setReassigned] = useState(false);
+
+  if (!open || !task) return null;
+
+  const handleReassign = () => {
+    setReassigned(true);
+    setTimeout(() => {
+      setReassigned(false);
+      onClose();
+    }, 2000);
+  };
 
   return (
     <div className="reassign-task-container">
@@ -74,14 +93,14 @@ export default function ReassignTask({ onClose }: ReassignTaskProps) {
           <div className="reassign-task-body">
             <div className="reassign-task-current">
               <div className="reassign-task-current-info">
-                <p>Add pagination to GET /tasks</p>
+                <p>{task.title}</p>
                 <span>
-                  Currently assigned to Karan Verma · Payments Platform
+                  Currently assigned to {task.developer ?? "Unassigned"} · Payments Platform
                 </span>
               </div>
 
               <span className="reassign-task-status">
-                IN_PROGRESS
+                {task.status}
               </span>
             </div>
 
@@ -176,21 +195,32 @@ export default function ReassignTask({ onClose }: ReassignTaskProps) {
           </div>
 
           <div className="reassign-task-footer">
-            <button
-              type="button"
-              onClick={onClose}
-              className="reassign-task-cancel"
-            >
-              Cancel
-            </button>
+            {!reassigned && (
+              <>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="reassign-task-cancel"
+                >
+                  Cancel
+                </button>
 
-            <button
-              type="button"
-              className="reassign-task-submit"
-            >
-              Reassign Task
-            </button>
+                <button
+                  type="button"
+                  className="reassign-task-submit"
+                  onClick={handleReassign}
+                >
+                  Reassign Task
+                </button>
+              </>
+            )}
           </div>
+
+          {reassigned && (
+            <div className="reassign-success-message">
+              <span>✓</span> Task Reassigned successfully
+            </div>
+          )}
         </div>
       </div>
     </div>
