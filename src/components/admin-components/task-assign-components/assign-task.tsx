@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import "./AssignTask.css";
+import "./assign-task.css";
 
 const developers = [
   { id: 1, name: "Karan Verma", role: "Backend", tasks: 6, initials: "KV" },
@@ -11,11 +11,10 @@ const developers = [
 ];
 
 export default function AssignTask() {
-  const [selected, setSelected] = useState(2);
+  const [selected, setSelected] = useState<number | null>(null);
 
   return (
     <div className="assign-task-modal">
-      {/* Header */}
       <div className="assign-task-header">
         <div>
           <h2 className="assign-task-title">Assign Task</h2>
@@ -25,10 +24,14 @@ export default function AssignTask() {
           </p>
         </div>
 
-        <button className="close-button">×</button>
+        <button
+          type="button"
+          className="close-button"
+        >
+          ×
+        </button>
       </div>
 
-      {/* Task Information */}
       <div className="task-info">
         <div className="task-name">
           Add rate limiting to /auth/signin
@@ -45,59 +48,66 @@ export default function AssignTask() {
         </div>
       </div>
 
-      {/* Assign To */}
       <div className="assign-label">Assign to</div>
 
       <div className="developer-list">
-        {developers.map((developer) => (
-          <button
-            key={developer.id}
-            onClick={() => setSelected(developer.id)}
-            className={`developer-button ${
-              selected === developer.id ? "selected" : ""
-            }`}
-          >
-            <div className="developer-info">
-              <div className="developer-avatar">
-                {developer.initials}
-              </div>
+        {developers.map((developer) => {
+          const isSelected = selected === developer.id;
 
-              <div className="developer-details">
-                <strong className="developer-name">
-                  {developer.name}
-                </strong>
-
-                <span className="developer-role">
-                  {developer.role} · {developer.tasks} active tasks
-                </span>
-              </div>
-            </div>
-
-            <div
-              className={`radio-button ${
-                selected === developer.id ? "selected" : ""
+          return (
+            <button
+              type="button"
+              key={developer.id}
+              onClick={() => setSelected(developer.id)}
+              className={`developer-button ${
+                isSelected ? "developer-button-selected" : ""
               }`}
             >
-              {selected === developer.id && (
-                <div className="radio-dot" />
-              )}
-            </div>
-          </button>
-        ))}
+              <div className="developer-info">
+                <div className="developer-avatar">
+                  {developer.initials}
+                </div>
+
+                <div className="developer-details">
+                  <strong className="developer-name">
+                    {developer.name}
+                  </strong>
+
+                  <span className="developer-role">
+                    {developer.role} · {developer.tasks} active tasks
+                  </span>
+                </div>
+              </div>
+
+              <div
+                className={`radio-button ${
+                  isSelected ? "radio-button-selected" : ""
+                }`}
+              >
+                {isSelected && <div className="radio-dot" />}
+              </div>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Footer */}
       <div className="assign-task-footer">
         <span className="footer-note">
           Only active members of this project are shown
         </span>
 
         <div className="footer-actions">
-          <button className="cancel-button">
+          <button
+            type="button"
+            className="cancel-button"
+          >
             Cancel
           </button>
 
-          <button className="assign-button">
+          <button
+            type="button"
+            className="assign-button"
+          >
             Assign Task
           </button>
         </div>

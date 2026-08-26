@@ -1,0 +1,133 @@
+@reference "../../../app/globals.css";
+/* Full-screen dim + blur backdrop behind the modal */
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-sm;
+}
+
+/* The white modal card itself */
+.modal-card {
+  @apply bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden;
+}
+
+/* ---------- Header ---------- */
+
+.modal-header {
+  @apply flex justify-between items-start p-6 border-b border-gray-100;
+}
+
+.modal-title {
+  @apply text-xl font-bold text-gray-900;
+}
+
+.modal-subtitle {
+  @apply text-sm text-gray-500 mt-1;
+}
+
+.modal-close-btn {
+  @apply text-gray-400 hover:text-gray-600 transition-colors;
+}
+
+.modal-close-icon {
+  @apply w-5 h-5;
+}
+
+/* ---------- Success State ---------- */
+
+.success-container {
+  @apply p-8 flex flex-col items-center justify-center space-y-4 my-6;
+}
+
+.success-icon-wrapper {
+  @apply w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500;
+}
+
+.success-icon {
+  @apply w-8 h-8;
+}
+
+.success-title {
+  @apply text-lg font-bold text-gray-900;
+}
+
+.success-message {
+  @apply text-sm text-gray-500 text-center;
+}
+
+/* ---------- Form Body ---------- */
+
+.modal-body {
+  @apply p-6 space-y-5;
+}
+
+.form-group {
+  @apply block;
+}
+
+.form-label {
+  @apply block text-sm font-semibold text-black mb-1.5;
+}
+
+/* Slightly different label color used only on the password field
+   in the original design — kept as its own class for accuracy */
+.form-label-dark {
+  @apply block text-sm font-semibold text-gray-900 mb-1.5;
+}
+
+.form-input {
+  @apply w-full px-4 py-2.5 border border-gray-200 rounded-lg
+         focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent
+         outline-none text-sm text-black transition-all;
+}
+
+/* ---------- Temporary Password Field ---------- */
+
+.password-field-wrapper {
+  @apply relative;
+}
+
+.password-input {
+  @apply w-full px-4 py-2.5 border border-gray-200 rounded-lg
+         bg-gray-50 text-gray-900 text-sm outline-none font-mono;
+}
+
+.password-badge {
+  @apply absolute right-3 top-2.5 text-xs font-bold bg-[#eef2f6] text-gray-600 px-2 py-0.5 rounded;
+}
+
+/* ---------- Info Notice Box ---------- */
+
+.info-box {
+  @apply flex items-start bg-gray-50 p-4 rounded-lg border border-gray-100;
+}
+
+.info-icon {
+  @apply w-5 h-5 text-gray-400 mr-3 flex-shrink-0 mt-0.5;
+}
+
+.info-text {
+  @apply text-sm text-gray-600 leading-relaxed;
+}
+
+/* ---------- Footer ---------- */
+
+.modal-footer {
+  @apply flex items-center justify-between p-6 bg-gray-50/80 border-t border-gray-100;
+}
+
+.footer-meta {
+  @apply text-xs text-gray-400 font-medium;
+}
+
+.footer-actions {
+  @apply flex space-x-3;
+}
+
+.btn-cancel {
+  @apply px-4 py-2 rounded-lg text-sm font-semibold text-gray-700
+         bg-white border border-gray-300 hover:bg-gray-50 transition-colors;
+}
+
+.btn-submit {
+  @apply px-5 py-2 rounded-lg text-sm font-semibold text-white
+         bg-[#4f46e5] hover:bg-indigo-700 shadow-sm transition-colors;
+}

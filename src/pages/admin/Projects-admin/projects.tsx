@@ -60,7 +60,7 @@ export default function ProjectsPage() {
             </button>
             
             <div className="admin-badge-wrapper">
-              <span className="admin-role-text">Admin</span>
+              <span className="admin-role-text">ADMIN</span>
               <div className="admin-avatar">
                 AG
               </div>
