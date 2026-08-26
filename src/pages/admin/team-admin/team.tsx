@@ -1,122 +1,248 @@
-"use client";
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/admin-components/layout/sidebar';
-import AddDeveloperModal from '@/components/admin-components/team-components/add_developer';
-import './team.css'; // <-- Import the new stylesheet
+import { useState } from "react";
+import Sidebar from "@/components/admin-components/layout/sidebar";
+import AddDeveloperModal from "@/components/admin-components/team-components/add_developer";
+import styles from "./team.module.css";
 
-// Mock data based on the provided UI design
-const developers = [
-  { initials: 'SD', name: 'Sahil Das', email: 'sahil.das@company.com', status: 'ACTIVE', tasks: 4, score: '91%', joined: 'Feb 3, 2026' },
-  { initials: 'KV', name: 'Karan Verma', email: 'karan.verma@company.com', status: 'ACTIVE', tasks: 6, score: '88%', joined: 'Jan 14, 2026' },
-  { initials: 'NP', name: 'Neha Patil', email: 'neha.patil@company.com', status: 'ACTIVE', tasks: 3, score: '85%', joined: 'Mar 22, 2026' },
-  { initials: 'RS', name: 'Rhea Sen', email: 'rhea.sen@company.com', status: 'ACTIVE', tasks: 5, score: '82%', joined: 'Apr 8, 2026' },
-  { initials: 'AT', name: 'Aman Thakur', email: 'aman.thakur@company.com', status: 'ACTIVE', tasks: 2, score: '76%', joined: 'Jun 30, 2026' },
-  { initials: 'PN', name: 'Priya Nair', email: 'priya.nair@company.com', status: 'INACTIVE', tasks: 0, score: '79%', joined: 'Nov 11, 2025' },
+type Developer = {
+  initials: string;
+  name: string;
+  email: string;
+  status: "ACTIVE" | "INACTIVE";
+  tasks: number;
+  score: string;
+  joined: string;
+};
+
+type Filter = "ALL" | "ACTIVE" | "INACTIVE";
+
+const developers: Developer[] = [
+  {
+    initials: "SD",
+    name: "Sahil Das",
+    email: "sahil.das@company.com",
+    status: "ACTIVE",
+    tasks: 4,
+    score: "91%",
+    joined: "Feb 3, 2026",
+  },
+  {
+    initials: "KV",
+    name: "Karan Verma",
+    email: "karan.verma@company.com",
+    status: "ACTIVE",
+    tasks: 6,
+    score: "88%",
+    joined: "Jan 14, 2026",
+  },
+  {
+    initials: "NP",
+    name: "Neha Patil",
+    email: "neha.patil@company.com",
+    status: "ACTIVE",
+    tasks: 3,
+    score: "85%",
+    joined: "Mar 22, 2026",
+  },
+  {
+    initials: "RS",
+    name: "Rhea Sen",
+    email: "rhea.sen@company.com",
+    status: "ACTIVE",
+    tasks: 5,
+    score: "82%",
+    joined: "Apr 8, 2026",
+  },
+  {
+    initials: "AT",
+    name: "Aman Thakur",
+    email: "aman.thakur@company.com",
+    status: "ACTIVE",
+    tasks: 2,
+    score: "76%",
+    joined: "Jun 30, 2026",
+  },
+  {
+    initials: "PN",
+    name: "Priya Nair",
+    email: "priya.nair@company.com",
+    status: "INACTIVE",
+    tasks: 0,
+    score: "79%",
+    joined: "Nov 11, 2025",
+  },
 ];
 
-export default function TeamPage() {
-  const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const cx = (...classes: string[]) =>
+  classes
+    .map((className) => styles[className as keyof typeof styles])
+    .filter(Boolean)
+    .join(" ");
+
+function DeveloperRow({ developer }: { developer: Developer }) {
+  const isActive = developer.status === "ACTIVE";
 
   return (
-    <div className="team-container">
-      
-      {/* Sidebar Integration */}
-      <Sidebar 
-        activePage="team"
-        onPageChange={() => {}}
-    />
-
-      {/* Main Content Area */}
-      <div className="main-content"> 
-        
-        {/* Header Section */}
-        <div className="header-section">
-          <div>
-            <h1 className="page-title">Team</h1>
-            <p className="page-subtitle">6 Developer accounts · managed by Admin</p>
+    <tr className={cx("table-row")}>
+      <td className={cx("table-cell")}>
+        <div className={cx("dev-info-wrapper")}>
+          <div
+            className={cx(
+              "dev-avatar",
+              isActive ? "avatar-active" : "avatar-inactive"
+            )}
+          >
+            {developer.initials}
           </div>
-          
-          <div className="header-actions">
-            <button 
+
+          <div className={cx("dev-text-wrapper")}>
+            <p
+              className={cx(
+                "dev-name",
+                isActive ? "name-active" : "name-inactive"
+              )}
+            >
+              {developer.name}
+            </p>
+
+            <p className={cx("dev-email")}>{developer.email}</p>
+          </div>
+        </div>
+      </td>
+
+      <td className={cx("table-cell")}>
+        <span
+          className={cx(
+            "status-badge",
+            isActive ? "status-active" : "status-inactive"
+          )}
+        >
+          {developer.status}
+        </span>
+      </td>
+
+      <td className={cx("tasks-cell")}>{developer.tasks}</td>
+      <td className={cx("score-cell")}>{developer.score}</td>
+      <td className={cx("joined-cell")}>{developer.joined}</td>
+
+      <td className={cx("table-cell-right")}>
+        <button type="button" className={cx("btn-secondary")}>
+          {isActive ? "Edit" : "Reactivate"}
+        </button>
+      </td>
+    </tr>
+  );
+}
+
+export default function TeamPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState<Filter>("ALL");
+
+  const filters: { label: string; value: Filter }[] = [
+    { label: "All", value: "ALL" },
+    { label: "Active", value: "ACTIVE" },
+    { label: "Inactive", value: "INACTIVE" },
+  ];
+
+  const filteredDevelopers = developers.filter((developer) => {
+    if (selectedFilter === "ALL") {
+      return true;
+    }
+
+    return developer.status === selectedFilter;
+  });
+
+  return (
+    <div className={cx("team-container")}>
+      <Sidebar activePage="team" onPageChange={() => {}} />
+
+      <main className={cx("main-content")}>
+        <header className={cx("header-section")}>
+          <div>
+            <h1 className={cx("page-title")}>Team</h1>
+
+            <p className={cx("page-subtitle")}>
+              {developers.length} Developer accounts · managed by Admin
+            </p>
+          </div>
+
+          <div className={cx("header-actions")}>
+            <button
+              type="button"
+              className={cx("btn-primary")}
               onClick={() => setIsModalOpen(true)}
-              className="btn-primary"
             >
               + Add Developer
             </button>
-            
-            <div className="admin-badge-wrapper">
-              <span className="admin-role-text">ADMIN</span>
-              <div className="admin-avatar">AG</div>
+
+            <div className={cx("admin-badge-wrapper")}>
+              <span className={cx("admin-role-text")}>ADMIN</span>
+              <div className={cx("admin-avatar")}>AG</div>
             </div>
           </div>
+        </header>
+
+        <div className={cx("filters-wrapper")}>
+          {filters.map((filter) => {
+            const isSelected = selectedFilter === filter.value;
+
+            return (
+              <button
+                key={filter.value}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => setSelectedFilter(filter.value)}
+                className={cx(
+                  isSelected
+                    ? "filter-btn-active"
+                    : "filter-btn-inactive"
+                )}
+              >
+                {filter.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Filter Tabs */}
-        <div className="filters-wrapper">
-          <button className="filter-btn-active">All</button>
-          <button className="filter-btn-inactive">Active</button>
-          <button className="filter-btn-inactive">Inactive</button>
-        </div>
-
-        {/* Developer Table */}
-        <div className="table-container">
-          <table className="team-table">
+        <div className={cx("table-container")}>
+          <table className={cx("team-table")}>
             <thead>
-              <tr className="table-head-row">
-                <th className="table-head-cell">Developer</th>
-                <th className="table-head-cell">Status</th>
-                <th className="table-head-cell">Active Tasks</th>
-                <th className="table-head-cell">Avg Review Score</th>
-                <th className="table-head-cell">Joined</th>
-                <th className="table-cell-right"></th>
+              <tr className={cx("table-head-row")}>
+                <th className={cx("table-head-cell")}>Developer</th>
+                <th className={cx("table-head-cell")}>Status</th>
+                <th className={cx("table-head-cell")}>Active Tasks</th>
+                <th className={cx("table-head-cell")}>Avg Review Score</th>
+                <th className={cx("table-head-cell")}>Joined</th>
+                <th className={cx("table-cell-right")}></th>
               </tr>
             </thead>
-            <tbody className="table-body">
-              {developers.map((dev, idx) => (
-                <tr key={idx} className="table-row">
-                  
-                  <td className="table-cell">
-                    <div className="dev-info-wrapper">
-                      <div className={`dev-avatar ${dev.status === 'ACTIVE' ? 'avatar-active' : 'avatar-inactive'}`}>
-                        {dev.initials}
-                      </div>
-                      <div>
-                        <p className={`dev-name ${dev.status === 'ACTIVE' ? 'name-active' : 'name-inactive'}`}>
-                          {dev.name}
-                        </p>
-                        <p className="dev-email">{dev.email}</p>
-                      </div>
-                    </div>
+
+            <tbody className={cx("table-body")}>
+              {filteredDevelopers.length > 0 ? (
+                filteredDevelopers.map((developer) => (
+                  <DeveloperRow
+                    key={developer.email}
+                    developer={developer}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className={cx("table-cell")}
+                  >
+                    No developers found.
                   </td>
-                  
-                  <td className="table-cell">
-                    <span className={`status-badge ${dev.status === 'ACTIVE' ? 'status-active' : 'status-inactive'}`}>
-                      {dev.status}
-                    </span>
-                  </td>
-                  
-                  <td className="tasks-cell">{dev.tasks}</td>
-                  <td className="score-cell">{dev.score}</td>
-                  <td className="joined-cell">{dev.joined}</td>
-                  
-                  <td className="table-cell-right">
-                    <button className="btn-secondary">
-                      {dev.status === 'ACTIVE' ? 'Edit' : 'Reactivate'}
-                    </button>
-                  </td>
-                  
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
-      </div>
-      
-      {/* Add Developer Modal Component */}
-      <AddDeveloperModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      
+      </main>
+
+      <AddDeveloperModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
