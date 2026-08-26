@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import AddMember from "@/components/admin-components/project-member-components/add-member";
 import "./project-detail.css";
 
 type Member = {
@@ -40,6 +42,8 @@ export default function ProjectDetail({
   project,
   onBack,
 }: ProjectDetailProps) {
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+
   return (
     <div className="project-detail-container">
 
@@ -86,6 +90,7 @@ export default function ProjectDetail({
 
           <button
             type="button"
+            onClick={() => setIsAddMemberOpen(true)}
             className="project-detail-primary-button"
           >
             + Add Member
@@ -332,6 +337,12 @@ export default function ProjectDetail({
         </div>
 
       </div>
+
+      <AddMember
+        isOpen={isAddMemberOpen}
+        onClose={() => setIsAddMemberOpen(false)}
+        projectName={project.name}
+      />
 
     </div>
   );

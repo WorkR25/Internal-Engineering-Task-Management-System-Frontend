@@ -15,6 +15,7 @@ const developers = [
 interface AddMemberProps {
   isOpen: boolean;
   onClose: () => void;
+  projectName?: string;
 }
 
 // ==========================================
@@ -32,7 +33,7 @@ const addMemberSchema = z.object({
 
 type AddMemberFormValues = z.infer<typeof addMemberSchema>;
 
-export default function AddMember({ isOpen, onClose }: AddMemberProps) {
+export default function AddMember({ isOpen, onClose, projectName = "Payments Platform" }: AddMemberProps) {
   const {
     watch,
     setValue,
@@ -51,6 +52,23 @@ export default function AddMember({ isOpen, onClose }: AddMemberProps) {
   const search = watch("search");
   const successMessage = watch("successMessage");
 
+  const filteredDevelopers = developers.filter((developer) =>
+    developer.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const selectedDeveloper = developers.find(
+    (developer) => developer.id === selected
+  );
+
+  // FIX: if the currently selected developer is no longer visible in the
+  // filtered (searched) list, clear the selection so it can't be submitted.
+  useEffect(() => {
+    if (selected !== 0 && !filteredDevelopers.some((d) => d.id === selected)) {
+      setValue("developerId", 0, { shouldValidate: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -63,20 +81,17 @@ export default function AddMember({ isOpen, onClose }: AddMemberProps) {
 
   if (!isOpen) return null;
 
-  const filteredDevelopers = developers.filter((developer) =>
-    developer.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const selectedDeveloper = developers.find(
-    (developer) => developer.id === selected
-  );
-
   // ==========================================
   // API INTEGRATION HANDLER
   // ==========================================
   const handleAddToProject = handleSubmit(async (data) => {
     const developer = developers.find((d) => d.id === data.developerId);
-    if (!developer) return;
+
+    // FIX: double-guard — never add a developer who isn't in the
+    // currently visible/filtered list, even if state somehow got stale.
+    if (!developer || !filteredDevelopers.some((d) => d.id === developer.id)) {
+      return;
+    }
 
     try {
       const payload = {
@@ -117,7 +132,7 @@ export default function AddMember({ isOpen, onClose }: AddMemberProps) {
           <div>
             <h2 className="modal-title">Add Project Member</h2>
             <p className="modal-subtitle">
-              Payments Platform · showing active Developers not yet on this project
+              {projectName} · showing active Developers not yet on this project
             </p>
           </div>
           <button type="button" onClick={onClose} className="btn-close">
@@ -203,9 +218,15 @@ export default function AddMember({ isOpen, onClose }: AddMemberProps) {
             <button
               type="button"
               onClick={handleAddToProject}
-              disabled={!!successMessage || !selectedDeveloper}
+              disabled={
+                !!successMessage ||
+                !selectedDeveloper ||
+                !filteredDevelopers.some((d) => d.id === selectedDeveloper.id)
+              }
               className={`btn-submit ${
-                successMessage || !selectedDeveloper
+                successMessage ||
+                !selectedDeveloper ||
+                !filteredDevelopers.some((d) => d.id === selectedDeveloper.id)
                   ? "btn-submit-disabled"
                   : "btn-submit-active"
               }`}
