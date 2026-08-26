@@ -154,3 +154,7 @@
 .btn-primary {
   @apply rounded-md bg-[#5146e5] px-3 py-1.5 text-[10px] font-medium text-white hover:bg-indigo-700 transition-colors;
 }
+
+.create-role-btn {
+  @apply rounded-md bg-[#5146e5] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-indigo-700;
+}
