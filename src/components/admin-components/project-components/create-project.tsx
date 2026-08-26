@@ -1,7 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import "./create-project.css";
+
+const createProjectSchema = z
+  .object({
+    projectName: z.string().trim().min(1, "Project name is required").min(3, "Project name must be at least 3 characters"),
+    description: z.string().trim().min(1, "Description is required").min(10, "Description must be at least 10 characters"),
+    startDate: z.string().min(1, "Start date is required"),
+    targetEndDate: z.string().min(1, "Target end date is required"),
+  })
+  .refine(
+    (data) =>
+      !data.startDate ||
+      !data.targetEndDate ||
+      data.targetEndDate >= data.startDate,
+    {
+      message: "Target end date must be on or after the start date",
+      path: ["targetEndDate"],
+    }
+  );
+
+type CreateProjectFormValues = z.infer<typeof createProjectSchema>;
 
 type CreateProjectProps = {
   open: boolean;
@@ -12,29 +34,35 @@ export default function CreateProject({
   open,
   onClose,
 }: CreateProjectProps) {
-  const [projectName, setProjectName] = useState("");
-  const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [targetEndDate, setTargetEndDate] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<CreateProjectFormValues>({
+    resolver: zodResolver(createProjectSchema),
+  });
 
-  const handleCreateProject = async () => {
+  const onSubmit = (data: CreateProjectFormValues) => {
     const payload = {
-      name: projectName,
-      description,
-      startDate,
-      targetEndDate,
+      name: data.projectName,
+      description: data.description,
+      startDate: data.startDate,
+      targetEndDate: data.targetEndDate,
     };
 
-    try {
-      /*
-       * API will be connected here later.
-       */
-      console.log("Submitting payload:", payload);
+    /*
+     * API will be connected here later.
+     */
+    console.log("Submitting payload:", payload);
 
-      onClose();
-    } catch (error) {
-      console.error(error);
-    }
+    reset();
+    onClose();
+  };
+
+  const handleClose = () => {
+    reset();
+    onClose();
   };
 
   if (!open) {
@@ -66,7 +94,7 @@ export default function CreateProject({
 
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="btn-close"
             >
               ×
@@ -76,9 +104,12 @@ export default function CreateProject({
 
         </div>
 
-        {/* FORM BODY */}
+        {/* FORM */}
 
-        <div className="form-body">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="form-body"
+        >
 
           {/* PROJECT NAME */}
 
@@ -94,13 +125,16 @@ export default function CreateProject({
             <input
               id="projectName"
               type="text"
-              value={projectName}
-              onChange={(e) =>
-                setProjectName(e.target.value)
-              }
               placeholder="Analytics Pipeline v2"
               className="form-input"
+              {...register("projectName")}
             />
+
+            {errors.projectName && (
+              <p className="mt-1 text-xs text-red-600">
+                {errors.projectName.message}
+              </p>
+            )}
 
           </div>
 
@@ -117,20 +151,25 @@ export default function CreateProject({
 
             <textarea
               id="description"
-              value={description}
-              onChange={(e) =>
-                setDescription(e.target.value)
-              }
-              placeholder="Rebuild the nightly analytics aggregation pipeline to support real-time developer performance snapshots."
               rows={3}
+              placeholder="Rebuild the nightly analytics aggregation pipeline to support real-time developer performance snapshots."
               className="form-textarea"
+              {...register("description")}
             />
+
+            {errors.description && (
+              <p className="mt-1 text-xs text-red-600">
+                {errors.description.message}
+              </p>
+            )}
 
           </div>
 
           {/* DATES */}
 
           <div className="dates-grid">
+
+            {/* START DATE */}
 
             <div>
 
@@ -144,14 +183,19 @@ export default function CreateProject({
               <input
                 id="startDate"
                 type="date"
-                value={startDate}
-                onChange={(e) =>
-                  setStartDate(e.target.value)
-                }
                 className="form-input"
+                {...register("startDate")}
               />
 
+              {errors.startDate && (
+                <p className="mt-1 text-xs text-red-600">
+                  {errors.startDate.message}
+                </p>
+              )}
+
             </div>
+
+            {/* TARGET END DATE */}
 
             <div>
 
@@ -165,48 +209,50 @@ export default function CreateProject({
               <input
                 id="targetEndDate"
                 type="date"
-                value={targetEndDate}
-                onChange={(e) =>
-                  setTargetEndDate(e.target.value)
-                }
                 className="form-input"
+                {...register("targetEndDate")}
               />
+
+              {errors.targetEndDate && (
+                <p className="mt-1 text-xs text-red-600">
+                  {errors.targetEndDate.message}
+                </p>
+              )}
 
             </div>
 
           </div>
 
-        </div>
+          {/* FOOTER */}
 
-        {/* FOOTER */}
+          <div className="modal-footer">
 
-        <div className="modal-footer">
+            <p className="footer-hint">
+              You&apos;ll add team members after creating
+            </p>
 
-          <p className="footer-hint">
-            You&apos;ll add team members after creating
-          </p>
+            <div className="footer-actions">
 
-          <div className="footer-actions">
+              <button
+                type="button"
+                onClick={handleClose}
+                className="btn-cancel"
+              >
+                Cancel
+              </button>
 
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn-cancel"
-            >
-              Cancel
-            </button>
+              <button
+                type="submit"
+                className="btn-submit"
+              >
+                Create Project
+              </button>
 
-            <button
-              type="button"
-              onClick={handleCreateProject}
-              className="btn-submit"
-            >
-              Create Project
-            </button>
+            </div>
 
           </div>
 
-        </div>
+        </form>
 
       </div>
 
