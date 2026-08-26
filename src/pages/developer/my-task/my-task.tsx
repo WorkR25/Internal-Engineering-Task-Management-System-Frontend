@@ -6,7 +6,7 @@ import CreateTask from "../../../components/admin-components/task-components/cre
 
 import "./task-board.css"; // <-- Import the new stylesheet
 // 3. import AssignTask
-import AssignTask from "../../../components/admin-components/task-assign-components/assign-task";
+import AssignTask from "../../../components/-components/task-assign-components/assign-task";
 import ReassignTask from "../../../components/admin-components/task-assign-components/reassign-task";
 
 const tasks = {
