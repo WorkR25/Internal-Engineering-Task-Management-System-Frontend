@@ -1,11 +1,11 @@
 @reference "../../../app/globals.css";
 
 .create-role-page {
-    @apply flex min-h-screen items-center justify-center bg-white;
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/30;
 }
 
 .create-role-card {
-    @apply w-full max-w-[360px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg;
+    @apply w-full max-w-[360px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl;
 }
 
 .create-role-header {

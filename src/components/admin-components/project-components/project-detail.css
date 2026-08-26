@@ -1,0 +1,242 @@
+@reference "../../../app/globals.css";
+
+.project-detail-container {
+  @apply min-h-screen bg-[#f8f9fc];
+}
+
+.project-detail-header {
+  @apply flex items-center justify-between border-b border-gray-200 bg-white px-8 py-6;
+}
+
+.project-detail-back {
+  @apply mb-2 text-xs font-semibold text-[#5146e5] hover:underline;
+}
+
+.project-detail-subtitle {
+  @apply mb-1 text-xs text-gray-500;
+}
+
+.project-detail-title-wrapper {
+  @apply flex items-center gap-3;
+}
+
+.project-detail-title {
+  @apply text-2xl font-bold tracking-tight text-gray-900;
+}
+
+.project-detail-status {
+  @apply rounded bg-blue-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-600;
+}
+
+.project-detail-actions {
+  @apply flex items-center gap-3;
+}
+
+.project-detail-secondary-button {
+  @apply rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50;
+}
+
+.project-detail-primary-button {
+  @apply rounded-lg bg-[#4f46e5] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700;
+}
+
+.project-detail-admin {
+  @apply ml-2 flex items-center gap-3 border-l border-gray-200 pl-4;
+}
+
+.project-detail-admin > span {
+  @apply rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-semibold text-gray-600;
+}
+
+.project-detail-avatar {
+  @apply flex h-8 w-8 items-center justify-center rounded-full bg-[#5146e5] text-[10px] font-semibold text-white;
+}
+
+/* BODY */
+
+.project-detail-body {
+  @apply min-h-[calc(100vh-89px)] space-y-6 bg-[#f8f9fc] p-8;
+}
+
+/* META */
+
+.project-detail-meta-card {
+  @apply rounded-xl border border-gray-200 bg-white p-6;
+}
+
+.project-detail-description {
+  @apply mb-4 text-sm leading-relaxed text-gray-700;
+}
+
+.project-detail-meta {
+  @apply flex gap-8 text-sm text-gray-500;
+}
+
+.project-detail-meta span {
+  @apply font-semibold text-gray-900;
+}
+
+/* STATS */
+
+.project-detail-stats {
+  @apply grid grid-cols-4 gap-4;
+}
+
+.project-detail-stat-card {
+  @apply rounded-xl border border-gray-200 bg-white p-6;
+}
+
+.project-detail-stat-card h3 {
+  @apply mb-2 text-xs font-bold uppercase tracking-wider text-gray-400;
+}
+
+.project-detail-stat-card p {
+  @apply text-4xl font-bold text-gray-900;
+}
+
+/* BOTTOM */
+
+.project-detail-bottom {
+  @apply grid grid-cols-2 gap-6;
+}
+
+.project-detail-table-card,
+.project-detail-tasks-card {
+  @apply overflow-hidden rounded-xl border border-gray-200 bg-white;
+}
+
+/* CARD HEADER */
+
+.project-detail-card-header {
+  @apply border-b border-gray-200 p-6;
+}
+
+.project-detail-card-header-flex {
+  @apply flex items-center justify-between;
+}
+
+.project-detail-card-header h2 {
+  @apply text-lg font-bold text-gray-900;
+}
+
+.project-detail-card-header p {
+  @apply mt-1 text-sm text-gray-500;
+}
+
+/* MEMBERS TABLE */
+
+.project-detail-members-table {
+  @apply w-full border-collapse text-left;
+}
+
+.project-detail-members-table thead {
+  @apply bg-gray-50;
+}
+
+.project-detail-members-table th {
+  @apply border-b border-gray-200 px-6 py-3 text-xs font-bold uppercase tracking-wider text-gray-400;
+}
+
+.project-detail-members-table tbody {
+  @apply divide-y divide-gray-100;
+}
+
+.project-detail-members-table tbody tr {
+  @apply transition-colors hover:bg-gray-50;
+}
+
+.project-detail-members-table td {
+  @apply px-6 py-4 text-sm text-gray-600;
+}
+
+.project-detail-member {
+  @apply flex items-center gap-3;
+}
+
+.project-detail-member-avatar {
+  @apply flex h-8 w-8 items-center justify-center rounded-full bg-indigo-50 text-xs font-bold text-[#4f46e5];
+}
+
+.project-detail-member span {
+  @apply font-bold text-gray-900;
+}
+
+.project-detail-remove-cell {
+  @apply text-right;
+}
+
+.project-detail-remove-button {
+  @apply rounded-lg border border-red-200 px-4 py-1.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50;
+}
+
+/* TASKS */
+
+.project-detail-outline-button {
+  @apply rounded-lg border border-gray-200 px-4 py-1.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50;
+}
+
+.project-detail-task-list {
+  @apply space-y-5 p-6;
+}
+
+.project-detail-task-item {
+  @apply border-b border-gray-100 pb-5 last:border-0 last:pb-0;
+}
+
+.project-detail-task-item > p {
+  @apply mb-2 text-sm font-bold text-gray-900;
+}
+
+.project-detail-task-item > div {
+  @apply flex items-center gap-3 text-xs text-gray-500;
+}
+
+.project-detail-task-status {
+  @apply rounded px-2 py-0.5 font-bold uppercase tracking-wider;
+}
+
+.project-detail-no-tasks {
+  @apply text-sm text-gray-500;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+  .project-detail-bottom {
+    @apply grid-cols-1;
+  }
+
+  .project-detail-stats {
+    @apply grid-cols-2;
+  }
+}
+
+@media (max-width: 700px) {
+  .project-detail-header {
+    @apply flex-col items-start gap-4;
+  }
+
+  .project-detail-actions {
+    @apply flex-wrap;
+  }
+
+  .project-detail-body {
+    @apply p-4;
+  }
+
+  .project-detail-meta {
+    @apply flex-col gap-2;
+  }
+
+  .project-detail-stats {
+    @apply grid-cols-1;
+  }
+
+  .project-detail-members-table {
+    @apply min-w-[700px];
+  }
+
+  .project-detail-table-card {
+    @apply overflow-x-auto;
+  }
+}

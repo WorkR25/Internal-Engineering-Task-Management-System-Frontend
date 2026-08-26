@@ -1,18 +1,15 @@
 @reference "../../../app/globals.css";
-/* Full-screen dim + blur backdrop behind the modal */
+
 .modal-overlay {
   @apply fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-sm;
 }
 
-/* The white modal card itself */
 .modal-card {
-  @apply bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden;
+  @apply w-full max-w-lg overflow-hidden rounded-xl bg-white shadow-xl;
 }
 
-/* ---------- Header ---------- */
-
 .modal-header {
-  @apply flex justify-between items-start p-6 border-b border-gray-100;
+  @apply flex items-start justify-between border-b border-gray-100 p-6;
 }
 
 .modal-title {
@@ -20,29 +17,27 @@
 }
 
 .modal-subtitle {
-  @apply text-sm text-gray-500 mt-1;
+  @apply mt-1 text-sm text-gray-500;
 }
 
 .modal-close-btn {
-  @apply text-gray-400 hover:text-gray-600 transition-colors;
+  @apply text-gray-400 transition-colors hover:text-gray-600;
 }
 
 .modal-close-icon {
-  @apply w-5 h-5;
+  @apply h-5 w-5;
 }
 
-/* ---------- Success State ---------- */
-
 .success-container {
-  @apply p-8 flex flex-col items-center justify-center space-y-4 my-6;
+  @apply my-6 flex flex-col items-center justify-center space-y-4 p-8;
 }
 
 .success-icon-wrapper {
-  @apply w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500;
+  @apply flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-500;
 }
 
 .success-icon {
-  @apply w-8 h-8;
+  @apply h-8 w-8;
 }
 
 .success-title {
@@ -50,13 +45,11 @@
 }
 
 .success-message {
-  @apply text-sm text-gray-500 text-center;
+  @apply text-center text-sm text-gray-500;
 }
 
-/* ---------- Form Body ---------- */
-
 .modal-body {
-  @apply p-6 space-y-5;
+  @apply space-y-5 p-6;
 }
 
 .form-group {
@@ -64,58 +57,55 @@
 }
 
 .form-label {
-  @apply block text-sm font-semibold text-black mb-1.5;
+  @apply mb-1.5 block text-sm font-semibold text-black;
 }
 
-/* Slightly different label color used only on the password field
-   in the original design — kept as its own class for accuracy */
 .form-label-dark {
-  @apply block text-sm font-semibold text-gray-900 mb-1.5;
+  @apply mb-1.5 block text-sm font-semibold text-gray-900;
 }
 
 .form-input {
-  @apply w-full px-4 py-2.5 border border-gray-200 rounded-lg
-         focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent
-         outline-none text-sm text-black transition-all;
+  @apply w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-[#4f46e5];
 }
-
-/* ---------- Temporary Password Field ---------- */
 
 .password-field-wrapper {
   @apply relative;
 }
 
 .password-input {
-  @apply w-full px-4 py-2.5 border border-gray-200 rounded-lg
-         bg-gray-50 text-gray-900 text-sm outline-none font-mono;
+  @apply w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 pr-24 font-mono text-sm text-gray-900 outline-none;
 }
 
 .password-badge {
-  @apply absolute right-3 top-2.5 text-xs font-bold bg-[#eef2f6] text-gray-600 px-2 py-0.5 rounded;
+  @apply absolute right-10 top-2.5 rounded bg-[#eef2f6] px-2 py-0.5 text-xs font-bold text-gray-600;
 }
 
-/* ---------- Info Notice Box ---------- */
+.password-toggle {
+  @apply absolute right-2 top-1/2 flex -translate-y-1/2 items-center justify-center text-gray-400 hover:text-gray-600;
+}
+
+.password-toggle-icon {
+  @apply h-4 w-4;
+}
 
 .info-box {
-  @apply flex items-start bg-gray-50 p-4 rounded-lg border border-gray-100;
+  @apply flex items-start rounded-lg border border-gray-100 bg-gray-50 p-4;
 }
 
 .info-icon {
-  @apply w-5 h-5 text-gray-400 mr-3 flex-shrink-0 mt-0.5;
+  @apply mt-0.5 mr-3 h-5 w-5 flex-shrink-0 text-gray-400;
 }
 
 .info-text {
-  @apply text-sm text-gray-600 leading-relaxed;
+  @apply text-sm leading-relaxed text-gray-600;
 }
 
-/* ---------- Footer ---------- */
-
 .modal-footer {
-  @apply flex items-center justify-between p-6 bg-gray-50/80 border-t border-gray-100;
+  @apply flex items-center justify-between border-t border-gray-100 bg-gray-50/80 p-6;
 }
 
 .footer-meta {
-  @apply text-xs text-gray-400 font-medium;
+  @apply text-xs font-medium text-gray-400;
 }
 
 .footer-actions {
@@ -123,11 +113,9 @@
 }
 
 .btn-cancel {
-  @apply px-4 py-2 rounded-lg text-sm font-semibold text-gray-700
-         bg-white border border-gray-300 hover:bg-gray-50 transition-colors;
+  @apply rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50;
 }
 
 .btn-submit {
-  @apply px-5 py-2 rounded-lg text-sm font-semibold text-white
-         bg-[#4f46e5] hover:bg-indigo-700 shadow-sm transition-colors;
+  @apply rounded-lg bg-[#4f46e5] px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60;
 }
