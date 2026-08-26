@@ -25,7 +25,9 @@
 .header-actions {
   @apply flex items-center gap-3;
 }
-
+.btn-add-role {
+  @apply rounded-lg bg-[#4f46e5] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700;
+}
 .admin-badge {
   @apply rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-500;
 }
@@ -107,7 +109,7 @@
 }
 
 .project-name {
-  @apply text-xs font-medium text-gray-800;
+  @apply text-xs font-bold text-gray-800;
 }
 
 .status-badge-base {
@@ -144,7 +146,7 @@
 }
 
 .review-title {
-  @apply truncate text-xs font-medium text-gray-800;
+  @apply truncate text-xs font-bold text-gray-800;
 }
 
 .review-meta {

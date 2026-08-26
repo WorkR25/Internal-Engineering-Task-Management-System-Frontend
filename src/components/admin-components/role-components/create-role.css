@@ -4,28 +4,44 @@
     @apply flex min-h-screen items-center justify-center bg-white;
 }
 
+.create-role-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-sm;
+}
+
 .create-role-card {
-    @apply w-full max-w-[360px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg;
+    @apply w-full max-w-lg overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl;
 }
 
 .create-role-header {
-    @apply flex items-start justify-between border-b border-gray-200 px-5 py-4;
+    @apply flex items-start justify-between border-b border-gray-100 px-6 py-6;
 }
 
 .create-role-header-content h1 {
-    @apply text-sm font-bold text-gray-900;
+    @apply text-xl font-bold text-gray-900;
 }
 
 .create-role-header-content p {
-    @apply mt-0.5 text-[10px] text-gray-500;
+    @apply mt-1 text-sm text-gray-500;
 }
 
 .create-role-close {
-    @apply text-sm text-gray-400 hover:text-gray-600;
+    @apply text-gray-400 transition-colors hover:text-gray-600;
+}
+
+.create-role-success {
+    @apply my-6 flex flex-col items-center justify-center space-y-4 p-8;
+}
+
+.create-role-success-icon {
+    @apply flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-500;
+}
+
+.create-role-success h3 {
+    @apply text-lg font-bold text-gray-900;
 }
 
 .create-role-form {
-    @apply px-5 py-4;
+    @apply space-y-5 p-6;
 }
 
 .create-role-info {
@@ -50,19 +66,19 @@
 
 .create-role-field label,
 .create-role-field-description label {
-    @apply mb-1.5 block text-[10px] font-semibold text-gray-700;
+    @apply mb-1.5 block text-sm font-semibold text-black;
 }
 
 .create-role-field input {
-    @apply w-full rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-800 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100;
+    @apply w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-[#4f46e5];
 }
 
 .create-role-field-description textarea {
-    @apply w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-800 outline-none placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100;
+    @apply w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black outline-none transition-all placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-[#4f46e5];
 }
 
 .create-role-footer {
-    @apply flex items-center justify-between border-t border-gray-200 bg-gray-50 px-5 py-3;
+    @apply flex items-center justify-end border-t border-gray-100 bg-gray-50/80 px-6 py-6;
 }
 
 .create-role-footer p {
@@ -70,13 +86,13 @@
 }
 
 .create-role-actions {
-    @apply flex gap-2;
+    @apply flex items-center space-x-3;
 }
 
 .create-role-cancel {
-    @apply rounded-md border border-gray-300 bg-white px-3 py-1.5 text-[10px] font-semibold text-gray-600 hover:bg-gray-50;
+    @apply rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50;
 }
 
 .create-role-submit {
-    @apply rounded-md bg-indigo-600 px-3 py-1.5 text-[10px] font-semibold text-white hover:bg-indigo-700;
+    @apply rounded-lg bg-[#4f46e5] px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700;
 }
