@@ -3,15 +3,9 @@
 import { useState } from "react";
 import "./create-role.css";
 
-interface CreateRoleProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function CreateRole({isOpen,onClose,}: CreateRoleProps) {
+export default function CreateRole() {
     const [roleName, setRoleName] = useState("");
     const [description, setDescription] = useState("");
-    if (!isOpen) return null;
 
     return (
         <main className="create-role-page">
@@ -27,7 +21,6 @@ export default function CreateRole({isOpen,onClose,}: CreateRoleProps) {
                     <button
                         type="button"
                         className="create-role-close"
-                        onClick={onClose}
                     >
                         ×
                     </button>
@@ -82,7 +75,6 @@ export default function CreateRole({isOpen,onClose,}: CreateRoleProps) {
                         <button
                             type="button"
                             className="create-role-cancel"
-                            onClick={onClose}
                         >
                             Cancel
                         </button>
