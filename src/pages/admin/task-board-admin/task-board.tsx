@@ -10,27 +10,26 @@ import AssignTask from "../../../components/admin-components/task-assign-compone
 import ReassignTask from "../../../components/admin-components/task-assign-components/reassign-task";
 
 const tasks = {
-   todo: [
-    { title: "Add rate limiting to auth/signin", priority: "HIGH", developer: "Karan Verma", deadline: "Dec 2, 2026" },
-    { title: "Seed assignment reason", priority: "LOW", developer: null, deadline: "Dec 5, 2026" },
+  todo: [
+    { title: "Add rate limiting to auth/signin", priority: "HIGH", developer: "Karan Verma", deadline: "Dec 2, 2026", status: "TODO" },
+    { title: "Seed assignment reason", priority: "LOW", developer: null, deadline: "Dec 5, 2026", status: "TODO" },
   ],
   inProgress: [
-    { title: "Implement payment webhook handler", priority: "HIGH", developer: "Sahil Das", deadline: "Dec 4, 2026" },
-    { title: "Add pagination to GET tasks", priority: "MEDIUM", developer: "Nisha Patel", deadline: "Dec 6, 2026" },
+    { title: "Implement payment webhook handler", priority: "HIGH", developer: "Sahil Das", deadline: "Dec 4, 2026", status: "IN_PROGRESS" },
+    { title: "Add pagination to GET tasks", priority: "MEDIUM", developer: "Nisha Patel", deadline: "Dec 6, 2026", status: "IN_PROGRESS" },
   ],
   inReview: [
-    { title: "Fix N+1 query on dashboard", priority: "HIGH", developer: "Rhea Sen", deadline: "Dec 3, 2026" },
-    { title: "Refactor webhook retry logic", priority: "MEDIUM", developer: "Sahil Das", deadline: "Dec 7, 2026" },
+    { title: "Fix N+1 query on dashboard", priority: "HIGH", developer: "Rhea Sen", deadline: "Dec 3, 2026", status: "IN_REVIEW" },
+    { title: "Refactor webhook retry logic", priority: "MEDIUM", developer: "Sahil Das", deadline: "Dec 7, 2026", status: "IN_REVIEW" },
   ],
   changesRequested: [
-    { title: "Refactor review scoring service", priority: "CRITICAL", developer: "Karan Verma", deadline: "Dec 5, 2026" },
+    { title: "Refactor review scoring service", priority: "CRITICAL", developer: "Karan Verma", deadline: "Dec 5, 2026", status: "CHANGES_REQUESTED" },
   ],
   completed: [
-    { title: "Seed roles and assignment reasons", priority: "LOW", developer: "Sahil Das", deadline: "Nov 28, 2026" },
-    { title: "Set up Sequelize migrations", priority: "LOW", developer: "Nisha Patel", deadline: "Nov 30, 2026" },
+    { title: "Seed roles and assignment reasons", priority: "LOW", developer: "Sahil Das", deadline: "Nov 28, 2026", status: "COMPLETED" },
+    { title: "Set up Sequelize migrations", priority: "LOW", developer: "Nisha Patel", deadline: "Nov 30, 2026", status: "COMPLETED" },
   ],
 };
-
 type Task = {
   title: string;
   priority: string;
