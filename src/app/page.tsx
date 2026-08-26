@@ -1,10 +1,10 @@
 "use client";
 
-// import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
+import Dashboard from "@/pages/admin/dashboard-admin/dashboard";
 
-// export default function Home() {
-//   return <Dashboard />;
-// }
+export default function Home() {
+  return <Dashboard />;
+}
 
 // import MyTask from "@/pages/developer/my-task/my-task";
 
@@ -74,7 +74,7 @@
 //   return <ReviewsQueue />;
 // }
 
-import AssignTask from "@/components/admin-components/task-assign-components/assign-task";
-export default function Page() {
-   return <AssignTask />;
- }
+// import AssignTask from "@/components/admin-components/task-assign-components/assign-task";
+// export default function Page() {
+//    return <AssignTask />;
+//  }
