@@ -1,7 +1,8 @@
 "use client";
-
+import { useState } from "react";
 import Sidebar from "../../../components/admin-components/layout/sidebar";
 import "./dashboard.css"; // <-- Import the new stylesheet
+import CreateRole from "@/components/admin-components/role-components/create-role";
 
 const projects = [
   { name: "Payments Platform", status: "ACTIVE", openTasks: 9, targetEnd: "Dec 12, 2026" },
@@ -19,6 +20,7 @@ const pendingReviews = [
 ];
 
 export default function Dashboard() {
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   return (
     <main className="dashboard-container">
       <Sidebar 
@@ -35,7 +37,16 @@ export default function Dashboard() {
           </div>
 
           <div className="header-actions">
-            <span className="admin-badge">ADMIN</span>
+          <button
+            type="button"
+            className="create-role-btn"
+            onClick={() => setIsRoleModalOpen(true)}
+          >
+          Create New Role
+          </button>
+
+          <span className="admin-badge">ADMIN</span>
+
             <div className="admin-avatar">AG</div>
           </div>
         </header>
@@ -144,6 +155,10 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
+      <CreateRole
+  isOpen={isRoleModalOpen}
+  onClose={() => setIsRoleModalOpen(false)}
+/>
     </main>
   );
 }
