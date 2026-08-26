@@ -48,7 +48,6 @@
 
 .developer-list {
   @apply m-0 h-[180px] shrink-0 overflow-x-hidden overflow-y-auto px-[17px];
-  /* Tailwind doesn't have native scrollbar utilities yet, so we use raw CSS here */
   scrollbar-width: thin;
   scrollbar-color: #c7c9d1 transparent;
 }
@@ -108,7 +107,7 @@
 }
 
 .no-results {
-  @apply p-[12px] text-center text-[9px] text-[#9aa1ae];
+  @apply p-[12px] text-center text-[9px] text-red-600;
 }
 
 /* =========================
