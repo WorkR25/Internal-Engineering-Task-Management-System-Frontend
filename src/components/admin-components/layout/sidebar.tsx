@@ -58,7 +58,7 @@ export default function Sidebar({
     {
       label: "Projects",
       id: "projects", 
-      href: "/admin/Projects-admin/projects",
+      href: "/admin/Projects-admin/project",
     },
 
   ];
