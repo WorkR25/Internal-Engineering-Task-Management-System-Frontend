@@ -1,8 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import "./create-role.css";
 
+const createRoleSchema = z.object({
+  roleName: z
+    .string()
+    .trim()
+    .min(1, "Role name is required")
+    .min(3, "Role name must be at least 3 characters"),
+  description: z
+    .string()
+    .trim()
+    .min(1, "Description is required")
+    .min(10, "Description must be at least 10 characters"),
+});
+
+type CreateRoleFormValues = z.infer<typeof createRoleSchema>;
 
 interface CreateRoleModalProps {
   isOpen: boolean;
@@ -11,33 +28,56 @@ interface CreateRoleModalProps {
 
 export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProps) {
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    } = useForm<CreateRoleFormValues>({
+    resolver: zodResolver(createRoleSchema),
+  });
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleCreateRole = () => {
+  const handleCreateRole = (data: CreateRoleFormValues) => {
+    console.log(data);
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
     // Simulate API Call
-    setIsSuccess(true);
     setTimeout(() => {
-      setIsSuccess(false);
-      onClose();
-    }, 2000);
+      setIsSubmitting(false);
+      setIsSuccess(true);
+
+      setTimeout(() => {
+        setIsSuccess(false);
+        reset();
+        onClose();
+      }, 2000);
+    }, 500);
   };
 
   const handleClose = () => {
     setIsSuccess(false);
+    setErrorMessage(null);
+    reset();
     onClose();
   };
 
@@ -69,7 +109,7 @@ export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProp
             <h3>Role Created Successfully!</h3>
           </div>
         ) : (
-          <>
+          <form onSubmit={handleSubmit(handleCreateRole)} noValidate>
             {/* Modal Body */}
             <div className="create-role-form">
               <div className="create-role-field">
@@ -77,7 +117,12 @@ export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProp
                 <input
                   type="text"
                   placeholder="e.g. Lead Engineer"
+                  aria-invalid={!!errors.roleName}
+                  {...register("roleName")}
                 />
+                {errors.roleName && (
+                  <p className="create-role-error">{errors.roleName.message}</p>
+                )}
               </div>
 
               <div className="create-role-field-description">
@@ -85,22 +130,29 @@ export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProp
                 <textarea
                   placeholder="Briefly describe the responsibilities..."
                   rows={3}
+                  aria-invalid={!!errors.description}
+                  {...register("description")}
                 />
+                {errors.description && (
+                  <p className="create-role-error">{errors.description.message}</p>
+                )}
               </div>
+
+              {errorMessage && <p className="create-role-error">{errorMessage}</p>}
             </div>
 
             {/* Modal Footer */}
             <div className="create-role-footer">
               <div className="create-role-actions">
-                <button onClick={handleClose} className="create-role-cancel">
+                <button type="button" onClick={handleClose} className="create-role-cancel">
                   Cancel
                 </button>
-                <button onClick={handleCreateRole} className="create-role-submit">
-                  Create Role
+                <button type="submit" disabled={isSubmitting} className="create-role-submit">
+                  {isSubmitting ? "Creating..." : "Create Role"}
                 </button>
               </div>
             </div>
-          </>
+          </form>
         )}
 
       </div>
