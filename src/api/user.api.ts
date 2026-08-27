@@ -35,11 +35,12 @@ export interface User {
   id: string;
   fullName: string;
   email: string;
-  role: string;
-  status: string;
+  roleId: string;
+  isActive: boolean;
+  mustChangePassword: boolean;
   createdAt: string;
+  updatedAt: string;
 }
-
 export async function getAllUsers(): Promise<User[]> {
   const response = await fetch("/backend/users", {
     method: "GET",

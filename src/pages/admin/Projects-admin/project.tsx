@@ -25,11 +25,11 @@ type RecentTask = {
 type Project = {
   id: number;
   name: string;
-  status: "ACTIVE" | "PLANNING" | "COMPLETED";
+  status: "PLANNING" | "ACTIVE" | "COMPLETED" | "ARCHIVED";
   openTasks?: number;
-  description: string;
-  startDate: string;
-  targetEndDate: string;
+  description: string | null;
+  startDate: string | null;
+  targetEndDate: string | null;
   createdBy: string;
   completed: number;
   inReview: number;
