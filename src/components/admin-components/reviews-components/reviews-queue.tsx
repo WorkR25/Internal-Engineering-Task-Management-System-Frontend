@@ -1,5 +1,5 @@
 "use client";
-
+import { useState } from "react";
 import "./reviews-queue.css";
 
 type Review = {
@@ -62,7 +62,33 @@ const reviews: Review[] = [
   },
 ];
 
-export default function ReviewsQueue() {
+const projectFilters = [
+  "All Projects",
+  "Payments Platform",
+  "Notification Service",
+  "Mobile API Gateway",
+];
+
+interface ReviewsQueueProps {
+  onReviewSelect?: (review: Review) => void;
+}
+
+export default function ReviewsQueue({ onReviewSelect }: ReviewsQueueProps) {
+  const [activeFilter, setActiveFilter] = useState("All Projects");
+
+  const filteredReviews =
+    activeFilter === "All Projects"
+      ? reviews
+      : reviews.filter((review) => review.project === activeFilter);
+
+  const handleReviewClick = (review: Review) => {
+    if (onReviewSelect) {
+      onReviewSelect(review);
+    } else {
+      console.log("Review selected:", review);
+    }
+  };
+
   return (
     <section className="reviews-page">
       <div className="reviews-card">
@@ -74,39 +100,25 @@ export default function ReviewsQueue() {
           </h1>
 
           <p className="reviews-subtitle">
-            6 submissions awaiting a decision, across all projects
+            {filteredReviews.length} submission{filteredReviews.length !== 1 ? "s" : ""} awaiting a decision
+            {activeFilter !== "All Projects" ? ` in ${activeFilter}` : ", across all projects"}
           </p>
         </div>
 
         {/* FILTERS */}
         <div className="reviews-filters">
-          <button
-            type="button"
-            className="filter-button filter-button-active"
-          >
-            All Projects
-          </button>
-
-          <button
-            type="button"
-            className="filter-button"
-          >
-            Payments Platform
-          </button>
-
-          <button
-            type="button"
-            className="filter-button"
-          >
-            Notification Service
-          </button>
-
-          <button
-            type="button"
-            className="filter-button"
-          >
-            Mobile API Gateway
-          </button>
+          {projectFilters.map((filter) => (
+            <button
+              key={filter}
+              type="button"
+              onClick={() => setActiveFilter(filter)}
+              className={`filter-button ${
+                activeFilter === filter ? "filter-button-active" : ""
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
         </div>
 
         {/* TABLE HEADER */}
@@ -121,10 +133,12 @@ export default function ReviewsQueue() {
         </div>
 
         {/* ROWS */}
-        {reviews.map((review) => (
+        {filteredReviews.map((review) => (
           <div
             key={review.title}
+            onClick={() => handleReviewClick(review)}
             className="reviews-table-row"
+            style={{ cursor: "pointer" }}
           >
             {/* TASK */}
             <div className="review-task">
@@ -180,12 +194,24 @@ export default function ReviewsQueue() {
             {/* REVIEW BUTTON */}
             <button
               type="button"
+              onClick={(event) => {
+                event.stopPropagation(); // prevent double-trigger from row's onClick
+                handleReviewClick(review);
+              }}
               className="review-button"
             >
               Review
             </button>
           </div>
         ))}
+
+        {/* EMPTY STATE */}
+        {filteredReviews.length === 0 && (
+          <div style={{ padding: "24px", textAlign: "center", fontSize: "10px", color: "#9aa1ae" }}>
+            No submissions for {activeFilter}
+          </div>
+        )}
+
       </div>
     </section>
   );
