@@ -1,17 +1,69 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  createTask,
+  type CreateTaskRequest,
+} from "@/api/create_task.api";
+
 import "./create-task.css";
 
 const createTaskSchema = z.object({
-  title: z.string().trim().min(1, "Title is required").min(5, "Title must be at least 5 characters"),
-  description: z.string().trim().min(1, "Description is required").min(5, "Description must be at least 5 characters"),
-  acceptanceCriteria: z.string().min(1, "Acceptance criteria is required"),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
-  deadline: z.string().optional(),
+  projectId: z
+    .number({
+      error: "Project ID is required",
+    })
+    .int("Project ID must be a valid integer")
+    .positive("Project ID must be greater than 0"),
+
+  title: z
+    .string()
+    .trim()
+    .min(1, "Title is required")
+    .min(5, "Title must be at least 5 characters"),
+
+  description: z
+    .string()
+    .trim()
+    .min(1, "Description is required")
+    .min(5, "Description must be at least 5 characters"),
+
+  acceptanceCriteria: z
+    .string()
+    .trim()
+    .min(1, "Acceptance criteria is required")
+    .min(5, "Acceptance criteria must be at least 5 characters"),
+
+  priority: z.enum([
+    "LOW",
+    "MEDIUM",
+    "HIGH",
+    "CRITICAL",
+  ]),
+
+  deadline: z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true;
+
+        const selectedDate = new Date(value);
+        const today = new Date();
+
+        today.setHours(0, 0, 0, 0);
+
+        return !Number.isNaN(selectedDate.getTime()) && selectedDate >= today;
+      },
+      {
+        message: "Deadline must be today or a future date",
+      }
+    ),
 });
 
 type CreateTaskFormValues = z.infer<typeof createTaskSchema>;
@@ -19,34 +71,67 @@ type CreateTaskFormValues = z.infer<typeof createTaskSchema>;
 type CreateTaskProps = {
   open: boolean;
   onClose: () => void;
+  projectId: number;
 };
 
 export default function CreateTask({
   open,
   onClose,
+  projectId,
 }: CreateTaskProps) {
   const [submitted, setSubmitted] = useState(false);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CreateTaskFormValues>({
     resolver: zodResolver(createTaskSchema),
+
     defaultValues: {
+      projectId,
       priority: "HIGH",
+      deadline: "",
     },
   });
 
-  const onSubmit = (data: CreateTaskFormValues) => {
-    console.log(data);
+  const createTaskMutation = useMutation({
+    mutationFn: (data: CreateTaskRequest) =>
+      createTask(data),
 
-    setSubmitted(true);
+    onSuccess: () => {
+      setSubmitted(true);
 
-    setTimeout(() => {
-      setSubmitted(false);
-      onClose();
-    }, 1800);
+      reset();
+
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 1800);
+    },
+  });
+
+  const onSubmit = (
+    data: CreateTaskFormValues
+  ) => {
+    createTaskMutation.mutate({
+      projectId: data.projectId,
+
+      title: data.title,
+
+      description: data.description,
+
+      priority: data.priority,
+
+      ...(data.deadline
+        ? {
+            deadline: new Date(
+              data.deadline
+            ).toISOString(),
+          }
+        : {}),
+    });
   };
 
   if (!open) {
@@ -55,11 +140,9 @@ export default function CreateTask({
 
   return (
     <div className="create-task-overlay">
-
       <div className="create-task-modal">
 
         {submitted ? (
-
           <div className="create-task-success">
 
             <div className="create-task-success-icon">
@@ -75,11 +158,8 @@ export default function CreateTask({
             </p>
 
           </div>
-
         ) : (
-
           <>
-
             <div className="create-task-header">
 
               <div>
@@ -88,7 +168,7 @@ export default function CreateTask({
                 </h2>
 
                 <p className="create-task-subtitle">
-                  Create a new task for Payments Platform
+                  Create a new task
                 </p>
               </div>
 
@@ -96,6 +176,7 @@ export default function CreateTask({
                 type="button"
                 onClick={onClose}
                 className="create-task-close"
+                disabled={createTaskMutation.isPending}
               >
                 ×
               </button>
@@ -108,6 +189,29 @@ export default function CreateTask({
             >
 
               <div className="create-task-fields">
+
+                <div>
+                  <label className="create-task-label">
+                    Project ID
+                  </label>
+
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="Enter project ID"
+                    className="create-task-input"
+                    {...register("projectId", {
+                      valueAsNumber: true,
+                    })}
+                  />
+
+                  {errors.projectId && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.projectId.message}
+                    </p>
+                  )}
+                </div>
 
                 <div>
                   <label className="create-task-label">
@@ -208,6 +312,7 @@ export default function CreateTask({
 
                     <input
                       type="date"
+                      min={new Date().toISOString().split("T")[0]}
                       className="create-task-input"
                       {...register("deadline")}
                     />
@@ -221,6 +326,14 @@ export default function CreateTask({
 
                 </div>
 
+                {createTaskMutation.isError && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {createTaskMutation.error instanceof Error
+                      ? createTaskMutation.error.message
+                      : "Failed to create task"}
+                  </p>
+                )}
+
               </div>
 
               <div className="create-task-footer">
@@ -229,6 +342,7 @@ export default function CreateTask({
                   type="button"
                   onClick={onClose}
                   className="create-task-cancel"
+                  disabled={createTaskMutation.isPending}
                 >
                   Cancel
                 </button>
@@ -236,14 +350,16 @@ export default function CreateTask({
                 <button
                   type="submit"
                   className="create-task-submit"
+                  disabled={createTaskMutation.isPending}
                 >
-                  Create Task
+                  {createTaskMutation.isPending
+                    ? "Creating..."
+                    : "Create Task"}
                 </button>
 
               </div>
 
             </form>
-
           </>
         )}
 
