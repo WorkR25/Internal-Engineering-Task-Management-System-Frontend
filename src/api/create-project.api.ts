@@ -14,7 +14,7 @@ export interface CreateProjectResponse {
 export interface GetProjectsResponse {
   success: boolean;
   message: string;
-  data: unknown;
+  data: Project[]; // import Project from wherever it should canonically live
 }
 
 export async function createProject(

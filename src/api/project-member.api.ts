@@ -8,10 +8,11 @@ export interface ProjectMember {
 }
 
 export interface Developer {
-  id: number;
+  id: string;
   fullName: string;
   email: string;
-  role: string;
+  roleId: string;
+  isActive: boolean;
 }
 
 export interface AddProjectMemberRequest {

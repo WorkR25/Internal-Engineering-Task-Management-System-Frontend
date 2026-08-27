@@ -1,46 +1,89 @@
 "use client";
 
 import { useState } from "react";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import AddMember from "@/components/admin-components/project-member-components/add-member";
 import {
   getProjectMembers,
-  removeProjectMember,
+  ProjectMember,
 } from "@/api/project-member.api";
 import "./project-detail.css";
-
-type RecentTask = {
-  title: string;
-  status: string;
-  assignee: string;
-  statusColor: string;
-};
 
 type Project = {
   id: number;
   name: string;
-  status: "ACTIVE" | "PLANNING" | "COMPLETED";
-  openTasks: number;
-  targetEnd: string;
+  status: string;
   description: string;
   startDate: string;
   targetEndDate: string;
   createdBy: string;
+  openTasks: number;
   completed: number;
   inReview: number;
-  recentTasks: RecentTask[];
+};
+
+type ProjectResponse = {
+  success: boolean;
+  message: string;
+  data: Project;
 };
 
 type ProjectDetailProps = {
-  project: Project;
+  projectId: number;
   onBack: () => void;
 };
 
-function formatDate(date: string) {
+async function getProjectById(
+  projectId: number
+): Promise<ProjectResponse> {
+  const response = await fetch(
+    `/backend/projects/${projectId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result?.message || "Failed to fetch project"
+    );
+  }
+
+  return result;
+}
+
+function getInitials(
+  fullName?: string,
+  fallback = "U"
+) {
+  if (!fullName || typeof fullName !== "string") {
+    return fallback;
+  }
+
+  return fullName
+    .trim()
+    .split(/\s+/)
+    .map((name) => name.charAt(0))
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function getMemberName(member: ProjectMember) {
+  if (
+    member.fullName &&
+    typeof member.fullName === "string"
+  ) {
+    return member.fullName;
+  }
+
+  return "Unknown Developer";
+}
+
+function formatDate(date?: string) {
   if (!date) {
     return "-";
   }
@@ -59,51 +102,79 @@ function formatDate(date: string) {
 }
 
 export default function ProjectDetail({
-  project,
+  projectId,
   onBack,
 }: ProjectDetailProps) {
   const [isAddMemberOpen, setIsAddMemberOpen] =
     useState(false);
 
-  const queryClient = useQueryClient();
+  const {
+    data: projectResponse,
+    isLoading: isProjectLoading,
+    error: projectError,
+  } = useQuery({
+    queryKey: ["project", projectId],
+    queryFn: () => getProjectById(projectId),
+  });
 
   const {
     data: membersResponse,
-    isLoading,
-    error,
+    isLoading: isMembersLoading,
+    error: membersError,
   } = useQuery({
-    queryKey: ["project-members", project.id],
-    queryFn: () => getProjectMembers(project.id),
+    queryKey: ["project-members", projectId],
+    queryFn: () => getProjectMembers(projectId),
   });
 
-  const removeMemberMutation = useMutation({
-    mutationFn: (userId: number) =>
-      removeProjectMember(project.id, userId),
+  if (isProjectLoading) {
+    return (
+      <div className="project-detail-container">
+        <div className="project-detail-loading">
+          Loading project...
+        </div>
+      </div>
+    );
+  }
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["project-members", project.id],
-      });
+  if (projectError) {
+    return (
+      <div className="project-detail-container">
+        <button
+          type="button"
+          onClick={onBack}
+          className="project-detail-back"
+        >
+          ← Back to Projects
+        </button>
 
-      queryClient.invalidateQueries({
-        queryKey: ["project", project.id],
-      });
-    },
-  });
+        <div className="project-detail-error">
+          {projectError.message}
+        </div>
+      </div>
+    );
+  }
+
+  const project = projectResponse?.data;
+
+  if (!project) {
+    return (
+      <div className="project-detail-container">
+        <button
+          type="button"
+          onClick={onBack}
+          className="project-detail-back"
+        >
+          ← Back to Projects
+        </button>
+
+        <div className="project-detail-error">
+          Project not found.
+        </div>
+      </div>
+    );
+  }
 
   const members = membersResponse?.data || [];
-
-  const handleRemoveMember = (userId: number) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to remove this member from the project?"
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    removeMemberMutation.mutate(userId);
-  };
 
   return (
     <div className="project-detail-container">
@@ -227,7 +298,9 @@ export default function ProjectDetail({
             </h3>
 
             <p>
-              {members.length}
+              {isMembersLoading
+                ? "..."
+                : members.length}
             </p>
           </div>
         </div>
@@ -245,18 +318,18 @@ export default function ProjectDetail({
               </p>
             </div>
 
-            {isLoading ? (
-              <p className="project-detail-no-tasks">
+            {membersError ? (
+              <div className="project-detail-no-tasks">
+                {membersError.message}
+              </div>
+            ) : isMembersLoading ? (
+              <div className="project-detail-no-tasks">
                 Loading members...
-              </p>
-            ) : error ? (
-              <p className="text-sm text-red-600">
-                {error.message}
-              </p>
+              </div>
             ) : members.length === 0 ? (
-              <p className="project-detail-no-tasks">
-                No members assigned to this project.
-              </p>
+              <div className="project-detail-no-tasks">
+                No members added to this project yet.
+              </div>
             ) : (
               <table className="project-detail-members-table">
                 <thead>
@@ -278,65 +351,60 @@ export default function ProjectDetail({
                 </thead>
 
                 <tbody>
-                  {members.map((member) => (
-                    <tr key={member.userId}>
-                      <td>
-                        <div className="project-detail-member">
-                          <div className="project-detail-member-avatar">
-                            {member.fullName
-                              .split(" ")
-                              .map((name) => name[0])
-                              .join("")
-                              .slice(0, 2)
-                              .toUpperCase()}
+                  {members.map((member) => {
+                    const memberName =
+                      getMemberName(member);
+
+                    return (
+                      <tr
+                        key={
+                          member.id ||
+                          member.userId
+                        }
+                      >
+                        <td>
+                          <div className="project-detail-member">
+                            <div className="project-detail-member-avatar">
+                              {getInitials(
+                                memberName
+                              )}
+                            </div>
+
+                            <div>
+                              <span>
+                                {memberName}
+                              </span>
+
+                              <small>
+                                {member.email || "-"}
+                              </small>
+                            </div>
                           </div>
+                        </td>
 
-                          <div>
-                            <span>
-                              {member.fullName}
-                            </span>
+                        <td>
+                          {member.role || "DEVELOPER"}
+                        </td>
 
-                            <small>
-                              {member.email}
-                            </small>
-                          </div>
-                        </div>
-                      </td>
+                        <td>
+                          {formatDate(
+                            member.joinedAt
+                          )}
+                        </td>
 
-                      <td>
-                        {member.role}
-                      </td>
-
-                      <td>
-                        {formatDate(member.joinedAt)}
-                      </td>
-
-                      <td className="project-detail-remove-cell">
-                        <button
-                          type="button"
-                          className="project-detail-remove-button"
-                          onClick={() =>
-                            handleRemoveMember(member.userId)
-                          }
-                          disabled={
-                            removeMemberMutation.isPending
-                          }
-                        >
-                          {removeMemberMutation.isPending
-                            ? "Removing..."
-                            : "Remove"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        <td className="project-detail-remove-cell">
+                          <button
+                            type="button"
+                            className="project-detail-remove-button"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
-            )}
-
-            {removeMemberMutation.isError && (
-              <p className="text-sm text-red-600">
-                {removeMemberMutation.error.message}
-              </p>
             )}
           </div>
 
@@ -361,37 +429,9 @@ export default function ProjectDetail({
             </div>
 
             <div className="project-detail-task-list">
-              {!project.recentTasks ||
-              project.recentTasks.length === 0 ? (
-                <p className="project-detail-no-tasks">
-                  No recent tasks.
-                </p>
-              ) : (
-                project.recentTasks.map((task) => (
-                  <div
-                    key={task.title}
-                    className="project-detail-task-item"
-                  >
-                    <p>
-                      {task.title}
-                    </p>
-
-                    <div>
-                      <span
-                        className={`project-detail-task-status ${
-                          task.statusColor || ""
-                        }`}
-                      >
-                        {task.status}
-                      </span>
-
-                      <span>
-                        {task.assignee}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              )}
+              <p className="project-detail-no-tasks">
+                No recent tasks.
+              </p>
             </div>
           </div>
         </div>
@@ -399,8 +439,10 @@ export default function ProjectDetail({
 
       <AddMember
         isOpen={isAddMemberOpen}
-        onClose={() => setIsAddMemberOpen(false)}
-        projectId={project.id}
+        onClose={() =>
+          setIsAddMemberOpen(false)
+        }
+        projectId={projectId}
         projectName={project.name}
       />
     </div>

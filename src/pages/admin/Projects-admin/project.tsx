@@ -13,32 +13,12 @@ type Project = {
   status: "ACTIVE" | "PLANNING" | "COMPLETED";
   openTasks: number;
   targetEnd: string;
-  description: string;
-  startDate: string;
-  targetEndDate: string;
-  createdBy: string;
-  completed: number;
-  inReview: number;
-  recentTasks: RecentTask[];
-};
-
-type RecentTask = {
-  title: string;
-  status: string;
-  assignee: string;
-  statusColor: string;
 };
 
 type ProjectsResponse = {
   success: boolean;
   message: string;
   data: Project[];
-};
-
-type ProjectResponse = {
-  success: boolean;
-  message: string;
-  data: Project;
 };
 
 async function getProjects(): Promise<ProjectsResponse> {
@@ -54,41 +34,6 @@ async function getProjects(): Promise<ProjectsResponse> {
   }
 
   return result;
-}
-
-async function getProjectById(
-  projectId: number
-): Promise<ProjectResponse> {
-  const response = await fetch(`/backend/projects/${projectId}`, {
-    method: "GET",
-    credentials: "include",
-  });
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new Error(result?.message || "Failed to fetch project");
-  }
-
-  return result;
-}
-
-function formatDate(date: string) {
-  if (!date) {
-    return "-";
-  }
-
-  const parsedDate = new Date(date);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return date;
-  }
-
-  return parsedDate.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
 }
 
 export default function ProjectsPage() {
@@ -107,97 +52,24 @@ export default function ProjectsPage() {
     queryFn: getProjects,
   });
 
-  const {
-    data: selectedProjectResponse,
-    isLoading: isProjectLoading,
-    error: selectedProjectError,
-  } = useQuery({
-    queryKey: ["project", selectedProjectId],
-    queryFn: () => getProjectById(selectedProjectId as number),
-    enabled: selectedProjectId !== null,
-  });
-
   const projects = projectsResponse?.data || [];
 
   if (selectedProjectId !== null) {
-    if (isProjectLoading) {
-      return (
-        <div className="projects-container">
-          <Sidebar
-            activePage="projects"
-            onPageChange={() => {}}
+    return (
+      <div className="projects-container">
+        <Sidebar
+          activePage="projects"
+          onPageChange={() => {}}
+        />
+
+        <main className="main-content">
+          <ProjectDetail
+            projectId={selectedProjectId}
+            onBack={() => setSelectedProjectId(null)}
           />
-
-          <main className="main-content">
-            <div className="projects-empty-state">
-              Loading project...
-            </div>
-          </main>
-        </div>
-      );
-    }
-
-    if (selectedProjectError) {
-      return (
-        <div className="projects-container">
-          <Sidebar
-            activePage="projects"
-            onPageChange={() => {}}
-          />
-
-          <main className="main-content">
-            <div className="projects-empty-state">
-              {selectedProjectError.message}
-
-              <button
-                type="button"
-                onClick={() => setSelectedProjectId(null)}
-                className="projects-create-button"
-              >
-                Back to Projects
-              </button>
-            </div>
-          </main>
-        </div>
-      );
-    }
-
-    if (selectedProjectResponse?.data) {
-      const project = selectedProjectResponse.data;
-
-      const normalizedProject: Project = {
-        id: project.id,
-        name: project.name,
-        status: project.status,
-        openTasks: project.openTasks ?? 0,
-        targetEnd:
-          project.targetEnd || project.targetEndDate || "",
-        description: project.description || "",
-        startDate: project.startDate || "",
-        targetEndDate:
-          project.targetEndDate || project.targetEnd || "",
-        createdBy: project.createdBy || "-",
-        completed: project.completed ?? 0,
-        inReview: project.inReview ?? 0,
-        recentTasks: project.recentTasks ?? [],
-      };
-
-      return (
-        <div className="projects-container">
-          <Sidebar
-            activePage="projects"
-            onPageChange={() => {}}
-          />
-
-          <main className="main-content">
-            <ProjectDetail
-              project={normalizedProject}
-              onBack={() => setSelectedProjectId(null)}
-            />
-          </main>
-        </div>
-      );
-    }
+        </main>
+      </div>
+    );
   }
 
   return (
@@ -291,10 +163,15 @@ export default function ProjectsPage() {
                       </td>
 
                       <td>
-                        {formatDate(
-                          project.targetEnd ||
-                            project.targetEndDate
-                        )}
+                        {project.targetEnd
+                          ? new Date(
+                              project.targetEnd
+                            ).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                          : "-"}
                       </td>
                     </tr>
                   ))}
@@ -307,7 +184,9 @@ export default function ProjectsPage() {
 
       <CreateProject
         open={isCreateProjectOpen}
-        onClose={() => setIsCreateProjectOpen(false)}
+        onClose={() =>
+          setIsCreateProjectOpen(false)
+        }
       />
     </div>
   );

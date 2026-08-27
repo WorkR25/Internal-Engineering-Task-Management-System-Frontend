@@ -96,6 +96,10 @@
   @apply bg-emerald-50 text-emerald-600;
 }
 
+.projects-status-archived {
+  @apply bg-slate-100 text-slate-500;
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 768px) {

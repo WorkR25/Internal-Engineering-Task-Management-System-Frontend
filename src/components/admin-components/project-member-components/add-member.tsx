@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addProjectMember,
   getDevelopers,
@@ -26,13 +22,14 @@ export default function AddMember({
   projectId,
   projectName,
 }: AddMemberProps) {
+  const [search, setSearch] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
 
   const queryClient = useQueryClient();
 
   const {
     data: developersResponse,
-    isLoading: isDevelopersLoading,
+    isLoading: developersLoading,
     error: developersError,
   } = useQuery({
     queryKey: ["developers"],
@@ -42,11 +39,12 @@ export default function AddMember({
 
   const {
     data: membersResponse,
-    isLoading: isMembersLoading,
+    isLoading: membersLoading,
+    error: membersError,
   } = useQuery({
     queryKey: ["project-members", projectId],
     queryFn: () => getProjectMembers(projectId),
-    enabled: isOpen,
+    enabled: isOpen && !!projectId,
   });
 
   const addMemberMutation = useMutation({
@@ -65,10 +63,11 @@ export default function AddMember({
       });
 
       queryClient.invalidateQueries({
-        queryKey: ["developers"],
+        queryKey: ["projects"],
       });
 
       setSelectedUserId("");
+      setSearch("");
       onClose();
     },
   });
@@ -85,66 +84,63 @@ export default function AddMember({
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedUserId("");
-      addMemberMutation.reset();
-    }
-  }, [isOpen]);
-
   if (!isOpen) {
     return null;
   }
 
-  const allUsers = developersResponse?.data || [];
+  const members = membersResponse?.data || [];
 
-  const currentMembers = membersResponse?.data || [];
+  const developers =
+    developersResponse?.data?.filter(
+      (developer) =>
+        developer.roleId === "2" &&
+        developer.isActive !== false &&
+        !members.some(
+          (member) =>
+            Number(member.userId) === Number(developer.id)
+        )
+    ) || [];
 
-  const memberUserIds = new Set(
-    currentMembers.map((member) => Number(member.userId))
-  );
+  const filteredDevelopers = developers.filter((developer) => {
+    const searchValue = search.trim().toLowerCase();
 
-  const developers = allUsers.filter((developer) => {
-    const role =
-      typeof developer.role === "string"
-        ? developer.role
-        : "";
+    if (!searchValue) {
+      return true;
+    }
 
     return (
-      role.toUpperCase() === "DEVELOPER" &&
-      !memberUserIds.has(Number(developer.id))
+      developer.fullName.toLowerCase().includes(searchValue) ||
+      developer.email.toLowerCase().includes(searchValue)
     );
   });
 
-  const isLoading =
-    isDevelopersLoading || isMembersLoading;
-
   const handleClose = () => {
-    if (addMemberMutation.isPending) {
-      return;
-    }
-
     setSelectedUserId("");
+    setSearch("");
     addMemberMutation.reset();
     onClose();
   };
 
   const handleSubmit = () => {
-    if (!selectedUserId || addMemberMutation.isPending) {
+    if (!selectedUserId) {
       return;
     }
 
     addMemberMutation.mutate();
   };
 
+  const isLoading =
+    developersLoading || membersLoading;
+
   return (
     <div className="modal-overlay">
       <div className="modal-card">
 
         <div className="modal-header">
+
           <div>
             <h2 className="modal-title">
-              Add Member
+              Add Project Member
             </h2>
 
             <p className="modal-subtitle">
@@ -160,11 +156,36 @@ export default function AddMember({
           >
             ×
           </button>
+
         </div>
 
         <div className="modal-body">
 
           <div className="form-group">
+
+            <label className="form-label">
+              Search Developer
+            </label>
+
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setSelectedUserId("");
+              }}
+              placeholder="Search by name or email"
+              className="form-input"
+              disabled={
+                isLoading ||
+                addMemberMutation.isPending
+              }
+            />
+
+          </div>
+
+          <div className="form-group">
+
             <label className="form-label">
               Select Developer
             </label>
@@ -186,7 +207,7 @@ export default function AddMember({
                   : "Select developer"}
               </option>
 
-              {developers.map((developer) => (
+              {filteredDevelopers.map((developer) => (
                 <option
                   key={developer.id}
                   value={developer.id}
@@ -195,6 +216,7 @@ export default function AddMember({
                 </option>
               ))}
             </select>
+
           </div>
 
           {developersError && (
@@ -203,9 +225,16 @@ export default function AddMember({
             </p>
           )}
 
+          {membersError && (
+            <p className="text-sm text-red-600">
+              {membersError.message}
+            </p>
+          )}
+
           {!isLoading &&
             !developersError &&
-            developers.length === 0 && (
+            !membersError &&
+            filteredDevelopers.length === 0 && (
               <p className="text-sm text-gray-500">
                 No developers available.
               </p>
@@ -236,13 +265,12 @@ export default function AddMember({
             className="btn-submit"
             disabled={
               !selectedUserId ||
-              addMemberMutation.isPending ||
-              isLoading
+              addMemberMutation.isPending
             }
           >
             {addMemberMutation.isPending
               ? "Adding..."
-              : "Add Member"}
+              : "Add to Project"}
           </button>
 
         </div>

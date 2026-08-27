@@ -53,6 +53,12 @@ const tasks = {
   ],
 };
 
+const projectFilters = [
+  "All Projects",
+  "Payments Platform",
+  "Notification Service",
+];
+
 function TaskCard({
   task,
   onClick,
@@ -152,6 +158,14 @@ export default function MyTask() {
   const [selectedTask, setSelectedTask] =
     useState<Task | null>(null);
 
+  const [activeFilter, setActiveFilter] =
+    useState("All Projects");
+
+  const filterTasks = (list: Task[]) =>
+    activeFilter === "All Projects"
+      ? list
+      : list.filter((task) => task.project === activeFilter);
+
   if (selectedTask) {
     return (
       <main className="developer-my-task-page">
@@ -232,26 +246,20 @@ export default function MyTask() {
 
           <div className="developer-project-filters">
 
-            <button
-              type="button"
-              className="developer-project-filter developer-project-filter-active"
-            >
-              All Projects
-            </button>
-
-            <button
-              type="button"
-              className="developer-project-filter"
-            >
-              Payments Platform
-            </button>
-
-            <button
-              type="button"
-              className="developer-project-filter"
-            >
-              Notification Service
-            </button>
+            {projectFilters.map((filter) => (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActiveFilter(filter)}
+                className={`developer-project-filter ${
+                  activeFilter === filter
+                    ? "developer-project-filter-active"
+                    : ""
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
 
           </div>
 
@@ -261,31 +269,31 @@ export default function MyTask() {
 
               <TaskColumn
                 title="TO DO"
-                tasks={tasks.todo}
+                tasks={filterTasks(tasks.todo)}
                 onTaskClick={setSelectedTask}
               />
 
               <TaskColumn
                 title="IN PROGRESS"
-                tasks={tasks.inProgress}
+                tasks={filterTasks(tasks.inProgress)}
                 onTaskClick={setSelectedTask}
               />
 
               <TaskColumn
                 title="IN REVIEW"
-                tasks={tasks.inReview}
+                tasks={filterTasks(tasks.inReview)}
                 onTaskClick={setSelectedTask}
               />
 
               <TaskColumn
                 title="CHANGES REQUESTED"
-                tasks={tasks.changesRequested}
+                tasks={filterTasks(tasks.changesRequested)}
                 onTaskClick={setSelectedTask}
               />
 
               <TaskColumn
                 title="COMPLETED"
-                tasks={tasks.completed}
+                tasks={filterTasks(tasks.completed)}
                 onTaskClick={setSelectedTask}
               />
 
