@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 import { signIn, getCurrentUser } from "../../api/auth.api";
 import { useAppDispatch } from "../../store/hooks";
 import { setUser } from "../../store/authSlice";
-import { ADMIN, DEVELOPER } from "../../contants/role.constant";
+import { ADMIN, DEVELOPER } from "../../contants/role.constant"; // Double-check spelling of "constants"
+import { Eye, EyeOff } from "lucide-react";
 import "./signin.css";
 
 const signInSchema = z.object({
@@ -20,6 +21,8 @@ const signInSchema = z.object({
 type SignInFormValues = z.infer<typeof signInSchema>;
 
 export default function SignInPage() {
+  const [showPassword, setShowPassword] = useState(false);
+
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -40,12 +43,12 @@ export default function SignInPage() {
 
       const roleName = currentUserResult.data.role.name;
 
-    if (roleName === ADMIN) {
-      router.push("/admin/dashboard");
-    } else if (roleName === DEVELOPER) {
-      router.push("/developer/dashboard");
-    } else {
-            router.push("/");
+      if (roleName === ADMIN) {
+        router.push("/admin/dashboard-admin/dashboard");
+      } else if (roleName === DEVELOPER) {
+        router.push("/developer/dashboard-developer/dashboard");
+      } else {
+        router.push("/");
       }
     },
   });
@@ -108,12 +111,22 @@ export default function SignInPage() {
 
             <div>
               <label className="input-label">Password</label>
-              <input
-                type="password"
-                placeholder="••••••••••••"
-                className="text-input"
-                {...register("password")}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••••••"
+                  className="text-input pr-10"
+                  {...register("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               {errors.password && <p className="signin-error">{errors.password.message}</p>}
             </div>
 

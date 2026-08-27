@@ -5,14 +5,21 @@ import { useQuery } from "@tanstack/react-query";
 import Sidebar from "@/components/admin-components/layout/sidebar";
 import CreateProject from "@/components/admin-components/project-components/create-project";
 import ProjectDetail from "@/components/admin-components/project-components/project-detail";
-import { getAllProjects } from "@/api/create-project.api";
 import "./project.css";
 
-type Member = {
-  initials: string;
+type Project = {
+  id: number;
   name: string;
-  focus: string;
-  joined: string;
+  status: "ACTIVE" | "PLANNING" | "COMPLETED";
+  openTasks: number;
+  targetEnd: string;
+  description: string;
+  startDate: string;
+  targetEndDate: string;
+  createdBy: string;
+  completed: number;
+  inReview: number;
+  recentTasks: RecentTask[];
 };
 
 type RecentTask = {
@@ -22,56 +29,175 @@ type RecentTask = {
   statusColor: string;
 };
 
-type Project = {
-  id: number;
-  name: string;
-  status: "ACTIVE" | "PLANNING" | "COMPLETED";
-  openTasks?: number;
-  description: string;
-  startDate: string;
-  targetEndDate: string;
-  createdBy: string;
-  completed: number;
-  inReview: number;
-  members: Member[];
-  recentTasks: RecentTask[];
+type ProjectsResponse = {
+  success: boolean;
+  message: string;
+  data: Project[];
 };
 
+type ProjectResponse = {
+  success: boolean;
+  message: string;
+  data: Project;
+};
+
+async function getProjects(): Promise<ProjectsResponse> {
+  const response = await fetch("/backend/projects", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result?.message || "Failed to fetch projects");
+  }
+
+  return result;
+}
+
+async function getProjectById(
+  projectId: number
+): Promise<ProjectResponse> {
+  const response = await fetch(`/backend/projects/${projectId}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result?.message || "Failed to fetch project");
+  }
+
+  return result;
+}
+
+function formatDate(date: string) {
+  if (!date) {
+    return "-";
+  }
+
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return date;
+  }
+
+  return parsedDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default function ProjectsPage() {
-  const [selectedProject, setSelectedProject] =
-    useState<Project | null>(null);
+  const [selectedProjectId, setSelectedProjectId] =
+    useState<number | null>(null);
 
   const [isCreateProjectOpen, setIsCreateProjectOpen] =
     useState(false);
 
   const {
-    data,
+    data: projectsResponse,
     isLoading,
-    isError,
     error,
   } = useQuery({
     queryKey: ["projects"],
-    queryFn: getAllProjects,
+    queryFn: getProjects,
   });
 
-  const projects: Project[] = data?.data ?? [];
+  const {
+    data: selectedProjectResponse,
+    isLoading: isProjectLoading,
+    error: selectedProjectError,
+  } = useQuery({
+    queryKey: ["project", selectedProjectId],
+    queryFn: () => getProjectById(selectedProjectId as number),
+    enabled: selectedProjectId !== null,
+  });
 
-  if (selectedProject) {
-    return (
-      <div className="projects-container">
-        <Sidebar
-          activePage="projects"
-          onPageChange={() => {}}
-        />
+  const projects = projectsResponse?.data || [];
 
-        <main className="main-content">
-          <ProjectDetail
-            project={selectedProject}
-            onBack={() => setSelectedProject(null)}
+  if (selectedProjectId !== null) {
+    if (isProjectLoading) {
+      return (
+        <div className="projects-container">
+          <Sidebar
+            activePage="projects"
+            onPageChange={() => {}}
           />
-        </main>
-      </div>
-    );
+
+          <main className="main-content">
+            <div className="projects-empty-state">
+              Loading project...
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    if (selectedProjectError) {
+      return (
+        <div className="projects-container">
+          <Sidebar
+            activePage="projects"
+            onPageChange={() => {}}
+          />
+
+          <main className="main-content">
+            <div className="projects-empty-state">
+              {selectedProjectError.message}
+
+              <button
+                type="button"
+                onClick={() => setSelectedProjectId(null)}
+                className="projects-create-button"
+              >
+                Back to Projects
+              </button>
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    if (selectedProjectResponse?.data) {
+      const project = selectedProjectResponse.data;
+
+      const normalizedProject: Project = {
+        id: project.id,
+        name: project.name,
+        status: project.status,
+        openTasks: project.openTasks ?? 0,
+        targetEnd:
+          project.targetEnd || project.targetEndDate || "",
+        description: project.description || "",
+        startDate: project.startDate || "",
+        targetEndDate:
+          project.targetEndDate || project.targetEnd || "",
+        createdBy: project.createdBy || "-",
+        completed: project.completed ?? 0,
+        inReview: project.inReview ?? 0,
+        recentTasks: project.recentTasks ?? [],
+      };
+
+      return (
+        <div className="projects-container">
+          <Sidebar
+            activePage="projects"
+            onPageChange={() => {}}
+          />
+
+          <main className="main-content">
+            <ProjectDetail
+              project={normalizedProject}
+              onBack={() => setSelectedProjectId(null)}
+            />
+          </main>
+        </div>
+      );
+    }
   }
 
   return (
@@ -115,17 +241,15 @@ export default function ProjectsPage() {
         <div className="projects-body">
           <div className="projects-table-card">
             {isLoading ? (
-              <div className="projects-loading">
+              <div className="projects-empty-state">
                 Loading projects...
               </div>
-            ) : isError ? (
-              <div className="projects-error">
-                {error instanceof Error
-                  ? error.message
-                  : "Failed to load projects"}
+            ) : error ? (
+              <div className="projects-empty-state">
+                {error.message}
               </div>
             ) : projects.length === 0 ? (
-              <div className="projects-empty">
+              <div className="projects-empty-state">
                 No projects found.
               </div>
             ) : (
@@ -144,7 +268,7 @@ export default function ProjectsPage() {
                     <tr
                       key={project.id}
                       onClick={() =>
-                        setSelectedProject(project)
+                        setSelectedProjectId(project.id)
                       }
                       className="projects-table-row"
                     >
@@ -167,15 +291,10 @@ export default function ProjectsPage() {
                       </td>
 
                       <td>
-                        {project.targetEndDate
-                          ? new Date(
-                              project.targetEndDate
-                            ).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })
-                          : "-"}
+                        {formatDate(
+                          project.targetEnd ||
+                            project.targetEndDate
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -188,9 +307,7 @@ export default function ProjectsPage() {
 
       <CreateProject
         open={isCreateProjectOpen}
-        onClose={() =>
-          setIsCreateProjectOpen(false)
-        }
+        onClose={() => setIsCreateProjectOpen(false)}
       />
     </div>
   );

@@ -24,7 +24,7 @@ export default function Sidebar({
     {
       label: "Dashboard",
       id: "dashboard",
-      href: "/",
+      href: "/developer/dashboard-developer/dashboard",
     },
     {
       label: "My Tasks",
