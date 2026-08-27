@@ -1,9 +1,14 @@
+"use client";
+
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Sidebar from "@/components/admin-components/layout/sidebar";
 import AddDeveloperModal from "@/components/admin-components/team-components/add_developer";
+import { getAllUsers } from "@/api/user.api";
 import styles from "./team.module.css";
 
 type Developer = {
+  id: string;
   initials: string;
   name: string;
   email: string;
@@ -14,63 +19,6 @@ type Developer = {
 };
 
 type Filter = "ALL" | "ACTIVE" | "INACTIVE";
-
-const developers: Developer[] = [
-  {
-    initials: "SD",
-    name: "Sahil Das",
-    email: "sahil.das@company.com",
-    status: "ACTIVE",
-    tasks: 4,
-    score: "91%",
-    joined: "Feb 3, 2026",
-  },
-  {
-    initials: "KV",
-    name: "Karan Verma",
-    email: "karan.verma@company.com",
-    status: "ACTIVE",
-    tasks: 6,
-    score: "88%",
-    joined: "Jan 14, 2026",
-  },
-  {
-    initials: "NP",
-    name: "Neha Patil",
-    email: "neha.patil@company.com",
-    status: "ACTIVE",
-    tasks: 3,
-    score: "85%",
-    joined: "Mar 22, 2026",
-  },
-  {
-    initials: "RS",
-    name: "Rhea Sen",
-    email: "rhea.sen@company.com",
-    status: "ACTIVE",
-    tasks: 5,
-    score: "82%",
-    joined: "Apr 8, 2026",
-  },
-  {
-    initials: "AT",
-    name: "Aman Thakur",
-    email: "aman.thakur@company.com",
-    status: "ACTIVE",
-    tasks: 2,
-    score: "76%",
-    joined: "Jun 30, 2026",
-  },
-  {
-    initials: "PN",
-    name: "Priya Nair",
-    email: "priya.nair@company.com",
-    status: "INACTIVE",
-    tasks: 0,
-    score: "79%",
-    joined: "Nov 11, 2025",
-  },
-];
 
 const cx = (...classes: string[]) =>
   classes
@@ -137,11 +85,41 @@ export default function TeamPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<Filter>("ALL");
 
+  const {
+    data: users = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: getAllUsers,
+  });
+
   const filters: { label: string; value: Filter }[] = [
     { label: "All", value: "ALL" },
     { label: "Active", value: "ACTIVE" },
     { label: "Inactive", value: "INACTIVE" },
   ];
+
+  const developers: Developer[] = users.map((user) => ({
+    id: user.id,
+    initials: user.fullName
+      .split(" ")
+      .map((name) => name.charAt(0))
+      .join("")
+      .slice(0, 2)
+      .toUpperCase(),
+    name: user.fullName,
+    email: user.email,
+    status: user.status === "ACTIVE" ? "ACTIVE" : "INACTIVE",
+    tasks: 0,
+    score: "-",
+    joined: new Date(user.createdAt).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
+  }));
 
   const filteredDevelopers = developers.filter((developer) => {
     if (selectedFilter === "ALL") {
@@ -161,7 +139,9 @@ export default function TeamPage() {
             <h1 className={cx("page-title")}>Team</h1>
 
             <p className={cx("page-subtitle")}>
-              {developers.length} Developer accounts · managed by Admin
+              {isLoading
+                ? "Loading..."
+                : `${developers.length} Developer accounts · managed by Admin`}
             </p>
           </div>
 
@@ -217,19 +197,28 @@ export default function TeamPage() {
             </thead>
 
             <tbody className={cx("table-body")}>
-              {filteredDevelopers.length > 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={6} className={cx("table-cell")}>
+                    Loading developers...
+                  </td>
+                </tr>
+              ) : isError ? (
+                <tr>
+                  <td colSpan={6} className={cx("table-cell")}>
+                    {error.message}
+                  </td>
+                </tr>
+              ) : filteredDevelopers.length > 0 ? (
                 filteredDevelopers.map((developer) => (
                   <DeveloperRow
-                    key={developer.email}
+                    key={developer.id}
                     developer={developer}
                   />
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className={cx("table-cell")}
-                  >
+                  <td colSpan={6} className={cx("table-cell")}>
                     No developers found.
                   </td>
                 </tr>

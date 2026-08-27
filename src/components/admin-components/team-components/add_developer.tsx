@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createUser } from "../../../api/user.api";
 import "./add_developer.css";
 
 const addDeveloperSchema = z.object({
@@ -26,14 +28,38 @@ interface AddDeveloperModalProps {
   onClose: () => void;
 }
 
+const generateTemporaryPassword = () => {
+  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowercase = "abcdefghijklmnopqrstuvwxyz";
+  const numbers = "0123456789";
+  const special = "!@#$%^&*";
+  const allCharacters = uppercase + lowercase + numbers + special;
+
+  const getRandomCharacter = (characters: string) => {
+    return characters[Math.floor(Math.random() * characters.length)];
+  };
+
+  const password = [
+    getRandomCharacter(uppercase),
+    getRandomCharacter(lowercase),
+    getRandomCharacter(numbers),
+    getRandomCharacter(special),
+    ...Array.from({ length: 8 }, () =>
+      getRandomCharacter(allCharacters)
+    ),
+  ];
+
+  return password.sort(() => Math.random() - 0.5).join("");
+};
+
 export default function AddDeveloperModal({
   isOpen,
   onClose,
 }: AddDeveloperModalProps) {
+  const queryClient = useQueryClient();
+
   const [isSuccess, setIsSuccess] = useState(false);
-  const [tempPassword] = useState("Tr8•kL2•pQm9");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [tempPassword, setTempPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -45,9 +71,27 @@ export default function AddDeveloperModal({
     resolver: zodResolver(addDeveloperSchema),
   });
 
+  const createUserMutation = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+
+      setIsSuccess(true);
+
+      setTimeout(() => {
+        setIsSuccess(false);
+        reset();
+        onClose();
+      }, 3000);
+    },
+  });
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      setTempPassword(generateTemporaryPassword());
     } else {
       document.body.style.overflow = "unset";
     }
@@ -60,28 +104,18 @@ export default function AddDeveloperModal({
   if (!isOpen) return null;
 
   const handleCreateAccount = (data: AddDeveloperFormValues) => {
-    console.log(data);
-
-    setIsSubmitting(true);
-    setErrorMessage(null);
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-
-      setTimeout(() => {
-        setIsSuccess(false);
-        reset();
-        onClose();
-      }, 3000);
-    }, 500);
+    createUserMutation.mutate({
+      fullName: data.fullName,
+      email: data.email,
+      password: tempPassword,
+    });
   };
 
   const handleClose = () => {
     setIsSuccess(false);
-    setIsSubmitting(false);
-    setErrorMessage(null);
+    createUserMutation.reset();
     setShowPassword(false);
+    setTempPassword("");
     reset();
     onClose();
   };
@@ -147,169 +181,169 @@ export default function AddDeveloperModal({
             </p>
           </div>
         ) : (
-          <>
-            <form onSubmit={handleSubmit(handleCreateAccount)}>
-              <div className="modal-body">
+          <form onSubmit={handleSubmit(handleCreateAccount)}>
+            <div className="modal-body">
 
-                <div className="form-group">
-                  <label className="form-label">
-                    Full Name
-                  </label>
+              <div className="form-group">
+                <label className="form-label">
+                  Full Name
+                </label>
 
-                  <input
-                    type="text"
-                    placeholder="Priyanka Iyer"
-                    className="form-input"
-                    {...register("fullName")}
-                  />
+                <input
+                  type="text"
+                  placeholder="Priyanka Iyer"
+                  className="form-input"
+                  {...register("fullName")}
+                />
 
-                  {errors.fullName && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.fullName.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">
-                    Email
-                  </label>
-
-                  <input
-                    type="email"
-                    placeholder="priyanka.iyer@company.com"
-                    className="form-input"
-                    {...register("email")}
-                  />
-
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.email.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label-dark">
-                    Temporary Password
-                  </label>
-
-                  <div className="password-field-wrapper">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      value={tempPassword}
-                      readOnly
-                      className="password-input"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      className="password-toggle"
-                      aria-label={
-                        showPassword
-                          ? "Hide password"
-                          : "Show password"
-                      }
-                    >
-                      {showPassword ? (
-                        <svg
-                          className="password-toggle-icon"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 3l18 18M10.58 10.58A2 2 0 0113.42 13.42M9.88 5.09A9.77 9.77 0 0112 4.5c5.25 0 9.27 4.5 10.5 7.5a18.2 18.2 0 01-3.04 4.62M6.61 6.61C4.73 7.91 3.34 9.7 1.5 12c1.23 3 5.25 7.5 10.5 7.5 1.45 0 2.78-.27 3.96-.72"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="password-toggle-icon"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                      )}
-                    </button>
-
-                    <span className="password-badge">
-                      Auto-generated
-                    </span>
-                  </div>
-                </div>
-
-                <div className="info-box">
-                  <svg
-                    className="info-icon"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-
-                  <p className="info-text">
-                    The Developer must change this password on first sign-in.
-                    It won't be shown again after this account is created —
-                    share it securely.
-                  </p>
-                </div>
-
-                {errorMessage && (
-                  <p className="text-sm text-red-600">
-                    {errorMessage}
+                {errors.fullName && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.fullName.message}
                   </p>
                 )}
-
               </div>
 
-              <div className="modal-footer">
-                <div className="footer-meta">
-                  Role: DEVELOPER · Status: Active
-                </div>
+              <div className="form-group">
+                <label className="form-label">
+                  Email
+                </label>
 
-                <div className="footer-actions">
+                <input
+                  type="email"
+                  placeholder="priyanka.iyer@company.com"
+                  className="form-input"
+                  {...register("email")}
+                />
+
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label className="form-label-dark">
+                  Temporary Password
+                </label>
+
+                <div className="password-field-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={tempPassword}
+                    readOnly
+                    className="password-input"
+                  />
+
                   <button
                     type="button"
-                    onClick={handleClose}
-                    className="btn-cancel"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="password-toggle"
+                    aria-label={
+                      showPassword
+                        ? "Hide password"
+                        : "Show password"
+                    }
                   >
-                    Cancel
+                    {showPassword ? (
+                      <svg
+                        className="password-toggle-icon"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 3l18 18M10.58 10.58A2 2 0 0113.42 13.42M9.88 5.09A9.77 9.77 0 0112 4.5c5.25 0 9.27 4.5 10.5 7.5a18.2 18.2 0 01-3.04 4.62M6.61 6.61C4.73 7.91 3.34 9.7 1.5 12c1.23 3 5.25 7.5 10.5 7.5 1.45 0 2.78-.27 3.96-.72"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="password-toggle-icon"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    )}
                   </button>
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="btn-submit"
-                  >
-                    {isSubmitting ? "Creating..." : "Create Account"}
-                  </button>
+                  <span className="password-badge">
+                    Auto-generated
+                  </span>
                 </div>
               </div>
-            </form>
-          </>
+
+              <div className="info-box">
+                <svg
+                  className="info-icon"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 01-18 0z"
+                  />
+                </svg>
+
+                <p className="info-text">
+                  The Developer must change this password on first sign-in.
+                  It won't be shown again after this account is created —
+                  share it securely.
+                </p>
+              </div>
+
+              {createUserMutation.isError && (
+                <p className="text-sm text-red-600">
+                  {createUserMutation.error.message}
+                </p>
+              )}
+
+            </div>
+
+            <div className="modal-footer">
+              <div className="footer-meta">
+                Role: DEVELOPER · Status: Active
+              </div>
+
+              <div className="footer-actions">
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="btn-cancel"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={createUserMutation.isPending}
+                  className="btn-submit"
+                >
+                  {createUserMutation.isPending
+                    ? "Creating..."
+                    : "Create Account"}
+                </button>
+              </div>
+            </div>
+          </form>
         )}
 
       </div>
