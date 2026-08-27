@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider } from "react-redux";
 import { useState } from "react";
+import { store } from "../store";
 import "../app/globals.css";
 
 export default function App({
@@ -12,8 +14,10 @@ export default function App({
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Component {...pageProps} />
-    </QueryClientProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <Component {...pageProps} />
+      </QueryClientProvider>
+    </Provider>
   );
 }

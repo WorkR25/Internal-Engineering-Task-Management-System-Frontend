@@ -15,11 +15,11 @@
 /* HEADER */
 
 .modal-header {
-  @apply border-b border-gray-200 px-5 py-4;
+  @apply border-b border-gray-200 px-5 py-4 justify-center;
 }
 
 .modal-header-flex {
-  @apply flex items-start justify-between;
+  @apply flex items-start justify-center;
 }
 
 .modal-title {
@@ -31,7 +31,7 @@
 }
 
 .btn-close {
-  @apply text-sm text-gray-400 hover:text-gray-600;
+  @apply text-sm text-gray-400 hover:text-gray-600 ;
 }
 
 /* FORM */
