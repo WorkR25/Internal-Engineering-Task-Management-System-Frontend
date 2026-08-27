@@ -3,7 +3,9 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import "./create-project.css";
+import { createProject, CreateProjectRequest } from "@/api/create-project.api";
 
 const createProjectSchema = z
   .object({
@@ -43,21 +45,24 @@ export default function CreateProject({
     resolver: zodResolver(createProjectSchema),
   });
 
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: (payload: CreateProjectRequest) => createProject(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      reset();
+      onClose();
+    },
+  });
+
   const onSubmit = (data: CreateProjectFormValues) => {
-    const payload = {
+    mutate({
       name: data.projectName,
       description: data.description,
       startDate: data.startDate,
       targetEndDate: data.targetEndDate,
-    };
-
-    /*
-     * API will be connected here later.
-     */
-    console.log("Submitting payload:", payload);
-
-    reset();
-    onClose();
+    });
   };
 
   const handleClose = () => {
@@ -223,6 +228,14 @@ export default function CreateProject({
 
           </div>
 
+          {/* API ERROR */}
+
+          {error && (
+            <p className="mb-3 text-xs text-red-600">
+              {error.message}
+            </p>
+          )}
+
           {/* FOOTER */}
 
           <div className="modal-footer">
@@ -237,6 +250,7 @@ export default function CreateProject({
                 type="button"
                 onClick={handleClose}
                 className="btn-cancel"
+                disabled={isPending}
               >
                 Cancel
               </button>
@@ -244,8 +258,9 @@ export default function CreateProject({
               <button
                 type="submit"
                 className="btn-submit"
+                disabled={isPending}
               >
-                Create Project
+                {isPending ? "Creating..." : "Create Project"}
               </button>
 
             </div>

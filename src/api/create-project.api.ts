@@ -1,0 +1,33 @@
+export interface CreateProjectRequest {
+  name: string;
+  description: string;
+  startDate: string;
+  targetEndDate: string;
+}
+
+export interface CreateProjectResponse {
+  success: boolean;
+  message: string;
+  data: unknown;
+}
+
+export async function createProject(
+  data: CreateProjectRequest
+): Promise<CreateProjectResponse> {
+  const response = await fetch("/backend/projects", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result?.message || "Failed to create project");
+  }
+
+  return result;
+}
