@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { createRole } from "../../../api/role.api";
 import "./create-role.css";
 
 const createRoleSchema = z.object({
@@ -28,19 +30,29 @@ interface CreateRoleModalProps {
 
 export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProps) {
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-    } = useForm<CreateRoleFormValues>({
+  } = useForm<CreateRoleFormValues>({
     resolver: zodResolver(createRoleSchema),
   });
 
-  // Prevent background scrolling when modal is open
+  const createRoleMutation = useMutation({
+    mutationFn: createRole,
+    onSuccess: () => {
+      setIsSuccess(true);
+
+      setTimeout(() => {
+        setIsSuccess(false);
+        reset();
+        onClose();
+      }, 2000);
+    },
+  });
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -56,27 +68,15 @@ export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProp
   if (!isOpen) return null;
 
   const handleCreateRole = (data: CreateRoleFormValues) => {
-    console.log(data);
-
-    setIsSubmitting(true);
-    setErrorMessage(null);
-
-    // Simulate API Call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-
-      setTimeout(() => {
-        setIsSuccess(false);
-        reset();
-        onClose();
-      }, 2000);
-    }, 500);
+    createRoleMutation.mutate({
+      name: data.roleName,
+      description: data.description,
+    });
   };
 
   const handleClose = () => {
     setIsSuccess(false);
-    setErrorMessage(null);
+    createRoleMutation.reset();
     reset();
     onClose();
   };
@@ -85,7 +85,6 @@ export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProp
     <div className="create-role-overlay">
       <div className="create-role-card">
 
-        {/* Modal Header */}
         <div className="create-role-header">
           <div className="create-role-header-content">
             <h1>Create New Role</h1>
@@ -98,7 +97,6 @@ export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProp
           </button>
         </div>
 
-        {/* Success View OR Form View */}
         {isSuccess ? (
           <div className="create-role-success">
             <div className="create-role-success-icon">
@@ -110,7 +108,6 @@ export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProp
           </div>
         ) : (
           <form onSubmit={handleSubmit(handleCreateRole)} noValidate>
-            {/* Modal Body */}
             <div className="create-role-form">
               <div className="create-role-field">
                 <label>Role Name</label>
@@ -138,17 +135,24 @@ export default function CreateRoleModal({ isOpen, onClose }: CreateRoleModalProp
                 )}
               </div>
 
-              {errorMessage && <p className="create-role-error">{errorMessage}</p>}
+              {createRoleMutation.isError && (
+                <p className="create-role-error">
+                  {createRoleMutation.error.message}
+                </p>
+              )}
             </div>
 
-            {/* Modal Footer */}
             <div className="create-role-footer">
               <div className="create-role-actions">
                 <button type="button" onClick={handleClose} className="create-role-cancel">
                   Cancel
                 </button>
-                <button type="submit" disabled={isSubmitting} className="create-role-submit">
-                  {isSubmitting ? "Creating..." : "Create Role"}
+                <button
+                  type="submit"
+                  disabled={createRoleMutation.isPending}
+                  className="create-role-submit"
+                >
+                  {createRoleMutation.isPending ? "Creating..." : "Create Role"}
                 </button>
               </div>
             </div>
