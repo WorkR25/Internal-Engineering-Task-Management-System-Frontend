@@ -44,9 +44,9 @@ export default function SignInPage() {
       const roleName = currentUserResult.data.role.name;
 
       if (roleName === ADMIN) {
-        router.push("/admin/dashboard");
+        router.push("/admin/dashboard-admin/dashboard");
       } else if (roleName === DEVELOPER) {
-        router.push("/developer/dashboard");
+        router.push("/developer/dashboard-developer/dashboard");
       } else {
         router.push("/");
       }

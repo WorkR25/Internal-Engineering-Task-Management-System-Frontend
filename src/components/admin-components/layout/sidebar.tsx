@@ -28,7 +28,7 @@ export default function Sidebar({
     {
       label: "Dashboard",
       id: "dashboard",
-      href: "/",
+      href: "/admin/dashboard-admin/dashboard",
     },
     {
       label: "Task Board",
