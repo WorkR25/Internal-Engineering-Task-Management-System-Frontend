@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,6 +37,8 @@ export default function CreateProject({
   open,
   onClose,
 }: CreateProjectProps) {
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -49,14 +52,24 @@ export default function CreateProject({
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: (payload: CreateProjectRequest) => createProject(payload),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-      reset();
-      onClose();
+      
+      // Check response structure for success status or dynamic message
+      const message = response?.message || "Project created successfully!";
+      setSuccessMessage(message);
+
+      // Auto-close modal after showing success message
+      setTimeout(() => {
+        setSuccessMessage(null);
+        reset();
+        onClose();
+      }, 1500);
     },
   });
 
   const onSubmit = (data: CreateProjectFormValues) => {
+    setSuccessMessage(null);
     mutate({
       name: data.projectName,
       description: data.description,
@@ -66,6 +79,7 @@ export default function CreateProject({
   };
 
   const handleClose = () => {
+    setSuccessMessage(null);
     reset();
     onClose();
   };
@@ -76,27 +90,16 @@ export default function CreateProject({
 
   return (
     <div className="create-project-overlay">
-
       <div className="modal-container">
-
         {/* HEADER */}
-
         <div className="modal-header">
-
           <div className="modal-header-flex">
-
             <div>
-
-              <h1 className="modal-title">
-                Create Project
-              </h1>
-
+              <h1 className="modal-title">Create Project</h1>
               <p className="modal-subtitle">
                 New projects start in PLANNING status
               </p>
-
             </div>
-
             <button
               type="button"
               onClick={handleClose}
@@ -104,29 +107,19 @@ export default function CreateProject({
             >
               ×
             </button>
-
           </div>
-
         </div>
 
         {/* FORM */}
-
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="form-body"
         >
-
           {/* PROJECT NAME */}
-
           <div className="form-group">
-
-            <label
-              htmlFor="projectName"
-              className="form-label"
-            >
+            <label htmlFor="projectName" className="form-label">
               Project Name
             </label>
-
             <input
               id="projectName"
               type="text"
@@ -134,26 +127,18 @@ export default function CreateProject({
               className="form-input"
               {...register("projectName")}
             />
-
             {errors.projectName && (
               <p className="mt-1 text-xs text-red-600">
                 {errors.projectName.message}
               </p>
             )}
-
           </div>
 
           {/* DESCRIPTION */}
-
           <div className="form-group">
-
-            <label
-              htmlFor="description"
-              className="form-label"
-            >
+            <label htmlFor="description" className="form-label">
               Description
             </label>
-
             <textarea
               id="description"
               rows={3}
@@ -161,75 +146,60 @@ export default function CreateProject({
               className="form-textarea"
               {...register("description")}
             />
-
             {errors.description && (
               <p className="mt-1 text-xs text-red-600">
                 {errors.description.message}
               </p>
             )}
-
           </div>
 
           {/* DATES */}
-
           <div className="dates-grid">
-
             {/* START DATE */}
-
             <div>
-
-              <label
-                htmlFor="startDate"
-                className="form-label"
-              >
+              <label htmlFor="startDate" className="form-label">
                 Start Date
               </label>
-
               <input
                 id="startDate"
                 type="date"
                 className="form-input"
                 {...register("startDate")}
               />
-
               {errors.startDate && (
                 <p className="mt-1 text-xs text-red-600">
                   {errors.startDate.message}
                 </p>
               )}
-
             </div>
 
             {/* TARGET END DATE */}
-
             <div>
-
-              <label
-                htmlFor="targetEndDate"
-                className="form-label"
-              >
+              <label htmlFor="targetEndDate" className="form-label">
                 Target End Date
               </label>
-
               <input
                 id="targetEndDate"
                 type="date"
                 className="form-input"
                 {...register("targetEndDate")}
               />
-
               {errors.targetEndDate && (
                 <p className="mt-1 text-xs text-red-600">
                   {errors.targetEndDate.message}
                 </p>
               )}
-
             </div>
-
           </div>
 
-          {/* API ERROR */}
+          {/* API SUCCESS MESSAGE */}
+          {successMessage && (
+            <p className="success-message">
+              {successMessage}
+            </p>
+          )}
 
+          {/* API ERROR */}
           {error && (
             <p className="mb-3 text-xs text-red-600">
               {error.message}
@@ -237,15 +207,11 @@ export default function CreateProject({
           )}
 
           {/* FOOTER */}
-
           <div className="modal-footer">
-
             <p className="footer-hint">
               You&apos;ll add team members after creating
             </p>
-
             <div className="footer-actions">
-
               <button
                 type="button"
                 onClick={handleClose}
@@ -254,7 +220,6 @@ export default function CreateProject({
               >
                 Cancel
               </button>
-
               <button
                 type="submit"
                 className="btn-submit"
@@ -262,15 +227,10 @@ export default function CreateProject({
               >
                 {isPending ? "Creating..." : "Create Project"}
               </button>
-
             </div>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 }
