@@ -11,6 +11,12 @@ export interface CreateProjectResponse {
   data: unknown;
 }
 
+export interface GetProjectsResponse {
+  success: boolean;
+  message: string;
+  data: unknown;
+}
+
 export async function createProject(
   data: CreateProjectRequest
 ): Promise<CreateProjectResponse> {
@@ -27,6 +33,21 @@ export async function createProject(
 
   if (!response.ok) {
     throw new Error(result?.message || "Failed to create project");
+  }
+
+  return result;
+}
+
+export async function getAllProjects(): Promise<GetProjectsResponse> {
+  const response = await fetch("/backend/projects", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result?.message || "Failed to fetch projects");
   }
 
   return result;
