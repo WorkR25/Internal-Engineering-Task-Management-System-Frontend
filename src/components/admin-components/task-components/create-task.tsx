@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -51,14 +51,19 @@ const createTaskSchema = z.object({
     .optional()
     .refine(
       (value) => {
-        if (!value) return true;
+        if (!value) {
+          return true;
+        }
 
         const selectedDate = new Date(value);
         const today = new Date();
 
         today.setHours(0, 0, 0, 0);
 
-        return !Number.isNaN(selectedDate.getTime()) && selectedDate >= today;
+        return (
+          !Number.isNaN(selectedDate.getTime()) &&
+          selectedDate >= today
+        );
       },
       {
         message: "Deadline must be today or a future date",
@@ -66,18 +71,22 @@ const createTaskSchema = z.object({
     ),
 });
 
-type CreateTaskFormValues = z.infer<typeof createTaskSchema>;
+type CreateTaskFormValues = z.infer<
+  typeof createTaskSchema
+>;
 
 type CreateTaskProps = {
   open: boolean;
   onClose: () => void;
   projectId: number;
+  onCreated?: () => void;
 };
 
 export default function CreateTask({
   open,
   onClose,
   projectId,
+  onCreated,
 }: CreateTaskProps) {
   const [submitted, setSubmitted] = useState(false);
 
@@ -91,10 +100,28 @@ export default function CreateTask({
 
     defaultValues: {
       projectId,
+      title: "",
+      description: "",
+      acceptanceCriteria: "",
       priority: "HIGH",
       deadline: "",
     },
   });
+
+  /*
+   * Keep projectId synchronized with the value received
+   * from the parent component.
+   */
+  useEffect(() => {
+    reset({
+      projectId,
+      title: "",
+      description: "",
+      acceptanceCriteria: "",
+      priority: "HIGH",
+      deadline: "",
+    });
+  }, [projectId, reset]);
 
   const createTaskMutation = useMutation({
     mutationFn: (data: CreateTaskRequest) =>
@@ -103,10 +130,15 @@ export default function CreateTask({
     onSuccess: () => {
       setSubmitted(true);
 
-      reset();
+      /*
+       * Tell the Task Board that a new task was created.
+       * The board will refetch the backend data.
+       */
+      onCreated?.();
 
       setTimeout(() => {
         setSubmitted(false);
+        reset();
         onClose();
       }, 1800);
     },
@@ -117,11 +149,9 @@ export default function CreateTask({
   ) => {
     createTaskMutation.mutate({
       projectId: data.projectId,
-
       title: data.title,
-
       description: data.description,
-
+      acceptanceCriteria: data.acceptanceCriteria,
       priority: data.priority,
 
       ...(data.deadline
@@ -160,6 +190,8 @@ export default function CreateTask({
           </div>
         ) : (
           <>
+            {/* HEADER */}
+
             <div className="create-task-header">
 
               <div>
@@ -183,12 +215,16 @@ export default function CreateTask({
 
             </div>
 
+            {/* FORM */}
+
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="create-task-form"
             >
 
               <div className="create-task-fields">
+
+                {/* PROJECT ID */}
 
                 <div>
                   <label className="create-task-label">
@@ -213,6 +249,8 @@ export default function CreateTask({
                   )}
                 </div>
 
+                {/* TITLE */}
+
                 <div>
                   <label className="create-task-label">
                     Title
@@ -231,6 +269,8 @@ export default function CreateTask({
                     </p>
                   )}
                 </div>
+
+                {/* DESCRIPTION */}
 
                 <div>
                   <label className="create-task-label">
@@ -251,6 +291,8 @@ export default function CreateTask({
                   )}
                 </div>
 
+                {/* ACCEPTANCE CRITERIA */}
+
                 <div>
                   <label className="create-task-label">
                     Acceptance Criteria
@@ -269,6 +311,8 @@ export default function CreateTask({
                     </p>
                   )}
                 </div>
+
+                {/* PRIORITY + DEADLINE */}
 
                 <div className="create-task-priority-deadline">
 
@@ -312,7 +356,11 @@ export default function CreateTask({
 
                     <input
                       type="date"
-                      min={new Date().toISOString().split("T")[0]}
+                      min={
+                        new Date()
+                          .toISOString()
+                          .split("T")[0]
+                      }
                       className="create-task-input"
                       {...register("deadline")}
                     />
@@ -326,6 +374,8 @@ export default function CreateTask({
 
                 </div>
 
+                {/* API ERROR */}
+
                 {createTaskMutation.isError && (
                   <p className="mt-1 text-sm text-red-600">
                     {createTaskMutation.error instanceof Error
@@ -335,6 +385,8 @@ export default function CreateTask({
                 )}
 
               </div>
+
+              {/* FOOTER */}
 
               <div className="create-task-footer">
 

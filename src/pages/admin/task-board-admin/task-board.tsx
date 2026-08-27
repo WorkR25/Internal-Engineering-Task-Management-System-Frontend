@@ -1,36 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 import Sidebar from "../../../components/admin-components/layout/sidebar";
+
 import CreateTask from "../../../components/admin-components/task-components/create-task";
 
-import "./task-board.css"; // <-- Import the new stylesheet
-// 3. import AssignTask
 import AssignTask from "../../../components/admin-components/task-assign-components/assign-task";
 import ReassignTask from "../../../components/admin-components/task-assign-components/reassign-task";
 
-const tasks = {
-  todo: [
-    { title: "Add rate limiting to auth/signin", priority: "HIGH", developer: "Karan Verma", deadline: "Dec 2, 2026", status: "TODO" },
-    { title: "Seed assignment reason", priority: "LOW", developer: null, deadline: "Dec 5, 2026", status: "TODO" },
-  ],
-  inProgress: [
-    { title: "Implement payment webhook handler", priority: "HIGH", developer: "Sahil Das", deadline: "Dec 4, 2026", status: "IN_PROGRESS" },
-    { title: "Add pagination to GET tasks", priority: "MEDIUM", developer: "Nisha Patel", deadline: "Dec 6, 2026", status: "IN_PROGRESS" },
-  ],
-  inReview: [
-    { title: "Fix N+1 query on dashboard", priority: "HIGH", developer: "Rhea Sen", deadline: "Dec 3, 2026", status: "IN_REVIEW" },
-    { title: "Refactor webhook retry logic", priority: "MEDIUM", developer: "Sahil Das", deadline: "Dec 7, 2026", status: "IN_REVIEW" },
-  ],
-  changesRequested: [
-    { title: "Refactor review scoring service", priority: "CRITICAL", developer: "Karan Verma", deadline: "Dec 5, 2026", status: "CHANGES_REQUESTED" },
-  ],
-  completed: [
-    { title: "Seed roles and assignment reasons", priority: "LOW", developer: "Sahil Das", deadline: "Nov 28, 2026", status: "COMPLETED" },
-    { title: "Set up Sequelize migrations", priority: "LOW", developer: "Nisha Patel", deadline: "Nov 30, 2026", status: "COMPLETED" },
-  ],
-};
-type Task = {
+import {
+  getTasks,
+  type ApiTask,
+} from "@/api/create_task.api";
+
+import "./task-board.css";
+
+type BoardTask = {
+  id: number;
   title: string;
   priority: string;
   developer: string | null;
@@ -38,160 +26,554 @@ type Task = {
   status: string;
 };
 
-// --- Subcomponents ---
+/*
+ * This function converts the backend task into the shape
+ * required by the existing Task Board UI.
+ */
+function mapApiTaskToBoardTask(
+  task: ApiTask
+): BoardTask {
+  return {
+    id: task.id,
 
-function TaskCard({ title, priority, developer, deadline, onClick }: Task & { onClick?: () => void }) {
-  const getPriorityClass = (level: string) => {
+    title: task.title,
+
+    priority: task.priority,
+
+    developer:
+      task.developer?.name ?? null,
+
+    deadline: task.deadline
+      ? new Date(task.deadline).toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }
+        )
+      : "No deadline",
+
+    status: task.status,
+  };
+}
+
+function TaskCard({
+  title,
+  priority,
+  developer,
+  deadline,
+  onClick,
+}: BoardTask & {
+  onClick?: () => void;
+}) {
+  const getPriorityClass = (
+    level: string
+  ) => {
     switch (level) {
-      case "CRITICAL": return "priority-critical";
-      case "HIGH": return "priority-high";
-      case "MEDIUM": return "priority-medium";
-      default: return "priority-low";
+      case "CRITICAL":
+        return "priority-critical";
+
+      case "HIGH":
+        return "priority-high";
+
+      case "MEDIUM":
+        return "priority-medium";
+
+      default:
+        return "priority-low";
     }
   };
 
   return (
-    <div 
-      className={`task-card ${onClick ? "task-card-clickable" : ""}`} 
-      onClick={onClick}>
-    
-      <h3 className="task-title">{title}</h3>
+    <div
+      className={`task-card ${
+        onClick
+          ? "task-card-clickable"
+          : ""
+      }`}
+      onClick={onClick}
+    >
+      <h3 className="task-title">
+        {title}
+      </h3>
 
       <div className="task-meta">
-        <span className={`priority-badge-base ${getPriorityClass(priority)}`}>
+
+        <span
+          className={`priority-badge-base ${getPriorityClass(
+            priority
+          )}`}
+        >
           {priority}
         </span>
-        <span className="task-deadline">{deadline}</span>
+
+        <span className="task-deadline">
+          {deadline}
+        </span>
+
       </div>
 
       <div className="task-dev-wrapper">
+
         <div className="task-dev-avatar">
-          {developer ? developer.split(" ").map((name) => name[0]).join("") : "?"}
+          {developer
+            ? developer
+                .split(" ")
+                .map(
+                  (name) => name[0]
+                )
+                .join("")
+            : "?"}
         </div>
-        <span className="task-dev-name">{developer ?? "Unassigned"}</span>
+
+        <span className="task-dev-name">
+          {developer ??
+            "Unassigned"}
+        </span>
+
       </div>
     </div>
   );
 }
 
-function Column({ title, count, tasks, onTaskClick }: {
-  title: string; count: number; tasks: Task[]; onTaskClick?: (task: Task) => void;
+function Column({
+  title,
+  count,
+  tasks,
+  onTaskClick,
+}: {
+  title: string;
+  count: number;
+  tasks: BoardTask[];
+  onTaskClick?: (
+    task: BoardTask
+  ) => void;
 }) {
   return (
     <div className="kanban-column">
+
       <div className="column-header">
-        <h2 className="column-title">{title}</h2>
-        <span className="column-badge">{count}</span>
+
+        <h2 className="column-title">
+          {title}
+        </h2>
+
+        <span className="column-badge">
+          {count}
+        </span>
+
       </div>
 
       <div className="column-task-list">
+
         {tasks.map((task) => (
           <TaskCard
-            key={task.title}
+            key={task.id}
             {...task}
             onClick={
-              (title === "TODO" && !task.developer) ||
-              (title === "IN PROGRESS" && !!task.developer)
-                ? () => onTaskClick?.(task)
+              (
+                title === "TODO" &&
+                !task.developer
+              ) ||
+              (
+                title === "IN PROGRESS" &&
+                !!task.developer
+              )
+                ? () =>
+                    onTaskClick?.(
+                      task
+                    )
                 : undefined
             }
           />
         ))}
+
+        {tasks.length === 0 && (
+          <div className="text-sm text-gray-400">
+            No tasks
+          </div>
+        )}
+
       </div>
+
     </div>
   );
 }
 
-// --- Main Page Component ---
-
 export default function TaskBoard() {
-  const [showCreateTask, setShowCreateTask] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [selectedReassignTask, setSelectedReassignTask] = useState<Task | null>(null);
- 
+  const projectId = 1;
+
+  const [
+    showCreateTask,
+    setShowCreateTask,
+  ] = useState(false);
+
+  const [
+    selectedTask,
+    setSelectedTask,
+  ] = useState<BoardTask | null>(
+    null
+  );
+
+  const [
+    selectedReassignTask,
+    setSelectedReassignTask,
+  ] = useState<BoardTask | null>(
+    null
+  );
+
+  /*
+   * Fetch tasks from backend.
+   */
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      "tasks",
+      projectId,
+    ],
+
+    queryFn: () =>
+      getTasks(projectId),
+  });
+
+  /*
+   * Convert backend response
+   * into Task Board objects.
+   */
+  const boardTasks: BoardTask[] =
+    data?.data?.map(
+      mapApiTaskToBoardTask
+    ) ?? [];
+
+  /*
+   * Separate tasks by status.
+   */
+  const todoTasks =
+    boardTasks.filter(
+      (task) =>
+        task.status === "TODO"
+    );
+
+  const inProgressTasks =
+    boardTasks.filter(
+      (task) =>
+        task.status ===
+        "IN_PROGRESS"
+    );
+
+  const inReviewTasks =
+    boardTasks.filter(
+      (task) =>
+        task.status ===
+        "IN_REVIEW"
+    );
+
+  const changesRequestedTasks =
+    boardTasks.filter(
+      (task) =>
+        task.status ===
+        "CHANGES_REQUESTED"
+    );
+
+  const completedTasks =
+    boardTasks.filter(
+      (task) =>
+        task.status ===
+        "COMPLETED"
+    );
+
+  /*
+   * Number of open tasks.
+   */
+  const openTasks =
+    boardTasks.filter(
+      (task) =>
+        task.status !==
+        "COMPLETED"
+    ).length;
 
   return (
     <div className="board-container">
-      
+
       <Sidebar
         activePage="task-board"
         onPageChange={() => {}}
       />
 
       <main className="board-main">
+
         <div className="board-wrapper">
 
           {/* HEADER */}
+
           <div className="board-header">
+
             <div>
-              <h1 className="header-title">Task Board</h1>
-              <p className="header-subtitle">Payments Platform · 9 open tasks</p>
+
+              <h1 className="header-title">
+                Task Board
+              </h1>
+
+              <p className="header-subtitle">
+                Payments Platform ·{" "}
+                {openTasks} open tasks
+              </p>
+
             </div>
 
             <div className="header-actions">
+
               <button
                 type="button"
-                onClick={() => setShowCreateTask(true)}
+                onClick={() =>
+                  setShowCreateTask(
+                    true
+                  )
+                }
                 className="btn-new-task"
               >
                 + New Task
               </button>
 
-              <span className="admin-badge">ADMIN</span>
-              <div className="admin-avatar">AG</div>
+              <span className="admin-badge">
+                ADMIN
+              </span>
+
+              <div className="admin-avatar">
+                AG
+              </div>
+
             </div>
+
           </div>
 
           {/* FILTERS */}
+
           <div className="filters-wrapper">
-            <button type="button" className="btn-filter-active">
+
+            <button
+              type="button"
+              className="btn-filter-active"
+            >
               All Tasks
             </button>
-            <button type="button" className="btn-filter-inactive">
+
+            <button
+              type="button"
+              className="btn-filter-inactive"
+            >
               My Tasks
             </button>
-            <button type="button" className="btn-filter-inactive">
+
+            <button
+              type="button"
+              className="btn-filter-inactive"
+            >
               High Priority
             </button>
-            <button type="button" className="btn-filter-inactive">
+
+            <button
+              type="button"
+              className="btn-filter-inactive"
+            >
               Overdue
             </button>
+
           </div>
+
+          {/* LOADING */}
+
+          {isLoading && (
+            <div className="py-10 text-center text-sm text-gray-500">
+              Loading tasks...
+            </div>
+          )}
+
+          {/* ERROR */}
+
+          {isError && (
+            <div className="py-10 text-center">
+
+              <p className="text-sm text-red-600">
+                {error instanceof Error
+                  ? error.message
+                  : "Failed to load tasks"}
+              </p>
+
+              <button
+                type="button"
+                onClick={() =>
+                  refetch()
+                }
+                className="mt-3 rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold"
+              >
+                Try Again
+              </button>
+
+            </div>
+          )}
 
           {/* TASK BOARD */}
-          <div className="kanban-scroll-area">
-            <div className="kanban-container">
-              <Column title="TODO" count={tasks.todo.length} tasks={tasks.todo} onTaskClick={(task) => setSelectedTask(task)} />
-              <Column title="IN PROGRESS" count={tasks.inProgress.length} tasks={tasks.inProgress} onTaskClick={(task) => setSelectedReassignTask(task)} />
-              <Column title="IN REVIEW" count={tasks.inReview.length} tasks={tasks.inReview} />
-              <Column title="CHANGES REQUESTED" count={tasks.changesRequested.length} tasks={tasks.changesRequested} />
-              <Column title="COMPLETED" count={tasks.completed.length} tasks={tasks.completed} />
-            </div>
-          </div>
+
+          {!isLoading &&
+            !isError && (
+              <div className="kanban-scroll-area">
+
+                <div className="kanban-container">
+
+                  <Column
+                    title="TODO"
+                    count={
+                      todoTasks.length
+                    }
+                    tasks={
+                      todoTasks
+                    }
+                    onTaskClick={(
+                      task
+                    ) =>
+                      setSelectedTask(
+                        task
+                      )
+                    }
+                  />
+
+                  <Column
+                    title="IN PROGRESS"
+                    count={
+                      inProgressTasks.length
+                    }
+                    tasks={
+                      inProgressTasks
+                    }
+                    onTaskClick={(
+                      task
+                    ) =>
+                      setSelectedReassignTask(
+                        task
+                      )
+                    }
+                  />
+
+                  <Column
+                    title="IN REVIEW"
+                    count={
+                      inReviewTasks.length
+                    }
+                    tasks={
+                      inReviewTasks
+                    }
+                  />
+
+                  <Column
+                    title="CHANGES REQUESTED"
+                    count={
+                      changesRequestedTasks.length
+                    }
+                    tasks={
+                      changesRequestedTasks
+                    }
+                  />
+
+                  <Column
+                    title="COMPLETED"
+                    count={
+                      completedTasks.length
+                    }
+                    tasks={
+                      completedTasks
+                    }
+                  />
+
+                </div>
+
+              </div>
+            )}
 
         </div>
+
       </main>
 
       {/* CREATE TASK MODAL */}
+
       <CreateTask
-        open={showCreateTask}
-        onClose={() => setShowCreateTask(false)}
+        open={
+          showCreateTask
+        }
+        onClose={() =>
+          setShowCreateTask(
+            false
+          )
+        }
+        projectId={
+          projectId
+        }
+        onCreated={() => {
+          /*
+           * Re-fetch backend tasks
+           * after successful creation.
+           */
+          refetch();
+        }}
       />
 
-      {/* Assign task modal */}
+      {/* ASSIGN TASK MODAL */}
 
       <AssignTask
-        open={selectedTask !== null}
-        task={selectedTask}
-        onClose={() => setSelectedTask(null)}
+        open={
+          selectedTask !== null
+        }
+        task={
+          selectedTask
+            ? {
+                title:
+                  selectedTask.title,
+                priority:
+                  selectedTask.priority,
+                developer:
+                  selectedTask.developer,
+                deadline:
+                  selectedTask.deadline,
+              }
+            : null
+        }
+        onClose={() =>
+          setSelectedTask(
+            null
+          )
+        }
       />
 
-      {/* Reassign task modal */}
+      {/* REASSIGN TASK MODAL */}
 
       <ReassignTask
-        open={selectedReassignTask !== null}
-        task={selectedReassignTask}
-        onClose={() => setSelectedReassignTask(null)}
+        open={
+          selectedReassignTask !==
+          null
+        }
+        task={
+          selectedReassignTask
+            ? {
+                title:
+                  selectedReassignTask.title,
+                developer:
+                  selectedReassignTask.developer,
+                status:
+                  selectedReassignTask.status,
+              }
+            : null
+        }
+        onClose={() =>
+          setSelectedReassignTask(
+            null
+          )
+        }
       />
 
     </div>
