@@ -111,7 +111,7 @@ export default function TeamPage() {
       .toUpperCase(),
     name: user.fullName,
     email: user.email,
-    status: user.status === "ACTIVE" ? "ACTIVE" : "INACTIVE",
+    status: user.isActive ? "ACTIVE" : "INACTIVE",
     tasks: 0,
     score: "-",
     joined: new Date(user.createdAt).toLocaleDateString("en-US", {
