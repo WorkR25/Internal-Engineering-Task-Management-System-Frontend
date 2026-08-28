@@ -1,17 +1,40 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import Sidebar from "../../../components/admin-components/layout/sidebar";
 import CreateRoleModal from "../../../components/admin-components/role-components/create-role";
-import "./dashboard.css"; 
+import "./dashboard.css";
 
-const projects = [
-  { name: "Payments Platform", status: "ACTIVE", openTasks: 9, targetEnd: "Dec 12, 2026" },
-  { name: "Notification Service", status: "ACTIVE", openTasks: 6, targetEnd: "Nov 30, 2026" },
-  { name: "Internal Admin Console", status: "PLANNING", openTasks: 4, targetEnd: "Jan 15, 2027" },
-  { name: "Mobile API Gateway", status: "ACTIVE", openTasks: 11, targetEnd: "Dec 20, 2026" },
-  { name: "Analytics Pipeline", status: "COMPLETED", openTasks: 0, targetEnd: "Oct 5, 2026" },
-];
+type Project = {
+  id: number;
+  name: string;
+  status: "ACTIVE" | "PLANNING" | "COMPLETED";
+  openTasks: number;
+  targetEnd: string;
+};
+
+type ProjectsResponse = {
+  success: boolean;
+  message: string;
+  data: Project[];
+};
+
+async function getProjects(): Promise<ProjectsResponse> {
+  const response = await fetch("/backend/projects", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result?.message || "Failed to fetch projects");
+  }
+
+  return result;
+}
 
 const pendingReviews = [
   { initials: "RS", title: "Rework webhook retry backoff", developer: "Rhea Sen", submitted: "submitted 2h ago" },
@@ -21,18 +44,28 @@ const pendingReviews = [
 ];
 
 export default function Dashboard() {
+  const router = useRouter();
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
 
+  const {
+    data: projectsResponse,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+  });
+
+  const projects = projectsResponse?.data || [];
+  const previewProjects = projects.slice(0, 5); // dashboard shows a preview only
+
   const activeProjectsCount = projects.filter((p) => p.status === "ACTIVE").length;
-  const openTasksCount = projects.reduce((sum, p) => sum + p.openTasks, 0);
+  const openTasksCount = projects.reduce((sum, p) => sum + (p.openTasks ?? 0), 0);
   const pendingReviewsCount = pendingReviews.length;
 
   return (
     <main className="dashboard-container">
-      <Sidebar 
-        activePage="dashboard"
-        onPageChange={() => {}}
-      />
+      <Sidebar activePage="dashboard" onPageChange={() => {}} />
 
       <section className="main-section">
         {/* Header */}
@@ -58,7 +91,6 @@ export default function Dashboard() {
 
         {/* Main Content */}
         <div className="content-wrapper">
-          
           {/* Stats Grid */}
           <div className="stats-grid">
             <div className="stat-card">
@@ -81,14 +113,13 @@ export default function Dashboard() {
 
             <div className="stat-card">
               <p className="stat-title">ON-TIME DELIVERY</p>
-              <p className="stat-value">92%</p>      {/* hard coded */}
-              <p className="stat-trend-positive">+4% vs last sprint</p>       {/* hard coded */}
+              <p className="stat-value">92%</p> {/* hard coded */}
+              <p className="stat-trend-positive">+4% vs last sprint</p> {/* hard coded */}
             </div>
           </div>
 
           {/* Bottom Grid: Projects & Reviews */}
           <div className="bottom-grid">
-            
             {/* Projects Table */}
             <section className="section-card">
               <div className="section-header">
@@ -96,38 +127,57 @@ export default function Dashboard() {
                   <h2 className="section-title">Projects</h2>
                   <p className="section-subtitle">{projects.length} total · sorted by target end date</p>
                 </div>
-                <button type="button" className="btn-outline">
+                <button
+                  type="button"
+                  className="btn-outline"
+                  onClick={() => router.push("/admin/projects-admin/project")}
+                >
                   View all
                 </button>
               </div>
 
-              {/* <div className="table-header-row">
-                <span>PROJECT</span>
-                <span>STATUS</span>
-                <span>OPEN TASKS</span>
-                <span>TARGET END</span>
-              </div> */}
+              {isLoading && (
+                <p className="px-5 py-4 text-xs text-gray-400">Loading projects...</p>
+              )}
 
-              {projects.map((project) => (
-                <div key={project.name} className="table-row">
-                  <span className="project-name">{project.name}</span>
-                  <span>
-                    <span
-                      className={`status-badge-base ${
-                        project.status === "ACTIVE"
-                          ? "status-active"
-                          : project.status === "COMPLETED"
-                          ? "status-completed"
-                          : "status-planning"
-                      }`}
-                    >
-                      {project.status}
+              {!isLoading && error && (
+                <p className="px-5 py-4 text-xs text-red-500">{(error as Error).message}</p>
+              )}
+
+              {!isLoading && !error && previewProjects.length === 0 && (
+                <p className="px-5 py-4 text-xs text-gray-400">No projects found.</p>
+              )}
+
+              {!isLoading &&
+                !error &&
+                previewProjects.map((project) => (
+                  <div key={project.id} className="table-row">
+                    <span className="project-name">{project.name}</span>
+                    <span>
+                      <span
+                        className={`status-badge-base ${
+                          project.status === "ACTIVE"
+                            ? "status-active"
+                            : project.status === "COMPLETED"
+                            ? "status-completed"
+                            : "status-planning"
+                        }`}
+                      >
+                        {project.status}
+                      </span>
                     </span>
-                  </span>
-                  <span className="table-text">{project.openTasks}</span>
-                  <span className="table-text">{project.targetEnd}</span>
-                </div>
-              ))}
+                    <span className="table-text">{project.openTasks ?? 0}</span>
+                    <span className="table-text">
+                      {project.targetEnd
+                        ? new Date(project.targetEnd).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })
+                        : "-"}
+                    </span>
+                  </div>
+                ))}
             </section>
 
             {/* Pending Reviews List */}
@@ -156,15 +206,14 @@ export default function Dashboard() {
                 </div>
               ))}
             </section>
-
           </div>
         </div>
       </section>
 
       {/* Role Creation Modal */}
-      <CreateRoleModal 
-        isOpen={isRoleModalOpen} 
-        onClose={() => setIsRoleModalOpen(false)} 
+      <CreateRoleModal
+        isOpen={isRoleModalOpen}
+        onClose={() => setIsRoleModalOpen(false)}
       />
     </main>
   );
