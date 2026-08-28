@@ -5,58 +5,56 @@ import { useQuery } from "@tanstack/react-query";
 import Sidebar from "@/components/admin-components/layout/sidebar";
 import CreateProject from "@/components/admin-components/project-components/create-project";
 import ProjectDetail from "@/components/admin-components/project-components/project-detail";
-import { getAllProjects } from "@/api/create-project.api";
 import "./project.css";
-
-type Member = {
-  initials: string;
-  name: string;
-  focus: string;
-  joined: string;
-};
-
-type RecentTask = {
-  title: string;
-  status: string;
-  assignee: string;
-  statusColor: string;
-};
 
 type Project = {
   id: number;
   name: string;
-  status: "PLANNING" | "ACTIVE" | "COMPLETED" | "ARCHIVED";
-  openTasks?: number;
-  description: string | null;
-  startDate: string | null;
-  targetEndDate: string | null;
-  createdBy: string;
-  completed: number;
-  inReview: number;
-  members: Member[];
-  recentTasks: RecentTask[];
+  status: "ACTIVE" | "PLANNING" | "COMPLETED";
+  openTasks: number;
+  targetEnd: string;
 };
 
+type ProjectsResponse = {
+  success: boolean;
+  message: string;
+  data: Project[];
+};
+
+async function getProjects(): Promise<ProjectsResponse> {
+  const response = await fetch("/backend/projects", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result?.message || "Failed to fetch projects");
+  }
+
+  return result;
+}
+
 export default function ProjectsPage() {
-  const [selectedProject, setSelectedProject] =
-    useState<Project | null>(null);
+  const [selectedProjectId, setSelectedProjectId] =
+    useState<number | null>(null);
 
   const [isCreateProjectOpen, setIsCreateProjectOpen] =
     useState(false);
 
   const {
-    data,
+    data: projectsResponse,
     isLoading,
-    isError,
     error,
   } = useQuery({
     queryKey: ["projects"],
-    queryFn: getAllProjects,
+    queryFn: getProjects,
   });
 
-  const projects: Project[] = data?.data ?? [];
+  const projects = projectsResponse?.data || [];
 
-  if (selectedProject) {
+  if (selectedProjectId !== null) {
     return (
       <div className="projects-container">
         <Sidebar
@@ -66,8 +64,8 @@ export default function ProjectsPage() {
 
         <main className="main-content">
           <ProjectDetail
-            project={selectedProject}
-            onBack={() => setSelectedProject(null)}
+            projectId={selectedProjectId}
+            onBack={() => setSelectedProjectId(null)}
           />
         </main>
       </div>
@@ -115,17 +113,15 @@ export default function ProjectsPage() {
         <div className="projects-body">
           <div className="projects-table-card">
             {isLoading ? (
-              <div className="projects-loading">
+              <div className="projects-empty-state">
                 Loading projects...
               </div>
-            ) : isError ? (
-              <div className="projects-error">
-                {error instanceof Error
-                  ? error.message
-                  : "Failed to load projects"}
+            ) : error ? (
+              <div className="projects-empty-state">
+                {error.message}
               </div>
             ) : projects.length === 0 ? (
-              <div className="projects-empty">
+              <div className="projects-empty-state">
                 No projects found.
               </div>
             ) : (
@@ -144,7 +140,7 @@ export default function ProjectsPage() {
                     <tr
                       key={project.id}
                       onClick={() =>
-                        setSelectedProject(project)
+                        setSelectedProjectId(project.id)
                       }
                       className="projects-table-row"
                     >
@@ -167,9 +163,9 @@ export default function ProjectsPage() {
                       </td>
 
                       <td>
-                        {project.targetEndDate
+                        {project.targetEnd
                           ? new Date(
-                              project.targetEndDate
+                              project.targetEnd
                             ).toLocaleDateString("en-US", {
                               month: "short",
                               day: "numeric",
