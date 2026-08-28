@@ -8,7 +8,7 @@ export interface ProjectMember {
 }
 
 export interface Developer {
-  id: string;
+  id: number;
   fullName: string;
   email: string;
   roleId: string;
