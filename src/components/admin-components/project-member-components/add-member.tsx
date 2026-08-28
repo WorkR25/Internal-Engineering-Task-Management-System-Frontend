@@ -286,7 +286,7 @@ export default function AddMember({
                       <div className="developer-info">
 
                         <p className="developer-name">
-                          {developer.fullName}
+                          {developer.fullName }
                         </p>
 
                         <p className="developer-email">

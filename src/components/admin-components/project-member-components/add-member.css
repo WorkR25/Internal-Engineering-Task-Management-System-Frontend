@@ -57,7 +57,7 @@
 }
 
 .developer-info {
-  @apply flex min-w-0 items-center gap-3;
+  @apply flex min-w-0 items-center gap-3 text-black;
 }
 
 .developer-avatar {
@@ -71,7 +71,9 @@
 .developer-name {
   @apply truncate text-sm font-semibold text-slate-900;
 }
-
+.developer-email {
+  @apply truncate text-sm text-slate-500;
+}
 .developer-meta {
   @apply mt-1 truncate text-xs text-slate-500;
 }

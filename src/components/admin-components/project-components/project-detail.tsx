@@ -1,9 +1,13 @@
 "use client";
-
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import AddMember from "@/components/admin-components/project-member-components/add-member";
-import { getProjectMembers,ProjectMember} from "@/api/project-member.api";
+import {
+  getProjectMembers,
+  removeProjectMember,
+  ProjectMember,
+} from "@/api/project-member.api";
 
 import "./project-detail.css";
 
@@ -41,15 +45,20 @@ type EditProjectData = {
 async function getProjectById(
   projectId: number
 ): Promise<ProjectResponse> {
-  const response = await fetch(`/backend/projects/${projectId}`, {
-    method: "GET",
-    credentials: "include",
-  });
+  const response = await fetch(
+    `/backend/projects/${projectId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
 
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result?.message || "Failed to fetch project");
+    throw new Error(
+      result?.message || "Failed to fetch project"
+    );
   }
 
   return result;
@@ -127,7 +136,7 @@ function getInitials(
 }
 
 function getMemberName(member: ProjectMember) {
-  return member.fullName?.trim() || "Unknown Developer";
+  return member.user?.fullName?.trim() || "Unknown Developer";
 }
 
 function formatDate(date?: string) {
@@ -159,7 +168,11 @@ function formatDateForInput(date?: string) {
     return "";
   }
 
-  return parsedDate.toISOString().slice(0, 10);
+  try {
+    return parsedDate.toISOString().slice(0, 10);
+  } catch {
+    return "";
+  }
 }
 
 export default function ProjectDetail({
@@ -226,6 +239,16 @@ export default function ProjectDetail({
     },
   });
 
+   const removeMemberMutation = useMutation({
+    mutationFn: (userId: number) =>
+      removeProjectMember(projectId, userId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["project-members", projectId],
+      });
+    },
+  });
+
   if (isProjectLoading) {
     return (
       <div className="project-detail-container">
@@ -239,10 +262,16 @@ export default function ProjectDetail({
   if (projectError) {
     return (
       <div className="project-detail-container">
-        <BackButton onBack={onBack} />
+        <button
+          type="button"
+          onClick={onBack}
+          className="project-detail-back"
+        >
+          ← Back to Projects
+        </button>
 
         <div className="project-detail-error">
-          {getErrorMessage(projectError)}
+          {projectError.message}
         </div>
       </div>
     );
@@ -253,7 +282,13 @@ export default function ProjectDetail({
   if (!project) {
     return (
       <div className="project-detail-container">
-        <BackButton onBack={onBack} />
+        <button
+          type="button"
+          onClick={onBack}
+          className="project-detail-back"
+        >
+          ← Back to Projects
+        </button>
 
         <div className="project-detail-error">
           Project not found.
@@ -262,7 +297,7 @@ export default function ProjectDetail({
     );
   }
 
-  const members = membersResponse?.data ?? [];
+  const members = membersResponse?.data || [];
 
   const openEditProject = () => {
     setEditProjectData({
@@ -372,28 +407,230 @@ export default function ProjectDetail({
       </div>
 
       <div className="project-detail-body">
-        <ProjectOverview project={project} />
+        <div className="project-detail-meta-card">
+          <p className="project-detail-description">
+            {project.description || "No description available."}
+          </p>
 
-        <ProjectStats
-          project={project}
-          memberCount={members.length}
-          isMembersLoading={isMembersLoading}
-        />
+          <div className="project-detail-meta">
+            <p>
+              Started{" "}
+              <span>
+                {formatDate(project.startDate)}
+              </span>
+            </p>
+
+            <p>
+              Target End{" "}
+              <span>
+                {formatDate(project.targetEndDate)}
+              </span>
+            </p>
+
+            <p>
+              Created by{" "}
+              <span>
+                {project.createdBy || "-"}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div className="project-detail-stats">
+          <div className="project-detail-stat-card">
+            <h3>
+              Open Tasks
+            </h3>
+
+            <p>
+              {project.openTasks ?? 0}
+            </p>
+          </div>
+
+          <div className="project-detail-stat-card">
+            <h3>
+              In Review
+            </h3>
+
+            <p>
+              {project.inReview ?? 0}
+            </p>
+          </div>
+
+          <div className="project-detail-stat-card">
+            <h3>
+              Completed
+            </h3>
+
+            <p>
+              {project.completed ?? 0}
+            </p>
+          </div>
+
+          <div className="project-detail-stat-card">
+            <h3>
+              Members
+            </h3>
+
+            <p>
+              {isMembersLoading
+                ? "..."
+                : members.length}
+            </p>
+          </div>
+        </div>
 
         <div className="project-detail-bottom">
-          <MembersSection
-            members={members}
-            isLoading={isMembersLoading}
-            error={membersError}
-          />
+          <div className="project-detail-table-card">
+            <div className="project-detail-card-header">
+              <h2>
+                Members
+              </h2>
 
-          <RecentTasks />
+              <p>
+                {members.length} active · removal preserves
+                membership history
+              </p>
+            </div>
+
+            {membersError ? (
+              <div className="project-detail-no-tasks">
+                {membersError.message}
+              </div>
+            ) : isMembersLoading ? (
+              <div className="project-detail-no-tasks">
+                Loading members...
+              </div>
+            ) : members.length === 0 ? (
+              <div className="project-detail-no-tasks">
+                No members added to this project yet.
+              </div>
+            ) : (
+              <div className="project-detail-table-scroll">
+                <table className="project-detail-members-table">
+                  <thead>
+                    <tr>
+                      <th>
+                        Developer
+                      </th>
+
+                      <th>
+                        Role
+                      </th>
+
+                      <th>
+                        Joined
+                      </th>
+
+                      <th></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {members.map((member) => {
+                      const memberName =
+                        getMemberName(member);
+
+                      return (
+                        <tr
+                          key={
+                            member.id ||
+                            member.userId
+                          }
+                        >
+                          <td>
+                            <div className="project-detail-member">
+                              <div className="project-detail-member-avatar">
+                                {getInitials(
+                                  memberName
+                                )}
+                              </div>
+
+                              <div className="flex flex-col">
+                                <span className="font-semibold text-slate-900">
+                                  {memberName}
+                                </span>
+
+                                <small className="text-slate-500">{member.user?.email || "-"}</small>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td>
+                            {member.role || "DEVELOPER"}
+                          </td>
+
+                          <td>
+                            {formatDate(
+                              member.joinedAt
+                            )}
+                          </td>
+
+                                                    <td className="project-detail-remove-cell">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeMemberMutation.mutate(
+                                  member.userId
+                                )
+                              }
+                              disabled={
+                                removeMemberMutation.isPending &&
+                                removeMemberMutation.variables ===
+                                  member.userId
+                              }
+                              className="project-detail-remove-button"
+                            >
+                              {removeMemberMutation.isPending &&
+                              removeMemberMutation.variables ===
+                                member.userId
+                                ? "Removing..."
+                                : "Remove"}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          <div className="project-detail-tasks-card">
+            <div className="project-detail-card-header project-detail-card-header-flex">
+              <div>
+                <h2>
+                  Recent Tasks
+                </h2>
+
+                <p>
+                  Latest activity
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="project-detail-outline-button"
+              >
+                Open Board
+              </button>
+            </div>
+
+            <div className="project-detail-task-list">
+              <p className="project-detail-no-tasks">
+                No recent tasks.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       <AddMember
         isOpen={isAddMemberOpen}
-        onClose={() => setIsAddMemberOpen(false)}
+        onClose={() =>
+          setIsAddMemberOpen(false)
+        }
         projectId={projectId}
         projectName={project.name}
       />
