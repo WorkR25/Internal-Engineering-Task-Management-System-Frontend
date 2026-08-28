@@ -41,7 +41,7 @@ export default function UpdatePassword({
     updatePasswordMutation.reset();
     onClose();
   };
-
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       <div className="w-full max-w-md rounded-lg bg-white shadow-xl">
