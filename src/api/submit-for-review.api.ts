@@ -23,26 +23,33 @@ export async function submitForReview(
       credentials: "include",
       body: JSON.stringify({
         prUrl: data.pullRequestUrl,
-        notes: data.notes,
+        notes: data.notes?.trim() || undefined,
       }),
     }
   );
 
-  const contentType = response.headers.get("content-type");
-
-  if (!contentType?.includes("application/json")) {
-    throw new Error(
-      `API returned HTML instead of JSON. Status: ${response.status}. Check API URL and backend route.`
-    );
-  }
-
-  const result = await response.json();
+  const contentType = response.headers.get("content-type") || "";
+  const result = contentType.includes("application/json")
+    ? await response.json()
+    : null;
 
   if (!response.ok) {
+    if (!result) {
+      throw new Error(
+        `Request failed with status ${response.status}. Check the API route and backend server.`
+      );
+    }
+
     throw new Error(
       result.message || "Failed to submit for review"
     );
   }
 
-  return result;
+  if (!result) {
+    throw new Error(
+      `API returned a non-JSON response. Status: ${response.status}`
+    );
+  }
+
+  return result as SubmitForReviewResponse;
 }
