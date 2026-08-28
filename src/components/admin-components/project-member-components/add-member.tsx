@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addProjectMember,
@@ -23,7 +23,7 @@ export default function AddMember({
   projectName,
 }: AddMemberProps) {
   const [search, setSearch] = useState("");
-  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -40,18 +40,57 @@ export default function AddMember({
   const {
     data: membersResponse,
     isLoading: membersLoading,
-    error: membersError,
   } = useQuery({
     queryKey: ["project-members", projectId],
     queryFn: () => getProjectMembers(projectId),
-    enabled: isOpen && !!projectId,
+    enabled: isOpen,
   });
 
+  const developers = useMemo(() => {
+    return (developersResponse?.data ?? []).filter(
+      (developer) =>
+        String(developer.roleId) === "2" &&
+        developer.isActive
+    );
+  }, [developersResponse]);
+
+  const members = useMemo(() => {
+    return membersResponse?.data ?? [];
+  }, [membersResponse]);
+
+  const availableDevelopers = useMemo(() => {
+    const memberIds = new Set(
+      members.map((member) => Number(member.userId))
+    );
+
+    const searchValue = search.trim().toLowerCase();
+
+    return developers.filter((developer) => {
+      if (memberIds.has(Number(developer.id))) {
+        return false;
+      }
+
+      if (!searchValue) {
+        return true;
+      }
+
+      return (
+        developer.fullName.toLowerCase().includes(searchValue) ||
+        developer.email.toLowerCase().includes(searchValue)
+      );
+    });
+  }, [developers, members, search]);
+
   const addMemberMutation = useMutation({
-    mutationFn: () =>
-      addProjectMember(projectId, {
-        userId: Number(selectedUserId),
-      }),
+    mutationFn: () => {
+      if (selectedUserId === null) {
+        throw new Error("Please select a developer");
+      }
+
+      return addProjectMember(projectId, {
+        userId: selectedUserId,
+      });
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -66,8 +105,8 @@ export default function AddMember({
         queryKey: ["projects"],
       });
 
-      setSelectedUserId("");
       setSearch("");
+      setSelectedUserId(null);
       onClose();
     },
   });
@@ -88,49 +127,41 @@ export default function AddMember({
     return null;
   }
 
-  const members = membersResponse?.data || [];
-
-  const developers =
-    developersResponse?.data?.filter(
-      (developer) =>
-        developer.roleId === "2" &&
-        developer.isActive !== false &&
-        !members.some(
-          (member) =>
-            Number(member.userId) === Number(developer.id)
-        )
-    ) || [];
-
-  const filteredDevelopers = developers.filter((developer) => {
-    const searchValue = search.trim().toLowerCase();
-
-    if (!searchValue) {
-      return true;
+  const getInitials = (name: string) => {
+    if (!name) {
+      return "DU";
     }
 
-    return (
-      developer.fullName.toLowerCase().includes(searchValue) ||
-      developer.email.toLowerCase().includes(searchValue)
-    );
-  });
+    return name
+      .trim()
+      .split(/\s+/)
+      .map((part) => part.charAt(0))
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  };
 
   const handleClose = () => {
-    setSelectedUserId("");
+    if (addMemberMutation.isPending) {
+      return;
+    }
+
     setSearch("");
+    setSelectedUserId(null);
     addMemberMutation.reset();
     onClose();
   };
 
   const handleSubmit = () => {
-    if (!selectedUserId) {
+    if (
+      selectedUserId === null ||
+      addMemberMutation.isPending
+    ) {
       return;
     }
 
     addMemberMutation.mutate();
   };
-
-  const isLoading =
-    developersLoading || membersLoading;
 
   return (
     <div className="modal-overlay">
@@ -152,7 +183,7 @@ export default function AddMember({
             type="button"
             onClick={handleClose}
             className="modal-close-btn"
-            aria-label="Close modal"
+            aria-label="Close"
           >
             ×
           </button>
@@ -163,86 +194,134 @@ export default function AddMember({
 
           <div className="form-group">
 
-            <label className="form-label">
+            <label
+              htmlFor="developer-search"
+              className="form-label"
+            >
               Search Developer
             </label>
 
             <input
+              id="developer-search"
               type="text"
               value={search}
               onChange={(event) => {
                 setSearch(event.target.value);
-                setSelectedUserId("");
+                setSelectedUserId(null);
               }}
-              placeholder="Search by name or email"
+              placeholder="Search developer by name or email"
               className="form-input"
               disabled={
-                isLoading ||
+                developersLoading ||
+                membersLoading ||
                 addMemberMutation.isPending
               }
             />
 
           </div>
 
-          <div className="form-group">
+          <div className="developer-section">
 
             <label className="form-label">
               Select Developer
             </label>
 
-            <select
-              value={selectedUserId}
-              onChange={(event) =>
-                setSelectedUserId(event.target.value)
-              }
-              className="form-input"
-              disabled={
-                isLoading ||
-                addMemberMutation.isPending
-              }
-            >
-              <option value="">
-                {isLoading
-                  ? "Loading developers..."
-                  : "Select developer"}
-              </option>
+            <div className="developer-list">
 
-              {filteredDevelopers.map((developer) => (
-                <option
-                  key={developer.id}
-                  value={developer.id}
-                >
-                  {developer.fullName} ({developer.email})
-                </option>
-              ))}
-            </select>
+              {developersLoading || membersLoading ? (
+
+                <div className="developer-empty">
+                  Loading developers...
+                </div>
+
+              ) : developersError ? (
+
+                <div className="developer-error">
+                  {developersError.message}
+                </div>
+
+              ) : availableDevelopers.length === 0 ? (
+
+                <div className="developer-empty">
+                  {search.trim()
+                    ? "No developer found."
+                    : "No developers available."}
+                </div>
+
+              ) : (
+
+                availableDevelopers.map((developer) => {
+
+                  const isSelected =
+                    selectedUserId === Number(developer.id);
+
+                  return (
+                    <label
+                      key={developer.id}
+                      className={`developer-option ${
+                        isSelected
+                          ? "developer-option-selected"
+                          : ""
+                      }`}
+                    >
+
+                      <input
+                        type="radio"
+                        name="developer"
+                        value={developer.id}
+                        checked={isSelected}
+                        onChange={() =>
+                          setSelectedUserId(
+                            Number(developer.id)
+                          )
+                        }
+                        className="developer-radio-input"
+                        disabled={addMemberMutation.isPending}
+                      />
+
+                      <div className="developer-avatar">
+                        {getInitials(developer.fullName)}
+                      </div>
+
+                      <div className="developer-info">
+
+                        <p className="developer-name">
+                          {developer.fullName}
+                        </p>
+
+                        <p className="developer-email">
+                          {developer.email}
+                        </p>
+
+                      </div>
+
+                      <span
+                        className={`developer-radio ${
+                          isSelected
+                            ? "developer-radio-selected"
+                            : ""
+                        }`}
+                      >
+                        {isSelected && (
+                          <span className="developer-radio-dot" />
+                        )}
+                      </span>
+
+                    </label>
+                  );
+                })
+
+              )}
+
+            </div>
 
           </div>
 
-          {developersError && (
-            <p className="text-sm text-red-600">
-              {developersError.message}
-            </p>
-          )}
-
-          {membersError && (
-            <p className="text-sm text-red-600">
-              {membersError.message}
-            </p>
-          )}
-
-          {!isLoading &&
-            !developersError &&
-            !membersError &&
-            filteredDevelopers.length === 0 && (
-              <p className="text-sm text-gray-500">
-                No developers available.
-              </p>
-            )}
-
           {addMemberMutation.isError && (
-            <p className="text-sm text-red-600">
-              {addMemberMutation.error.message}
+            <p className="form-error">
+              {addMemberMutation.error instanceof Error
+                ? addMemberMutation.error.message
+                : "Failed to add member"}
             </p>
           )}
 
@@ -264,7 +343,7 @@ export default function AddMember({
             onClick={handleSubmit}
             className="btn-submit"
             disabled={
-              !selectedUserId ||
+              selectedUserId === null ||
               addMemberMutation.isPending
             }
           >
