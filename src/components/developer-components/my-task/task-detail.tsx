@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import SubmitForReview from "../submit-for-review/submit-for-review";
 import "./task-detail.css";
 
 type TaskDetailProps = {
   task: {
+    id: number;
     title: string;
     project: string;
     priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -17,6 +20,18 @@ export default function TaskDetail({
   task,
   onBack,
 }: TaskDetailProps) {
+  const [isWorkStarted, setIsWorkStarted] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+
+  if (isSubmitModalOpen) {
+    return (
+      <SubmitForReview
+        task={{ ...task, attempt: task.submitted ? 2 : 1 }}
+        onClose={() => setIsSubmitModalOpen(false)}
+      />
+    );
+  }
+
   return (
     <section className="developer-task-detail-page">
 
@@ -249,7 +264,7 @@ export default function TaskDetail({
 
                   <p>
                     Left detailed feedback on the review. The main
-                    gap is that in-memory caching won't work once we
+                    gap is that in-memory caching won&apos;t work once we
                     scale past one instance.
                   </p>
 
@@ -346,7 +361,7 @@ export default function TaskDetail({
               </div>
 
               <div className="developer-feedback-text">
-                Good direction, but the in-memory cache won't survive
+                Good direction, but the in-memory cache won&apos;t survive
                 across service instances once we scale horizontally.
                 Please switch to a Redis-backed cache and add a test
                 for concurrent invalidation.
@@ -374,10 +389,21 @@ export default function TaskDetail({
 
               <button
                 type="button"
+                onClick={() => setIsWorkStarted(true)}
                 className="developer-start-work-button"
               >
-                Start Work
+                {isWorkStarted ? "Work In Progress" : "Start Work"}
               </button>
+
+              {isWorkStarted && (
+                <button
+                  type="button"
+                  onClick={() => setIsSubmitModalOpen(true)}
+                  className="developer-submit-review-button"
+                >
+                  Submit for Review
+                </button>
+              )}
 
             </div>
 

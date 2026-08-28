@@ -1,12 +1,13 @@
 export interface ProjectMember {
   id: number;
   userId: number;
-  fullName: string;
-  email: string;
   role: string;
   joinedAt: string;
+  user: {
+    fullName: string;
+    email: string;
+  };
 }
-
 export interface Developer {
   id: number;
   fullName: string;

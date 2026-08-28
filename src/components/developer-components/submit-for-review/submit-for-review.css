@@ -40,7 +40,7 @@
   @apply mt-0.5 text-[9px] text-gray-500;
 }
 
-.submit-review-critical {
+.submit-review-priority {
   @apply rounded-full bg-red-50 px-2.5 py-1 text-[8px] font-semibold text-red-500;
 }
 

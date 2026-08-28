@@ -1,12 +1,14 @@
 "use client";
-
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import AddMember from "@/components/admin-components/project-member-components/add-member";
 import {
   getProjectMembers,
+  removeProjectMember,
   ProjectMember,
 } from "@/api/project-member.api";
+
 import "./project-detail.css";
 
 type Project = {
@@ -134,14 +136,7 @@ function getInitials(
 }
 
 function getMemberName(member: ProjectMember) {
-  if (
-    member.fullName &&
-    typeof member.fullName === "string"
-  ) {
-    return member.fullName;
-  }
-
-  return "Unknown Developer";
+  return member.user?.fullName?.trim() || "Unknown Developer";
 }
 
 function formatDate(date?: string) {
@@ -173,7 +168,11 @@ function formatDateForInput(date?: string) {
     return "";
   }
 
-  return parsedDate.toISOString().slice(0, 10);
+  try {
+    return parsedDate.toISOString().slice(0, 10);
+  } catch {
+    return "";
+  }
 }
 
 export default function ProjectDetail({
@@ -236,6 +235,16 @@ export default function ProjectDetail({
 
       await queryClient.invalidateQueries({
         queryKey: ["projects"],
+      });
+    },
+  });
+
+   const removeMemberMutation = useMutation({
+    mutationFn: (userId: number) =>
+      removeProjectMember(projectId, userId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["project-members", projectId],
       });
     },
   });
@@ -497,80 +506,94 @@ export default function ProjectDetail({
                 No members added to this project yet.
               </div>
             ) : (
-              <table className="project-detail-members-table">
-                <thead>
-                  <tr>
-                    <th>
-                      Developer
-                    </th>
+              <div className="project-detail-table-scroll">
+                <table className="project-detail-members-table">
+                  <thead>
+                    <tr>
+                      <th>
+                        Developer
+                      </th>
 
-                    <th>
-                      Role
-                    </th>
+                      <th>
+                        Role
+                      </th>
 
-                    <th>
-                      Joined
-                    </th>
+                      <th>
+                        Joined
+                      </th>
 
-                    <th></th>
-                  </tr>
-                </thead>
+                      <th></th>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  {members.map((member) => {
-                    const memberName =
-                      getMemberName(member);
+                  <tbody>
+                    {members.map((member) => {
+                      const memberName =
+                        getMemberName(member);
 
-                    return (
-                      <tr
-                        key={
-                          member.id ||
-                          member.userId
-                        }
-                      >
-                        <td>
-                          <div className="project-detail-member">
-                            <div className="project-detail-member-avatar">
-                              {getInitials(
-                                memberName
-                              )}
+                      return (
+                        <tr
+                          key={
+                            member.id ||
+                            member.userId
+                          }
+                        >
+                          <td>
+                            <div className="project-detail-member">
+                              <div className="project-detail-member-avatar">
+                                {getInitials(
+                                  memberName
+                                )}
+                              </div>
+
+                              <div className="flex flex-col">
+                                <span className="font-semibold text-slate-900">
+                                  {memberName}
+                                </span>
+
+                                <small className="text-slate-500">{member.user?.email || "-"}</small>
+                              </div>
                             </div>
+                          </td>
 
-                            <div>
-                              <span>
-                                {memberName}
-                              </span>
+                          <td>
+                            {member.role || "DEVELOPER"}
+                          </td>
 
-                              <small>
-                                {member.email || "-"}
-                              </small>
-                            </div>
-                          </div>
-                        </td>
+                          <td>
+                            {formatDate(
+                              member.joinedAt
+                            )}
+                          </td>
 
-                        <td>
-                          {member.role || "DEVELOPER"}
-                        </td>
-
-                        <td>
-                          {formatDate(
-                            member.joinedAt
-                          )}
-                        </td>
-
-                        <td className="project-detail-remove-cell">
-                          <button
-                            type="button"
-                            className="project-detail-remove-button"
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                                                    <td className="project-detail-remove-cell">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeMemberMutation.mutate(
+                                  member.userId
+                                )
+                              }
+                              disabled={
+                                removeMemberMutation.isPending &&
+                                removeMemberMutation.variables ===
+                                  member.userId
+                              }
+                              className="project-detail-remove-button"
+                            >
+                              {removeMemberMutation.isPending &&
+                              removeMemberMutation.variables ===
+                                member.userId
+                                ? "Removing..."
+                                : "Remove"}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
 

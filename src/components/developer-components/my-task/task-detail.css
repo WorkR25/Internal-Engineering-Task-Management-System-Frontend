@@ -189,6 +189,10 @@
   @apply mt-3 w-full cursor-pointer rounded-md border-0 bg-[#5146e5] px-3 py-2.5 text-[10px] font-semibold text-white transition hover:bg-[#4338ca];
 }
 
+.developer-submit-review-button {
+  @apply mt-2 w-full cursor-pointer rounded-md border border-[#5146e5] bg-white px-3 py-2.5 text-[10px] font-semibold text-[#5146e5] transition hover:bg-[#eeedff];
+}
+
 .developer-activity-item {
   @apply relative flex items-start gap-2 pb-3;
 }
