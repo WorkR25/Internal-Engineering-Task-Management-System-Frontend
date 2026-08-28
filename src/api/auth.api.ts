@@ -61,6 +61,7 @@ export async function getCurrentUser(): Promise<CurrentUserResponse> {
 
   return result;
 }
+
 export interface LogoutResponse {
   success: boolean;
   message: string;
@@ -76,6 +77,37 @@ export async function logout(): Promise<LogoutResponse> {
 
   if (!response.ok) {
     throw new Error(result?.message || "Failed to logout");
+  }
+
+  return result;
+}
+
+export interface UpdatePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface UpdatePasswordResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function updatePassword(
+  data: UpdatePasswordRequest
+): Promise<UpdatePasswordResponse> {
+  const response = await fetch("/backend/auth/update-password", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result?.message || "Failed to update password");
   }
 
   return result;
