@@ -61,3 +61,22 @@ export async function getCurrentUser(): Promise<CurrentUserResponse> {
 
   return result;
 }
+export interface LogoutResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function logout(): Promise<LogoutResponse> {
+  const response = await fetch("/backend/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result?.message || "Failed to logout");
+  }
+
+  return result;
+}

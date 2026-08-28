@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AddMember from "@/components/admin-components/project-member-components/add-member";
-import {
-  getProjectMembers,
-  ProjectMember,
-} from "@/api/project-member.api";
+import { getProjectMembers,ProjectMember} from "@/api/project-member.api";
 
 import "./project-detail.css";
 
