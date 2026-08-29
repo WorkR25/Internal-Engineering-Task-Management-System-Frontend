@@ -6,11 +6,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { signIn } from "@/services/authApi";
-import { getCurrentUser } from "@/api/auth.api";
+import { getCurrentUser, signIn } from "@/services/authApi";
 import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/authSlice";
-import { ADMIN,DEVELOPER } from "@/constants/role.constant";
+import { ADMIN, DEVELOPER } from "@/constants/role.constant";
 import { Eye, EyeOff } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -44,9 +43,9 @@ export default function SignInPage() {
       const roleName = currentUserResult.data.role.name;
 
       if (roleName === ADMIN) {
-        router.push("/admin/dashboard-admin/dashboard");
+        router.push("/admin/dashboard");
       } else if (roleName === DEVELOPER) {
-        router.push("/developer/dashboard-developer/dashboard");
+        router.push("/developer/dashboard");
       } else {
         router.push("/");
       }
@@ -62,7 +61,11 @@ export default function SignInPage() {
       <div className={styles.leftPane}>
         <div>
           <h1 className={styles.brandTitle}>TaskReview</h1>
-          <p className={styles.subtitle}>Internal Engineering Task & Review System</p>
+
+          <p className={styles.subtitle}>
+            Internal Engineering Task & Review System
+          </p>
+
           <h2 className={styles.headline}>
             One source of truth for engineering work, from assignment to review.
           </h2>
@@ -70,6 +73,7 @@ export default function SignInPage() {
           <ul className={styles.featureList}>
             <li className={styles.featureItem}>
               <span className={styles.checkIcon}>✓</span>
+
               <span className={styles.featureText}>
                 Ownership, deadlines and submissions visible and auditable across every project.
               </span>
@@ -77,6 +81,7 @@ export default function SignInPage() {
 
             <li className={styles.featureItem}>
               <span className={styles.checkIcon}>✓</span>
+
               <span className={styles.featureText}>
                 Objective review scoring across six dimensions for every PR submission.
               </span>
@@ -84,6 +89,7 @@ export default function SignInPage() {
 
             <li className={styles.featureItem}>
               <span className={styles.checkIcon}>✓</span>
+
               <span className={styles.featureText}>
                 Full task activity history and developer performance analytics.
               </span>
@@ -91,7 +97,9 @@ export default function SignInPage() {
           </ul>
         </div>
 
-        <div className={styles.footerText}>© 2026 Internal Engineering Platform</div>
+        <div className={styles.footerText}>
+          © 2026 Internal Engineering Platform
+        </div>
       </div>
 
       <div className={styles.rightPane}>
@@ -108,7 +116,9 @@ export default function SignInPage() {
             noValidate
           >
             <div>
-              <label className={styles.inputLabel}>Email</label>
+              <label className={styles.inputLabel}>
+                Email
+              </label>
 
               <input
                 type="email"
@@ -118,12 +128,16 @@ export default function SignInPage() {
               />
 
               {errors.email && (
-                <p className={styles.signinError}>{errors.email.message}</p>
+                <p className={styles.signinError}>
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className={styles.inputLabel}>Password</label>
+              <label className={styles.inputLabel}>
+                Password
+              </label>
 
               <div className={styles.passwordWrapper}>
                 <input
@@ -135,21 +149,35 @@ export default function SignInPage() {
 
                 <button
                   type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
+                  onClick={() =>
+                    setShowPassword((prev) => !prev)
+                  }
                   className={styles.passwordToggle}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
               </div>
 
               {errors.password && (
-                <p className={styles.signinError}>{errors.password.message}</p>
+                <p className={styles.signinError}>
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
             {signInMutation.isError && (
-              <p className={styles.signinError}>{signInMutation.error.message}</p>
+              <p className={styles.signinError}>
+                {signInMutation.error.message}
+              </p>
             )}
 
             <button
@@ -157,7 +185,9 @@ export default function SignInPage() {
               className={styles.submitButton}
               disabled={signInMutation.isPending}
             >
-              {signInMutation.isPending ? "Signing in..." : "Sign In"}
+              {signInMutation.isPending
+                ? "Signing in..."
+                : "Sign In"}
             </button>
           </form>
 
@@ -167,12 +197,14 @@ export default function SignInPage() {
             </div>
 
             <div className={styles.dividerTextWrapper}>
-              <span className={styles.dividerText}>Need Access</span>
+              <span className={styles.dividerText}>
+                Need Access
+              </span>
             </div>
           </div>
 
           <p className={styles.helpText}>
-            Forgot your password or don't have an account yet?
+            Forgot your password or don&apos;t have an account yet?
             <br />
             Contact your workspace Admin to get provisioned.
           </p>
