@@ -6,11 +6,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { signIn } from "@/services/authApi";
-import { getCurrentUser } from "@/api/auth.api";
+import { getCurrentUser, signIn } from "@/services/authApi";
 import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/authSlice";
-import { ADMIN,DEVELOPER } from "@/constants/role.constant";
+import { ADMIN, DEVELOPER } from "@/constants/role.constant";
 import { Eye, EyeOff } from "lucide-react";
 import styles from "./page.module.css";
 
