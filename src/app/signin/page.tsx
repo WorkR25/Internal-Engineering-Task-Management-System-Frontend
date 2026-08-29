@@ -6,12 +6,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { signIn, getCurrentUser } from "../../api/auth.api";
-import { useAppDispatch } from "../../store/hooks";
-import { setUser } from "../../store/authSlice";
-import { ADMIN, DEVELOPER } from "../../contants/role.constant"; // Double-check spelling of "constants"
+import { signIn } from "@/services/authApi";
+import { getCurrentUser } from "@/api/auth.api";
+import { useAppDispatch } from "@/store/hooks";
+import { setUser } from "@/store/authSlice";
+import { ADMIN,DEVELOPER } from "@/constants/role.constant";
 import { Eye, EyeOff } from "lucide-react";
-import "./signin.css";
+import styles from "./page.module.css";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -37,7 +38,6 @@ export default function SignInPage() {
   const signInMutation = useMutation({
     mutationFn: signIn,
     onSuccess: async () => {
-      // signin response has no user data — must fetch it separately
       const currentUserResult = await getCurrentUser();
       dispatch(setUser(currentUserResult.data));
 
@@ -58,97 +58,120 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="signin-container">
-      <div className="left-pane">
+    <div className={styles.signinContainer}>
+      <div className={styles.leftPane}>
         <div>
-          <h1 className="brand-title">TaskReview</h1>
-          <p className="subtitle">Internal Engineering Task & Review System</p>
-          <h2 className="headline">
+          <h1 className={styles.brandTitle}>TaskReview</h1>
+          <p className={styles.subtitle}>Internal Engineering Task & Review System</p>
+          <h2 className={styles.headline}>
             One source of truth for engineering work, from assignment to review.
           </h2>
-          <ul className="feature-list">
-            <li className="feature-item">
-              <span className="check-icon">✓</span>
-              <span className="feature-text">
+
+          <ul className={styles.featureList}>
+            <li className={styles.featureItem}>
+              <span className={styles.checkIcon}>✓</span>
+              <span className={styles.featureText}>
                 Ownership, deadlines and submissions visible and auditable across every project.
               </span>
             </li>
-            <li className="feature-item">
-              <span className="check-icon">✓</span>
-              <span className="feature-text">
+
+            <li className={styles.featureItem}>
+              <span className={styles.checkIcon}>✓</span>
+              <span className={styles.featureText}>
                 Objective review scoring across six dimensions for every PR submission.
               </span>
             </li>
-            <li className="feature-item">
-              <span className="check-icon">✓</span>
-              <span className="feature-text">
+
+            <li className={styles.featureItem}>
+              <span className={styles.checkIcon}>✓</span>
+              <span className={styles.featureText}>
                 Full task activity history and developer performance analytics.
               </span>
             </li>
           </ul>
         </div>
-        <div className="footer-text">© 2026 Internal Engineering Platform</div>
+
+        <div className={styles.footerText}>© 2026 Internal Engineering Platform</div>
       </div>
 
-      <div className="right-pane">
-        <div className="form-container">
-          <h2 className="form-title">Sign in</h2>
-          <p className="form-description">
+      <div className={styles.rightPane}>
+        <div className={styles.formContainer}>
+          <h2 className={styles.formTitle}>Sign in</h2>
+
+          <p className={styles.formDescription}>
             Access is provisioned by your Admin. No public sign-up.
           </p>
 
-          <form className="form-wrapper" onSubmit={handleSubmit(handleSignIn)} noValidate>
+          <form
+            className={styles.formWrapper}
+            onSubmit={handleSubmit(handleSignIn)}
+            noValidate
+          >
             <div>
-              <label className="input-label">Email</label>
+              <label className={styles.inputLabel}>Email</label>
+
               <input
                 type="email"
                 placeholder="arijit.ganguly@company.com"
-                className="text-input"
+                className={styles.textInput}
                 {...register("email")}
               />
-              {errors.email && <p className="signin-error">{errors.email.message}</p>}
+
+              {errors.email && (
+                <p className={styles.signinError}>{errors.email.message}</p>
+              )}
             </div>
 
             <div>
-              <label className="input-label">Password</label>
-              <div className="relative">
+              <label className={styles.inputLabel}>Password</label>
+
+              <div className={styles.passwordWrapper}>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••••••"
-                  className="text-input pr-10"
+                  className={styles.textInput}
                   {...register("password")}
                 />
+
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  className={styles.passwordToggle}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              {errors.password && <p className="signin-error">{errors.password.message}</p>}
+
+              {errors.password && (
+                <p className={styles.signinError}>{errors.password.message}</p>
+              )}
             </div>
 
             {signInMutation.isError && (
-              <p className="signin-error">{signInMutation.error.message}</p>
+              <p className={styles.signinError}>{signInMutation.error.message}</p>
             )}
 
-            <button type="submit" className="submit-button" disabled={signInMutation.isPending}>
+            <button
+              type="submit"
+              className={styles.submitButton}
+              disabled={signInMutation.isPending}
+            >
               {signInMutation.isPending ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
-          <div className="divider-container">
-            <div className="divider-line-wrapper">
-              <div className="divider-line"></div>
+          <div className={styles.dividerContainer}>
+            <div className={styles.dividerLineWrapper}>
+              <div className={styles.dividerLine}></div>
             </div>
-            <div className="divider-text-wrapper">
-              <span className="divider-text">Need Access</span>
+
+            <div className={styles.dividerTextWrapper}>
+              <span className={styles.dividerText}>Need Access</span>
             </div>
           </div>
 
-          <p className="help-text">
+          <p className={styles.helpText}>
             Forgot your password or don't have an account yet?
             <br />
             Contact your workspace Admin to get provisioned.

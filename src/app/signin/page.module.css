@@ -1,0 +1,109 @@
+@reference "../globals.css";
+
+.signinContainer {
+  @apply flex min-h-screen bg-white font-sans;
+}
+
+.leftPane {
+  @apply hidden flex-col justify-between bg-[#1b1b3a] p-12 text-white lg:flex lg:w-1/2 lg:p-20;
+}
+
+.brandTitle {
+  @apply mb-16 text-2xl font-bold tracking-tight;
+}
+
+.subtitle {
+  @apply mb-4 text-xs font-bold uppercase tracking-widest text-gray-400;
+}
+
+.headline {
+  @apply mb-10 text-3xl font-bold leading-tight lg:text-4xl;
+}
+
+.featureList {
+  @apply space-y-6;
+}
+
+.featureItem {
+  @apply flex items-start;
+}
+
+.checkIcon {
+  @apply mr-4 mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-xs;
+}
+
+.featureText {
+  @apply text-sm leading-relaxed text-gray-300;
+}
+
+.footerText {
+  @apply text-sm text-gray-500;
+}
+
+.rightPane {
+  @apply flex w-full items-center justify-center p-8 lg:w-2/3;
+}
+
+.formContainer {
+  @apply w-full max-w-md;
+}
+
+.formTitle {
+  @apply mb-2 text-3xl font-extrabold text-gray-900;
+}
+
+.formDescription {
+  @apply mb-8 text-sm text-gray-500;
+}
+
+.formWrapper {
+  @apply space-y-5;
+}
+
+.inputLabel {
+  @apply mb-1 block text-sm font-semibold text-gray-900;
+}
+
+.textInput {
+  @apply w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition-all placeholder-gray-400 focus:border-transparent focus:ring-2 focus:ring-[#4f46e5];
+}
+
+.passwordWrapper {
+  @apply relative;
+}
+
+.passwordToggle {
+  @apply absolute right-3 top-1/2 -translate-y-1/2 text-gray-500;
+}
+
+.submitButton {
+  @apply mt-2 w-full rounded-lg bg-[#4f46e5] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-700;
+}
+
+.dividerContainer {
+  @apply relative mt-8;
+}
+
+.dividerLineWrapper {
+  @apply absolute inset-0 flex items-center;
+}
+
+.dividerLine {
+  @apply w-full border-t border-gray-200;
+}
+
+.dividerTextWrapper {
+  @apply relative flex justify-center text-xs;
+}
+
+.dividerText {
+  @apply bg-white px-4 font-semibold uppercase tracking-wider text-gray-400;
+}
+
+.helpText {
+  @apply mt-8 text-center text-sm leading-relaxed text-gray-500;
+}
+
+.signinError {
+  @apply mt-1 text-sm text-red-500;
+}
