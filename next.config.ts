@@ -1,5 +1,5 @@
 const nextConfig = {
-  allowedDevOrigins: ["192.168.0.101"],
+  allowedDevOrigins: ["192.168.0.103"],
 
   async rewrites() {
     return [
