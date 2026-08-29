@@ -47,37 +47,37 @@ export default function Sidebar({
     {
       label: "Dashboard",
       id: "dashboard",
-      href: "/admin?page=dashboard",
+      href: "/admin/dashboard",
     },
     {
       label: "Task Board",
       id: "task-board",
-      href: "/admin?page=task-board",
+      href: "/admin/task-board",
     },
     {
       label: "Task Detail Review",
       id: "task-detail-review",
-      href: "/admin?page=task-detail-review",
+      href: "/admin/task-detail-review",
     },
     {
       label: "Reviews",
       id: "reviews",
-      href: "/admin?page=reviews",
+      href: "/admin/reviews",
     },
     {
       label: "Team",
       id: "team",
-      href: "/admin?page=team",
+      href: "/admin/team",
     },
     {
       label: "Performance",
       id: "performance",
-      href: "/admin?page=performance",
+      href: "/admin/performance",
     },
     {
       label: "Projects",
       id: "projects",
-      href: "/admin?page=projects",
+      href: "/admin/projects",
     },
   ];
 
@@ -136,9 +136,7 @@ export default function Sidebar({
       setNewPassword("");
     } catch (error) {
       setPasswordError(
-        error instanceof Error
-          ? error.message
-          : "Failed to update password"
+        error instanceof Error ? error.message : "Failed to update password"
       );
     } finally {
       setIsUpdatingPassword(false);
@@ -256,9 +254,7 @@ export default function Sidebar({
                 <input
                   type="password"
                   value={oldPassword}
-                  onChange={(event) =>
-                    setOldPassword(event.target.value)
-                  }
+                  onChange={(event) => setOldPassword(event.target.value)}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#5146e5]"
                   placeholder="Enter old password"
                 />
@@ -272,9 +268,7 @@ export default function Sidebar({
                 <input
                   type="password"
                   value={newPassword}
-                  onChange={(event) =>
-                    setNewPassword(event.target.value)
-                  }
+                  onChange={(event) => setNewPassword(event.target.value)}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#5146e5]"
                   placeholder="Enter new password"
                 />

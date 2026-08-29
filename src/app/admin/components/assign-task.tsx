@@ -5,8 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getAllUsers } from "@/api/user.api";
-
+import { getAllUsers } from "@/services/userApi";
 type Task = {
   id?: number;
   title: string;

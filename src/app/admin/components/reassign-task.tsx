@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { getAllUsers } from "@/api/user.api";
+import { getAllUsers } from "@/services/userApi";
 
 type Developer = {
   id: string;

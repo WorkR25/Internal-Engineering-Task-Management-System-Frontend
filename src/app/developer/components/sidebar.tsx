@@ -24,17 +24,17 @@ export default function Sidebar({
     {
       label: "Dashboard",
       id: "dashboard",
-      href: "/developer/dashboard-developer/dashboard",
+      href: "/developer/dashboard",
     },
     {
       label: "My Tasks",
       id: "my-tasks",
-      href: "/developer/my-task/my-task",
+      href: "/developer/my-tasks",
     },
     {
       label: "Performance",
       id: "performance",
-      href: "/developer/performance-developer/performance",
+      href: "/developer/performance",
     },
   ];
 
