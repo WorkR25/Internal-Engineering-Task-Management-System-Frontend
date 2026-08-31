@@ -10,6 +10,7 @@ import { submitForReview } from "@/services/submitForReviewApi";
 interface SubmitForReviewProps {
   task: {
     id: number;
+    assignmentId: number;
     title: string;
     project: string;
     priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -102,6 +103,7 @@ export default function SubmitForReview({
   ) => {
     submitForReviewMutation.mutate({
       taskId: task.id,
+      assignmentId: task.assignmentId,
       pullRequestUrl: data.pullRequestUrl,
       notes: data.notes,
     });
@@ -133,7 +135,7 @@ export default function SubmitForReview({
 
                 <p className="mt-1 text-[10px] text-gray-500">
                   This will be Attempt {task.attempt ?? 1} — moves the task
-                  to IN_REVIEW
+                  to READY FOR REVIEW
                 </p>
               </div>
 

@@ -48,3 +48,27 @@ export async function getAllUsers(): Promise<User[]> {
 
   return response.data.data;
 }
+
+export interface UpdateUserRequest {
+  fullName?: string;
+  email?: string;
+  password?: string;
+}
+
+export interface UpdateUserResponse {
+  success: boolean;
+  message: string;
+  data: User;
+}
+
+export async function updateUser(
+  userId: string,
+  data: UpdateUserRequest
+): Promise<UpdateUserResponse> {
+  const response = await axiosInstance.patch<UpdateUserResponse>(
+    `/users/${userId}`,
+    data
+  );
+
+  return response.data;
+}

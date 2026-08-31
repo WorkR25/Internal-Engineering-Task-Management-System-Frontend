@@ -2,6 +2,7 @@ import axiosInstance from "@/configs/axios.config";
 
 export type SubmitForReviewRequest = {
   taskId: number;
+  assignmentId: number;
   pullRequestUrl: string;
   notes?: string;
 };
@@ -19,6 +20,7 @@ export async function submitForReview(
     await axiosInstance.post<SubmitForReviewResponse>(
       `/tasks/${data.taskId}/submissions`,
       {
+        assignmentId: data.assignmentId,
         prUrl: data.pullRequestUrl,
         notes: data.notes?.trim() || undefined,
       }

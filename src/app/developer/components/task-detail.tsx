@@ -6,6 +6,7 @@ import SubmitForReview from "./submit-for-review";
 type TaskDetailProps = {
   task: {
     id: number;
+    assignmentId: number;
     title: string;
     project: string;
     priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
