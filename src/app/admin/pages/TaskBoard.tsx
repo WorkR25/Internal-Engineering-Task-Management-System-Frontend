@@ -7,6 +7,7 @@ import CreateTask from "../components/CreateTask";
 import AssignTask from "../components/assign-task";
 import ReassignTask from "../components/reassign-task";
 import { getTasks, type ApiTask } from "@/services/taskApi";
+import { getProjects } from "@/services/projectApi";
 
 type BoardTask = {
   id: number;
@@ -15,9 +16,13 @@ type BoardTask = {
   developer: string | null;
   deadline: string;
   status: string;
+  projectName: string;
 };
 
-function mapApiTaskToBoardTask(task: ApiTask): BoardTask {
+function mapApiTaskToBoardTask(
+  task: ApiTask,
+  projectName: string
+): BoardTask {
   return {
     id: task.id,
     title: task.title,
@@ -31,6 +36,7 @@ function mapApiTaskToBoardTask(task: ApiTask): BoardTask {
         })
       : "No deadline",
     status: task.status,
+    projectName,
   };
 }
 
@@ -151,8 +157,26 @@ export default function TaskBoard() {
     queryFn: () => getTasks(projectId),
   });
 
+  const {
+    data: projectsResponse,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+  });
+
+  const projects = projectsResponse?.data ?? [];
+
   const tasks: BoardTask[] =
-    data?.data?.map(mapApiTaskToBoardTask) ?? [];
+    data?.data?.map((task) => {
+      const project = projects.find(
+        (project) => project.id === task.projectId
+      );
+
+      return mapApiTaskToBoardTask(
+        task,
+        project?.name ?? "Unknown Project"
+      );
+    }) ?? [];
 
   const todoTasks = tasks.filter(
     (task) => task.status === "TODO"
@@ -194,7 +218,7 @@ export default function TaskBoard() {
               </h1>
 
               <p className="mt-1 text-xs text-gray-500">
-                Payments Platform · {openTasks} open tasks
+                {openTasks} open tasks
               </p>
             </div>
 
@@ -314,7 +338,6 @@ export default function TaskBoard() {
       <CreateTask
         open={showCreateTask}
         onClose={() => setShowCreateTask(false)}
-        projectId={projectId}
         onCreated={() => {
           refetch();
         }}
@@ -329,6 +352,7 @@ export default function TaskBoard() {
                 priority: selectedTask.priority,
                 developer: selectedTask.developer,
                 deadline: selectedTask.deadline,
+                projectName: selectedTask.projectName,
               }
             : null
         }

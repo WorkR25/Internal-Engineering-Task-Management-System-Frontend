@@ -14,6 +14,7 @@ type Task = {
   priority: string;
   developer: string | null;
   deadline: string;
+  projectName: string;
 };
 
 type AssignTaskProps = {
@@ -84,15 +85,12 @@ export default function AssignTask({
       return;
     }
 
-    // Keep the existing assignment callback.
     onAssigned?.(selectedDeveloper.fullName);
 
-    // Show success using Sonner toast.
     toast.success("Task Assigned successfully", {
       description: `${task.title} has been assigned to ${selectedDeveloper.fullName}.`,
     });
 
-    // Close the assignment modal after the toast is triggered.
     setTimeout(() => {
       onClose();
     }, 500);
@@ -129,7 +127,7 @@ export default function AssignTask({
           </div>
 
           <div className="flex flex-wrap items-center gap-[5px] text-[9px] text-[#70798a]">
-            <span>Payments Platform</span>
+            <span>{task.projectName}</span>
 
             <span>·</span>
 

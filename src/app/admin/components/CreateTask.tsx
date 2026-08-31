@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,14 +10,15 @@ import {
   createTask,
   type CreateTaskRequest,
 } from "@/services/taskApi";
+import { getProjects } from "@/services/projectApi";
 
 const createTaskSchema = z.object({
   projectId: z
     .number({
-      error: "Project ID is required",
+      error: "Project is required",
     })
-    .int("Project ID must be a valid integer")
-    .positive("Project ID must be greater than 0"),
+    .int("Project must be valid")
+    .positive("Please select a project"),
 
   title: z
     .string()
@@ -69,14 +70,12 @@ type CreateTaskFormValues = z.infer<typeof createTaskSchema>;
 type CreateTaskProps = {
   open: boolean;
   onClose: () => void;
-  projectId: number;
   onCreated?: () => void;
 };
 
 export default function CreateTask({
   open,
   onClose,
-  projectId,
   onCreated,
 }: CreateTaskProps) {
   const {
@@ -87,7 +86,7 @@ export default function CreateTask({
   } = useForm<CreateTaskFormValues>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
-      projectId,
+      projectId: 0,
       title: "",
       description: "",
       acceptanceCriteria: "",
@@ -96,16 +95,30 @@ export default function CreateTask({
     },
   });
 
+  const {
+    data: projectsResponse,
+    isLoading: projectsLoading,
+    isError: projectsError,
+  } = useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+    enabled: open,
+  });
+
+  const projects = projectsResponse?.data ?? [];
+
   useEffect(() => {
-    reset({
-      projectId,
-      title: "",
-      description: "",
-      acceptanceCriteria: "",
-      priority: "HIGH",
-      deadline: "",
-    });
-  }, [projectId, reset]);
+    if (open) {
+      reset({
+        projectId: 0,
+        title: "",
+        description: "",
+        acceptanceCriteria: "",
+        priority: "HIGH",
+        deadline: "",
+      });
+    }
+  }, [open, reset]);
 
   const createTaskMutation = useMutation({
     mutationFn: (data: CreateTaskRequest) => createTask(data),
@@ -182,20 +195,41 @@ export default function CreateTask({
           <div className="space-y-4">
             <div>
               <label className="mb-1.5 block text-xs font-semibold text-gray-700">
-                Project ID
+                Project
               </label>
 
-              <input
-                type="number"
-                min="1"
-                step="1"
-                placeholder="Enter project ID"
-                disabled={createTaskMutation.isPending}
+              <select
+                disabled={
+                  createTaskMutation.isPending ||
+                  projectsLoading ||
+                  projects.length === 0
+                }
                 className="w-full rounded-md border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#5146e5] disabled:bg-gray-100"
                 {...register("projectId", {
                   valueAsNumber: true,
                 })}
-              />
+              >
+                <option value={0}>
+                  {projectsLoading
+                    ? "Loading projects..."
+                    : "Select a project"}
+                </option>
+
+                {projects.map((project) => (
+                  <option
+                    key={project.id}
+                    value={project.id}
+                  >
+                    {project.name}
+                  </option>
+                ))}
+              </select>
+
+              {projectsError && (
+                <p className="mt-1 text-xs text-red-600">
+                  Failed to load projects
+                </p>
+              )}
 
               {errors.projectId && (
                 <p className="mt-1 text-xs text-red-600">
