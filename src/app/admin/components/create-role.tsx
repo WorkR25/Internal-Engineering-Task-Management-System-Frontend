@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { createRole } from "@/services/roleApi";
 
 const createRoleSchema = z.object({
@@ -13,6 +14,7 @@ const createRoleSchema = z.object({
     .trim()
     .min(1, "Role name is required")
     .min(3, "Role name must be at least 3 characters"),
+
   description: z
     .string()
     .trim()
@@ -31,8 +33,6 @@ export default function CreateRoleModal({
   isOpen,
   onClose,
 }: CreateRoleModalProps) {
-  const [isSuccess, setIsSuccess] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -44,14 +44,23 @@ export default function CreateRoleModal({
 
   const createRoleMutation = useMutation({
     mutationFn: createRole,
-    onSuccess: () => {
-      setIsSuccess(true);
 
-      setTimeout(() => {
-        setIsSuccess(false);
-        reset();
-        onClose();
-      }, 2000);
+    onSuccess: (response) => {
+      // Success is now shown using Sonner toast
+      toast.success(
+        response?.message || "Role created successfully!"
+      );
+
+      reset();
+      onClose();
+    },
+
+    onError: (error) => {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to create role"
+      );
     },
   });
 
@@ -79,7 +88,10 @@ export default function CreateRoleModal({
   };
 
   const handleClose = () => {
-    setIsSuccess(false);
+    if (createRoleMutation.isPending) {
+      return;
+    }
+
     createRoleMutation.reset();
     reset();
     onClose();
@@ -88,6 +100,8 @@ export default function CreateRoleModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-sm">
       <div className="w-full max-w-lg overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+
+        {/* HEADER */}
         <div className="flex items-start justify-between border-b border-gray-100 px-6 py-6">
           <div>
             <h1 className="text-xl font-bold text-gray-900">
@@ -102,7 +116,8 @@ export default function CreateRoleModal({
           <button
             type="button"
             onClick={handleClose}
-            className="text-gray-400 transition-colors hover:text-gray-600"
+            disabled={createRoleMutation.isPending}
+            className="text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Close"
           >
             <svg
@@ -121,113 +136,93 @@ export default function CreateRoleModal({
           </button>
         </div>
 
-        {isSuccess ? (
-          <div className="my-6 flex flex-col items-center justify-center space-y-4 p-8">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
-              <svg
-                className="h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={3}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
+        {/* FORM */}
+        <form
+          onSubmit={handleSubmit(handleCreateRole)}
+          noValidate
+        >
+          <div className="space-y-5 p-6">
 
-            <h3 className="text-lg font-bold text-gray-900">
-              Role Created Successfully!
-            </h3>
-          </div>
-        ) : (
-          <form
-            onSubmit={handleSubmit(handleCreateRole)}
-            noValidate
-          >
-            <div className="space-y-5 p-6">
-              <div className="mb-4">
-                <label className="mb-1.5 block text-sm font-semibold text-black">
-                  Role Name
-                </label>
+            {/* ROLE NAME */}
+            <div className="mb-4">
+              <label className="mb-1.5 block text-sm font-semibold text-black">
+                Role Name
+              </label>
 
-                <input
-                  type="text"
-                  placeholder="e.g. Lead Engineer"
-                  aria-invalid={!!errors.roleName}
-                  className={`w-full rounded-lg border px-4 py-2.5 text-sm text-black outline-none transition-all focus:border-transparent focus:ring-2 ${
-                    errors.roleName
-                      ? "border-red-300 focus:ring-red-200"
-                      : "border-gray-200 focus:ring-[#4f46e5]"
-                  }`}
-                  {...register("roleName")}
-                />
+              <input
+                type="text"
+                placeholder="e.g. Lead Engineer"
+                disabled={createRoleMutation.isPending}
+                aria-invalid={!!errors.roleName}
+                className={`w-full rounded-lg border px-4 py-2.5 text-sm text-black outline-none transition-all focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-100 ${
+                  errors.roleName
+                    ? "border-red-300 focus:ring-red-200"
+                    : "border-gray-200 focus:ring-[#4f46e5]"
+                }`}
+                {...register("roleName")}
+              />
 
-                {errors.roleName && (
-                  <p className="mt-1.5 text-[11px] font-medium text-red-500">
-                    {errors.roleName.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="mb-1.5 block text-sm font-semibold text-black">
-                  Description
-                </label>
-
-                <textarea
-                  placeholder="Briefly describe the responsibilities..."
-                  rows={3}
-                  aria-invalid={!!errors.description}
-                  className={`w-full resize-none rounded-lg border px-4 py-2.5 text-sm text-black outline-none transition-all placeholder:text-gray-400 focus:border-transparent focus:ring-2 ${
-                    errors.description
-                      ? "border-red-300 focus:ring-red-200"
-                      : "border-gray-200 focus:ring-[#4f46e5]"
-                  }`}
-                  {...register("description")}
-                />
-
-                {errors.description && (
-                  <p className="mt-1.5 text-[11px] font-medium text-red-500">
-                    {errors.description.message}
-                  </p>
-                )}
-              </div>
-
-              {createRoleMutation.isError && (
+              {errors.roleName && (
                 <p className="mt-1.5 text-[11px] font-medium text-red-500">
-                  {createRoleMutation.error.message}
+                  {errors.roleName.message}
                 </p>
               )}
             </div>
 
-            <div className="flex items-center justify-end border-t border-gray-100 bg-gray-50/80 px-6 py-6">
-              <div className="flex items-center space-x-3">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  disabled={createRoleMutation.isPending}
-                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  Cancel
-                </button>
+            {/* DESCRIPTION */}
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-black">
+                Description
+              </label>
 
-                <button
-                  type="submit"
-                  disabled={createRoleMutation.isPending}
-                  className="rounded-lg bg-[#4f46e5] px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {createRoleMutation.isPending
-                    ? "Creating..."
-                    : "Create Role"}
-                </button>
-              </div>
+              <textarea
+                placeholder="Briefly describe the responsibilities..."
+                rows={3}
+                disabled={createRoleMutation.isPending}
+                aria-invalid={!!errors.description}
+                className={`w-full resize-none rounded-lg border px-4 py-2.5 text-sm text-black outline-none transition-all placeholder:text-gray-400 focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-100 ${
+                  errors.description
+                    ? "border-red-300 focus:ring-red-200"
+                    : "border-gray-200 focus:ring-[#4f46e5]"
+                }`}
+                {...register("description")}
+              />
+
+              {errors.description && (
+                <p className="mt-1.5 text-[11px] font-medium text-red-500">
+                  {errors.description.message}
+                </p>
+              )}
             </div>
-          </form>
-        )}
+
+          </div>
+
+          {/* FOOTER */}
+          <div className="flex items-center justify-end border-t border-gray-100 bg-gray-50/80 px-6 py-6">
+            <div className="flex items-center space-x-3">
+
+              <button
+                type="button"
+                onClick={handleClose}
+                disabled={createRoleMutation.isPending}
+                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                disabled={createRoleMutation.isPending}
+                className="rounded-lg bg-[#4f46e5] px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {createRoleMutation.isPending
+                  ? "Creating..."
+                  : "Create Role"}
+              </button>
+
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );

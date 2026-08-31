@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
 import {
   addProjectMember,
   getDevelopers,
@@ -91,7 +93,7 @@ export default function AddMember({
       });
     },
 
-    onSuccess: async () => {
+    onSuccess: async (response) => {
       await queryClient.invalidateQueries({
         queryKey: ["project-members", projectId],
       });
@@ -104,9 +106,21 @@ export default function AddMember({
         queryKey: ["projects"],
       });
 
+      toast.success(
+        response?.message || "Developer added to project successfully!"
+      );
+
       setSearch("");
       setSelectedUserId(null);
       onClose();
+    },
+
+    onError: (error) => {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to add member"
+      );
     },
   });
 
@@ -165,6 +179,8 @@ export default function AddMember({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4">
       <div className="w-full max-w-[580px] overflow-hidden rounded-xl bg-white shadow-2xl">
+
+        {/* HEADER */}
         <div className="flex items-start justify-between border-b border-slate-200 px-6 py-5">
           <div>
             <h2 className="text-xl font-semibold text-slate-900">
@@ -187,7 +203,10 @@ export default function AddMember({
           </button>
         </div>
 
+        {/* BODY */}
         <div className="px-6 py-6">
+
+          {/* SEARCH */}
           <div className="mb-5">
             <label
               htmlFor="developer-search"
@@ -214,26 +233,33 @@ export default function AddMember({
             />
           </div>
 
+          {/* SELECT DEVELOPER */}
           <div className="w-full">
             <label className="mb-3 block text-sm font-semibold text-slate-700">
               Select Developer
             </label>
 
             <div className="max-h-[250px] space-y-2 overflow-y-auto">
+
               {developersLoading || membersLoading ? (
                 <div className="py-8 text-center text-sm text-slate-500">
                   Loading developers...
                 </div>
+
               ) : developersError ? (
                 <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
-                  {developersError.message}
+                  {developersError instanceof Error
+                    ? developersError.message
+                    : "Failed to load developers."}
                 </div>
+
               ) : availableDevelopers.length === 0 ? (
                 <div className="py-8 text-center text-sm text-slate-500">
                   {search.trim()
                     ? "No developer found."
                     : "No developers available."}
                 </div>
+
               ) : (
                 availableDevelopers.map((developer) => {
                   const isSelected =
@@ -291,19 +317,14 @@ export default function AddMember({
                   );
                 })
               )}
+
             </div>
           </div>
-
-          {addMemberMutation.isError && (
-            <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
-              {addMemberMutation.error instanceof Error
-                ? addMemberMutation.error.message
-                : "Failed to add member"}
-            </p>
-          )}
         </div>
 
+        {/* FOOTER */}
         <div className="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
+
           <button
             type="button"
             onClick={handleClose}
@@ -326,6 +347,7 @@ export default function AddMember({
               ? "Adding..."
               : "Add to Project"}
           </button>
+
         </div>
       </div>
     </div>
