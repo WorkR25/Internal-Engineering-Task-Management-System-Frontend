@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
 import {
   createProject,
   type CreateProjectRequest,
@@ -17,13 +18,18 @@ const createProjectSchema = z
       .trim()
       .min(1, "Project name is required")
       .min(3, "Project name must be at least 3 characters"),
+
     description: z
       .string()
       .trim()
       .min(1, "Description is required")
       .min(10, "Description must be at least 10 characters"),
+
     startDate: z.string().min(1, "Start date is required"),
-    targetEndDate: z.string().min(1, "Target end date is required"),
+
+    targetEndDate: z
+      .string()
+      .min(1, "Target end date is required"),
   })
   .refine(
     (data) =>
@@ -36,7 +42,9 @@ const createProjectSchema = z
     }
   );
 
-type CreateProjectFormValues = z.infer<typeof createProjectSchema>;
+type CreateProjectFormValues = z.infer<
+  typeof createProjectSchema
+>;
 
 type CreateProjectProps = {
   open: boolean;
@@ -47,8 +55,6 @@ export default function CreateProject({
   open,
   onClose,
 }: CreateProjectProps) {
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
   const queryClient = useQueryClient();
 
   const {
@@ -58,9 +64,16 @@ export default function CreateProject({
     reset,
   } = useForm<CreateProjectFormValues>({
     resolver: zodResolver(createProjectSchema),
+
+    defaultValues: {
+      projectName: "",
+      description: "",
+      startDate: "",
+      targetEndDate: "",
+    },
   });
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (payload: CreateProjectRequest) =>
       createProject(payload),
 
@@ -69,21 +82,27 @@ export default function CreateProject({
         queryKey: ["projects"],
       });
 
-      setSuccessMessage(
+      toast.success(
         response?.message || "Project created successfully!"
       );
 
+      reset();
+
       setTimeout(() => {
-        setSuccessMessage(null);
-        reset();
         onClose();
       }, 1500);
+    },
+
+    onError: (mutationError) => {
+      toast.error(
+        mutationError instanceof Error
+          ? mutationError.message
+          : "Failed to create project"
+      );
     },
   });
 
   const onSubmit = (data: CreateProjectFormValues) => {
-    setSuccessMessage(null);
-
     mutate({
       name: data.projectName,
       description: data.description,
@@ -97,7 +116,6 @@ export default function CreateProject({
       return;
     }
 
-    setSuccessMessage(null);
     reset();
     onClose();
   };
@@ -108,7 +126,8 @@ export default function CreateProject({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 px-4">
-      <div className="w-full max-w-[360px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+      <div className="w-full max-w-[650px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+        {/* HEADER */}
         <div className="border-b border-gray-200 px-5 py-4">
           <div className="flex items-start justify-between">
             <div>
@@ -132,11 +151,13 @@ export default function CreateProject({
           </div>
         </div>
 
+        {/* FORM */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           noValidate
           className="px-5 py-4"
         >
+          {/* PROJECT NAME */}
           <div className="mb-4">
             <label
               htmlFor="projectName"
@@ -161,6 +182,7 @@ export default function CreateProject({
             )}
           </div>
 
+          {/* DESCRIPTION */}
           <div className="mb-4">
             <label
               htmlFor="description"
@@ -185,7 +207,9 @@ export default function CreateProject({
             )}
           </div>
 
+          {/* DATES */}
           <div className="grid grid-cols-2 gap-3">
+            {/* START DATE */}
             <div>
               <label
                 htmlFor="startDate"
@@ -209,6 +233,7 @@ export default function CreateProject({
               )}
             </div>
 
+            {/* TARGET END DATE */}
             <div>
               <label
                 htmlFor="targetEndDate"
@@ -233,26 +258,14 @@ export default function CreateProject({
             </div>
           </div>
 
-          {successMessage && (
-            <p className="mt-4 flex items-center justify-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-center text-sm font-medium text-green-700">
-              {successMessage}
-            </p>
-          )}
-
-          {error && (
-            <p className="mt-3 text-xs text-red-600">
-              {error instanceof Error
-                ? error.message
-                : "Failed to create project"}
-            </p>
-          )}
-
+          {/* FOOTER */}
           <div className="mt-4 flex items-center justify-between border-t border-gray-200 bg-gray-50 px-0 py-3">
             <p className="text-[9px] text-gray-400">
               You&apos;ll add team members after creating
             </p>
 
             <div className="flex gap-2">
+              {/* CANCEL */}
               <button
                 type="button"
                 onClick={handleClose}
@@ -262,12 +275,15 @@ export default function CreateProject({
                 Cancel
               </button>
 
+              {/* CREATE */}
               <button
                 type="submit"
                 disabled={isPending}
                 className="rounded-md bg-indigo-600 px-3 py-1.5 text-[10px] font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isPending ? "Creating..." : "Create Project"}
+                {isPending
+                  ? "Creating..."
+                  : "Create Project"}
               </button>
             </div>
           </div>

@@ -5,7 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { getAllUsers } from "@/services/userApi";
+
 type Task = {
   id?: number;
   title: string;
@@ -82,16 +84,24 @@ export default function AssignTask({
       return;
     }
 
+    // Keep the existing assignment callback.
     onAssigned?.(selectedDeveloper.fullName);
 
+    // Show success using Sonner toast.
+    toast.success("Task Assigned successfully", {
+      description: `${task.title} has been assigned to ${selectedDeveloper.fullName}.`,
+    });
+
+    // Close the assignment modal after the toast is triggered.
     setTimeout(() => {
       onClose();
-    }, 1800);
+    }, 500);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
       <div className="w-[370px] overflow-hidden rounded-[10px] border border-[#e4e6eb] bg-white font-sans shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
+        {/* HEADER */}
         <div className="flex items-start justify-between border-b border-[#e8e9ee] px-[17px] py-[17px]">
           <div>
             <h2 className="text-[14px] text-[#172033]">
@@ -112,6 +122,7 @@ export default function AssignTask({
           </button>
         </div>
 
+        {/* TASK INFORMATION */}
         <div className="mx-[17px] mb-[13px] mt-[15px] rounded-[8px] border border-[#e4e7ec] bg-[#fafbfc] p-[11px]">
           <div className="mb-[6px] text-[12px] font-semibold text-[#273044]">
             {task.title}
@@ -119,7 +130,9 @@ export default function AssignTask({
 
           <div className="flex flex-wrap items-center gap-[5px] text-[9px] text-[#70798a]">
             <span>Payments Platform</span>
+
             <span>·</span>
+
             <span>Due {task.deadline}</span>
 
             <b className="ml-auto rounded-[5px] bg-[#fff3e3] px-[7px] py-1 text-[8px] text-[#d47b20]">
@@ -132,104 +145,117 @@ export default function AssignTask({
           </div>
         </div>
 
+        {/* FORM */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mx-[17px] mb-[7px] text-[9px] font-semibold text-[#4d5667]">
             Assign to
           </div>
 
+          {/* LOADING */}
           {isLoading && (
             <div className="px-[17px] py-4 text-[9px] text-[#7b8495]">
               Loading developers...
             </div>
           )}
 
+          {/* ERROR */}
           {isError && (
             <p className="px-[17px] py-4 text-[9px] font-medium text-red-600">
               Failed to load developers.
             </p>
           )}
 
-          {!isLoading && !isError && developers.length === 0 && (
-            <p className="px-[17px] py-4 text-[9px] text-[#7b8495]">
-              No active developers found.
-            </p>
-          )}
+          {/* NO DEVELOPERS */}
+          {!isLoading &&
+            !isError &&
+            developers.length === 0 && (
+              <p className="px-[17px] py-4 text-[9px] text-[#7b8495]">
+                No active developers found.
+              </p>
+            )}
 
-          {!isLoading && !isError && developers.length > 0 && (
-            <Controller
-              name="developerId"
-              control={control}
-              render={({ field }) => (
-                <div className="px-[17px]">
-                  {developers.map((developer) => {
-                    const isSelected =
-                      field.value === developer.id;
+          {/* DEVELOPERS */}
+          {!isLoading &&
+            !isError &&
+            developers.length > 0 && (
+              <Controller
+                name="developerId"
+                control={control}
+                render={({ field }) => (
+                  <div className="px-[17px]">
+                    {developers.map((developer) => {
+                      const isSelected =
+                        field.value === developer.id;
 
-                    const initials = developer.fullName
-                      .split(" ")
-                      .map((name) => name[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase();
+                      const initials = developer.fullName
+                        .split(" ")
+                        .map((name) => name[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase();
 
-                    return (
-                      <button
-                        type="button"
-                        key={developer.id}
-                        onClick={() => field.onChange(developer.id)}
-                        className={`mb-[6px] flex h-[43px] w-full cursor-pointer items-center justify-between rounded-[7px] border px-[10px] text-left ${
-                          isSelected
-                            ? "border-[#756ef0] bg-[#f8f7ff]"
-                            : "border-[#e2e5eb] bg-white"
-                        }`}
-                      >
-                        <div className="flex items-center gap-[9px]">
-                          <div className="flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#efefff] text-[8px] font-bold text-[#5d57b7]">
-                            {initials}
-                          </div>
-
-                          <div className="flex flex-col gap-[2px]">
-                            <strong className="text-[10px] text-[#273044]">
-                              {developer.fullName}
-                            </strong>
-
-                            <span className="text-[8px] text-[#7b8495]">
-                              Developer
-                            </span>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`flex h-[13px] w-[13px] items-center justify-center rounded-full border-[1.5px] ${
+                      return (
+                        <button
+                          type="button"
+                          key={developer.id}
+                          onClick={() =>
+                            field.onChange(developer.id)
+                          }
+                          className={`mb-[6px] flex h-[43px] w-full cursor-pointer items-center justify-between rounded-[7px] border px-[10px] text-left ${
                             isSelected
-                              ? "border-[#625be0]"
-                              : "border-[#d2d7df]"
+                              ? "border-[#756ef0] bg-[#f8f7ff]"
+                              : "border-[#e2e5eb] bg-white"
                           }`}
                         >
-                          {isSelected && (
-                            <div className="h-[7px] w-[7px] rounded-full bg-[#625be0]" />
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            />
-          )}
+                          <div className="flex items-center gap-[9px]">
+                            <div className="flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#efefff] text-[8px] font-bold text-[#5d57b7]">
+                              {initials}
+                            </div>
 
+                            <div className="flex flex-col gap-[2px]">
+                              <strong className="text-[10px] text-[#273044]">
+                                {developer.fullName}
+                              </strong>
+
+                              <span className="text-[8px] text-[#7b8495]">
+                                Developer
+                              </span>
+                            </div>
+                          </div>
+
+                          <div
+                            className={`flex h-[13px] w-[13px] items-center justify-center rounded-full border-[1.5px] ${
+                              isSelected
+                                ? "border-[#625be0]"
+                                : "border-[#d2d7df]"
+                            }`}
+                          >
+                            {isSelected && (
+                              <div className="h-[7px] w-[7px] rounded-full bg-[#625be0]" />
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              />
+            )}
+
+          {/* VALIDATION ERROR */}
           {errors.developerId && (
             <p className="mx-[17px] mb-[8px] text-[8px] font-medium text-red-600">
               {errors.developerId.message}
             </p>
           )}
 
+          {/* FOOTER */}
           <div className="mt-[10px] flex items-center justify-between gap-[10px] border-t border-[#e8e9ee] px-[17px] py-[13px]">
             <span className="text-[7px] text-[#a0a7b4]">
               Only active members of this project are shown
             </span>
 
-            {!isSubmitSuccessful ? (
+            {!isSubmitSuccessful && (
               <div className="flex gap-[7px]">
                 <button
                   type="button"
@@ -246,11 +272,6 @@ export default function AssignTask({
                 >
                   Assign Task
                 </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-                <span>✓</span>
-                Task Assigned successfully
               </div>
             )}
           </div>

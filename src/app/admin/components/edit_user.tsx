@@ -5,10 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  updateUser,
-  User,
-} from "@/services/userApi";
+import { updateUser } from "@/services/userApi";
 
 const editUserSchema = z
   .object({
@@ -54,7 +51,11 @@ type EditUserFormValues = z.infer<typeof editUserSchema>;
 
 interface EditUserModalProps {
   isOpen: boolean;
-  user: User | null;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+  } | null;
   onClose: () => void;
 }
 
@@ -160,7 +161,7 @@ export default function EditUserModal({
             </h2>
 
             <p className="mt-1 text-sm text-gray-500">
-              Update the developer account details
+              Update your account details
             </p>
           </div>
 
@@ -209,7 +210,7 @@ export default function EditUserModal({
             </h3>
 
             <p className="text-center text-sm text-gray-500">
-              The developer account has been updated successfully.
+              Your account has been updated successfully.
             </p>
           </div>
         ) : (
@@ -358,8 +359,7 @@ export default function EditUserModal({
 
             <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/80 p-6">
               <div className="text-xs font-medium text-gray-400">
-                Role: DEVELOPER · Status:{" "}
-                {user.isActive ? "Active" : "Inactive"}
+                Role: DEVELOPER
               </div>
 
               <div className="flex space-x-3">

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { getAllUsers } from "@/services/userApi";
 
 type Developer = {
@@ -48,8 +49,6 @@ export default function ReassignTask({
   task,
   onClose,
 }: ReassignTaskProps) {
-  const [reassigned, setReassigned] = useState(false);
-
   const {
     watch,
     handleSubmit,
@@ -94,7 +93,6 @@ export default function ReassignTask({
 
   useEffect(() => {
     if (open) {
-      setReassigned(false);
       reset({
         developer: "",
         reason: "",
@@ -116,13 +114,18 @@ export default function ReassignTask({
       return;
     }
 
-    setReassigned(true);
+    /*
+     * No reassign API call is present in the code provided.
+     * Keeping the existing behavior and only changing the
+     * success message to a toast.
+     */
+
+    toast.success("Task Reassigned successfully");
 
     setTimeout(() => {
-      setReassigned(false);
       reset();
       onClose();
-    }, 2000);
+    }, 1500);
   });
 
   return (
@@ -305,33 +308,24 @@ export default function ReassignTask({
             </div>
           </div>
 
-          {!reassigned && (
-            <div className="flex items-center justify-end gap-2 border-t border-gray-200 px-5 py-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="rounded-lg border border-gray-300 bg-white px-4 py-1.5 text-[10px] font-semibold text-gray-700 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
+          <div className="flex items-center justify-end gap-2 border-t border-gray-200 px-5 py-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg border border-gray-300 bg-white px-4 py-1.5 text-[10px] font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
 
-              <button
-                type="button"
-                onClick={handleReassign}
-                disabled={developers.length === 0}
-                className="rounded-lg bg-[#5146e5] px-4 py-1.5 text-[10px] font-semibold text-white hover:bg-[#453bd1] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Reassign Task
-              </button>
-            </div>
-          )}
-
-          {reassigned && (
-            <div className="mx-5 mb-4 flex items-center justify-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-center text-xs font-semibold text-green-700">
-              <span>✓</span>
-              Task Reassigned successfully
-            </div>
-          )}
+            <button
+              type="button"
+              onClick={handleReassign}
+              disabled={developers.length === 0}
+              className="rounded-lg bg-[#5146e5] px-4 py-1.5 text-[10px] font-semibold text-white hover:bg-[#453bd1] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Reassign Task
+            </button>
+          </div>
         </div>
       </div>
     </div>
