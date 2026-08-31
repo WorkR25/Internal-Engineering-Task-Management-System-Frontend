@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Sidebar from "@/app/admin/components/sidebar";
 import AddDeveloperModal from "@/app/admin/components/add_developer";
-import { getAllUsers } from "@/services/userApi";
+import EditUserModal from "@/app/admin/components/edit_user";
+import { getAllUsers, User } from "@/services/userApi";
 
 type Developer = {
   id: string;
@@ -19,7 +20,15 @@ type Developer = {
 
 type Filter = "ALL" | "ACTIVE" | "INACTIVE";
 
-function DeveloperRow({ developer }: { developer: Developer }) {
+function DeveloperRow({
+  developer,
+  user,
+  onEdit,
+}: {
+  developer: Developer;
+  user: User;
+  onEdit: (user: User) => void;
+}) {
   const isActive = developer.status === "ACTIVE";
 
   return (
@@ -79,6 +88,7 @@ function DeveloperRow({ developer }: { developer: Developer }) {
       <td className="px-6 py-4 text-right">
         <button
           type="button"
+          onClick={() => onEdit(user)}
           className="rounded-lg border border-gray-200 px-5 py-1.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
         >
           {isActive ? "Edit" : "Reactivate"}
@@ -90,6 +100,10 @@ function DeveloperRow({ developer }: { developer: Developer }) {
 
 export default function TeamPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] =
+    useState(false);
+  const [selectedUser, setSelectedUser] =
+    useState<User | null>(null);
   const [selectedFilter, setSelectedFilter] =
     useState<Filter>("ALL");
 
@@ -139,6 +153,20 @@ export default function TeamPage() {
 
     return developer.status === selectedFilter;
   });
+
+  const getUserById = (id: string) => {
+    return users.find((user) => user.id === id) ?? null;
+  };
+
+  const handleEdit = (user: User) => {
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setIsEditModalOpen(false);
+    setSelectedUser(null);
+  };
 
   return (
     <div className="min-h-screen w-full bg-[#f8f9fc] font-sans">
@@ -255,12 +283,22 @@ export default function TeamPage() {
                   </td>
                 </tr>
               ) : filteredDevelopers.length > 0 ? (
-                filteredDevelopers.map((developer) => (
-                  <DeveloperRow
-                    key={developer.id}
-                    developer={developer}
-                  />
-                ))
+                filteredDevelopers.map((developer) => {
+                  const user = getUserById(developer.id);
+
+                  if (!user) {
+                    return null;
+                  }
+
+                  return (
+                    <DeveloperRow
+                      key={developer.id}
+                      developer={developer}
+                      user={user}
+                      onEdit={handleEdit}
+                    />
+                  );
+                })
               ) : (
                 <tr>
                   <td
@@ -279,6 +317,12 @@ export default function TeamPage() {
       <AddDeveloperModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+
+      <EditUserModal
+        isOpen={isEditModalOpen}
+        user={selectedUser}
+        onClose={handleEditClose}
       />
     </div>
   );

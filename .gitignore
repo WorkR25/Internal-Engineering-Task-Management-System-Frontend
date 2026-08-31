@@ -40,5 +40,6 @@ next.config.ts
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+next.config.ts
 
 

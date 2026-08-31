@@ -6,6 +6,7 @@ import TaskDetail from "../components/task-detail";
 
 type Task = {
   id: number;
+  assignmentId: number;
   title: string;
   project: string;
   priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -17,6 +18,7 @@ const tasks = {
   todo: [
     {
       id: 1,
+      assignmentId: 1,
       title: "Add rate limiting to auth/signin",
       project: "Payments Platform",
       priority: "MEDIUM" as const,
@@ -29,6 +31,7 @@ const tasks = {
   inReview: [
     {
       id: 2,
+      assignmentId: 2,
       title: "Add pagination to GET /tasks",
       project: "Payments Platform",
       priority: "MEDIUM" as const,
@@ -39,6 +42,7 @@ const tasks = {
   changesRequested: [
     {
       id: 3,
+      assignmentId: 3,
       title: "Refactor review scoring service",
       project: "Payments Platform",
       priority: "CRITICAL" as const,
@@ -49,6 +53,7 @@ const tasks = {
   completed: [
     {
       id: 4,
+      assignmentId: 4,
       title: "Set up Sequelize migrations",
       project: "Payments Platform",
       priority: "LOW" as const,
