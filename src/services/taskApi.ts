@@ -36,10 +36,12 @@ export interface ApiTask {
   status: TaskStatus;
   priority: TaskPriority;
   deadline?: string | null;
+
   developer?: {
     id: number;
     name: string;
   } | null;
+
   createdAt?: string;
   updatedAt?: string;
 }
@@ -48,6 +50,22 @@ export interface GetTasksResponse {
   success: boolean;
   message: string;
   data: ApiTask[];
+}
+
+export interface AssignTaskRequest {
+  developerId: number;
+}
+
+export interface AssignTaskResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: number;
+    taskId: number;
+    developerId: number;
+    assignedBy: number;
+    isCurrent: boolean;
+  };
 }
 
 export async function createTask(
@@ -67,6 +85,18 @@ export async function getTasks(
   const response = await axiosInstance.get<GetTasksResponse>("/tasks", {
     params: projectId ? { projectId } : undefined,
   });
+
+  return response.data;
+}
+
+export async function assignTask(
+  taskId: number,
+  data: AssignTaskRequest
+): Promise<AssignTaskResponse> {
+  const response = await axiosInstance.post<AssignTaskResponse>(
+    `/tasks/${taskId}/assign`,
+    data
+  );
 
   return response.data;
 }

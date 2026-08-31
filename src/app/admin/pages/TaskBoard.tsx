@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Sidebar from "../components/sidebar";
 import CreateTask from "../components/CreateTask";
 import AssignTask from "../components/assign-task";
@@ -11,6 +11,7 @@ import { getProjects } from "@/services/projectApi";
 
 type BoardTask = {
   id: number;
+  projectId: number;
   title: string;
   priority: string;
   developer: string | null;
@@ -25,6 +26,7 @@ function mapApiTaskToBoardTask(
 ): BoardTask {
   return {
     id: task.id,
+    projectId: task.projectId,
     title: task.title,
     priority: task.priority,
     developer: task.developer?.name ?? null,
@@ -138,27 +140,24 @@ function Column({
 }
 
 export default function TaskBoard() {
-  const projectId = 1;
+  const [showCreateTask, setShowCreateTask] =
+    useState(false);
 
-  const [showCreateTask, setShowCreateTask] = useState(false);
   const [selectedTask, setSelectedTask] =
     useState<BoardTask | null>(null);
+
   const [selectedReassignTask, setSelectedReassignTask] =
     useState<BoardTask | null>(null);
 
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["tasks", projectId],
-    queryFn: () => getTasks(projectId),
-  });
+  const queryClient = useQueryClient();
 
+  /*
+   * GET ALL PROJECTS
+   */
   const {
     data: projectsResponse,
+    isLoading: projectsLoading,
+    isError: projectsError,
   } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
@@ -166,8 +165,49 @@ export default function TaskBoard() {
 
   const projects = projectsResponse?.data ?? [];
 
+  /*
+   * GET TASKS FROM EVERY PROJECT
+   *
+   * Backend requires projectId for GET /tasks.
+   * So frontend fetches tasks project-by-project
+   * and combines them into one list.
+   */
+  const {
+    data: tasksResponse,
+    isLoading: tasksLoading,
+    isError: tasksError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      "tasks",
+      "all-projects",
+      projects.map((project) => project.id),
+    ],
+
+    queryFn: async () => {
+      const responses = await Promise.all(
+        projects.map((project) =>
+          getTasks(project.id)
+        )
+      );
+
+      const allTasks = responses.flatMap(
+        (response) => response.data
+      );
+
+      return {
+        success: true,
+        message: "Tasks fetched successfully",
+        data: allTasks,
+      };
+    },
+
+    enabled: projects.length > 0,
+  });
+
   const tasks: BoardTask[] =
-    data?.data?.map((task) => {
+    tasksResponse?.data?.map((task) => {
       const project = projects.find(
         (project) => project.id === task.projectId
       );
@@ -201,6 +241,12 @@ export default function TaskBoard() {
   const openTasks = tasks.filter(
     (task) => task.status !== "COMPLETED"
   ).length;
+
+  const isLoading =
+    projectsLoading || tasksLoading;
+
+  const isError =
+    projectsError || tasksError;
 
   return (
     <div className="min-h-screen bg-[#f8f9fc] text-gray-900">
@@ -339,7 +385,9 @@ export default function TaskBoard() {
         open={showCreateTask}
         onClose={() => setShowCreateTask(false)}
         onCreated={() => {
-          refetch();
+          queryClient.invalidateQueries({
+            queryKey: ["tasks"],
+          });
         }}
       />
 
@@ -348,6 +396,8 @@ export default function TaskBoard() {
         task={
           selectedTask
             ? {
+                id: selectedTask.id,
+                projectId: selectedTask.projectId,
                 title: selectedTask.title,
                 priority: selectedTask.priority,
                 developer: selectedTask.developer,

@@ -7,9 +7,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { getAllUsers } from "@/services/userApi";
+import { getProjectMembers } from "@/services/projectMemberApi";
 
 type Task = {
   id?: number;
+  projectId: number;
   title: string;
   priority: string;
   developer: string | null;
@@ -30,7 +32,8 @@ const assignTaskSchema = z.object({
     .min(1, "Please select a developer to assign this task."),
 });
 
-type AssignTaskFormValues = z.infer<typeof assignTaskSchema>;
+type AssignTaskFormValues =
+  z.infer<typeof assignTaskSchema>;
 
 export default function AssignTask({
   open,
@@ -42,7 +45,10 @@ export default function AssignTask({
     control,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful },
+    formState: {
+      errors,
+      isSubmitSuccessful,
+    },
   } = useForm<AssignTaskFormValues>({
     resolver: zodResolver(assignTaskSchema),
     defaultValues: {
@@ -50,19 +56,61 @@ export default function AssignTask({
     },
   });
 
+  /*
+   * Get all active users
+   */
   const {
     data: users = [],
-    isLoading,
-    isError,
+    isLoading: usersLoading,
+    isError: usersError,
   } = useQuery({
     queryKey: ["developers"],
     queryFn: getAllUsers,
     enabled: open,
   });
 
-  const developers = users.filter(
-    (user) => user.isActive && user.roleId === "2"
-  );
+  /*
+   * Get members of THIS task's project
+   */
+  const {
+    data: projectMembersResponse,
+    isLoading: membersLoading,
+    isError: membersError,
+  } = useQuery({
+    queryKey: [
+      "project-members",
+      task?.projectId,
+    ],
+    queryFn: () =>
+      getProjectMembers(task!.projectId),
+    enabled: open && !!task?.projectId,
+  });
+
+  /*
+   * Only developers who are:
+   *
+   * 1. Active
+   * 2. Developer role
+   * 3. A member of this project
+   */
+  const developers = users
+    .filter(
+      (user) =>
+        user.isActive &&
+        user.roleId === "2"
+    )
+    .filter((user) =>
+      projectMembersResponse?.data.some(
+        (member) =>
+          member.userId === Number(user.id)
+      )
+    );
+
+  const isLoading =
+    usersLoading || membersLoading;
+
+  const isError =
+    usersError || membersError;
 
   useEffect(() => {
     if (open) {
@@ -76,20 +124,28 @@ export default function AssignTask({
     return null;
   }
 
-  const onSubmit = (data: AssignTaskFormValues) => {
+  const onSubmit = (
+    data: AssignTaskFormValues
+  ) => {
     const selectedDeveloper = developers.find(
-      (developer) => developer.id === data.developerId
+      (developer) =>
+        developer.id === data.developerId
     );
 
     if (!selectedDeveloper) {
       return;
     }
 
-    onAssigned?.(selectedDeveloper.fullName);
+    onAssigned?.(
+      selectedDeveloper.fullName
+    );
 
-    toast.success("Task Assigned successfully", {
-      description: `${task.title} has been assigned to ${selectedDeveloper.fullName}.`,
-    });
+    toast.success(
+      "Task Assigned successfully",
+      {
+        description: `${task.title} has been assigned to ${selectedDeveloper.fullName}.`,
+      }
+    );
 
     setTimeout(() => {
       onClose();
@@ -168,7 +224,7 @@ export default function AssignTask({
             !isError &&
             developers.length === 0 && (
               <p className="px-[17px] py-4 text-[9px] text-[#7b8495]">
-                No active developers found.
+                No active developers found in this project.
               </p>
             )}
 
@@ -181,60 +237,69 @@ export default function AssignTask({
                 control={control}
                 render={({ field }) => (
                   <div className="px-[17px]">
-                    {developers.map((developer) => {
-                      const isSelected =
-                        field.value === developer.id;
+                    {developers.map(
+                      (developer) => {
+                        const isSelected =
+                          field.value ===
+                          developer.id;
 
-                      const initials = developer.fullName
-                        .split(" ")
-                        .map((name) => name[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase();
+                        const initials =
+                          developer.fullName
+                            .split(" ")
+                            .map(
+                              (name) =>
+                                name[0]
+                            )
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase();
 
-                      return (
-                        <button
-                          type="button"
-                          key={developer.id}
-                          onClick={() =>
-                            field.onChange(developer.id)
-                          }
-                          className={`mb-[6px] flex h-[43px] w-full cursor-pointer items-center justify-between rounded-[7px] border px-[10px] text-left ${
-                            isSelected
-                              ? "border-[#756ef0] bg-[#f8f7ff]"
-                              : "border-[#e2e5eb] bg-white"
-                          }`}
-                        >
-                          <div className="flex items-center gap-[9px]">
-                            <div className="flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#efefff] text-[8px] font-bold text-[#5d57b7]">
-                              {initials}
-                            </div>
-
-                            <div className="flex flex-col gap-[2px]">
-                              <strong className="text-[10px] text-[#273044]">
-                                {developer.fullName}
-                              </strong>
-
-                              <span className="text-[8px] text-[#7b8495]">
-                                Developer
-                              </span>
-                            </div>
-                          </div>
-
-                          <div
-                            className={`flex h-[13px] w-[13px] items-center justify-center rounded-full border-[1.5px] ${
+                        return (
+                          <button
+                            type="button"
+                            key={developer.id}
+                            onClick={() =>
+                              field.onChange(
+                                developer.id
+                              )
+                            }
+                            className={`mb-[6px] flex h-[43px] w-full cursor-pointer items-center justify-between rounded-[7px] border px-[10px] text-left ${
                               isSelected
-                                ? "border-[#625be0]"
-                                : "border-[#d2d7df]"
+                                ? "border-[#756ef0] bg-[#f8f7ff]"
+                                : "border-[#e2e5eb] bg-white"
                             }`}
                           >
-                            {isSelected && (
-                              <div className="h-[7px] w-[7px] rounded-full bg-[#625be0]" />
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
+                            <div className="flex items-center gap-[9px]">
+                              <div className="flex h-[23px] w-[23px] items-center justify-center rounded-full bg-[#efefff] text-[8px] font-bold text-[#5d57b7]">
+                                {initials}
+                              </div>
+
+                              <div className="flex flex-col gap-[2px]">
+                                <strong className="text-[10px] text-[#273044]">
+                                  {developer.fullName}
+                                </strong>
+
+                                <span className="text-[8px] text-[#7b8495]">
+                                  Developer
+                                </span>
+                              </div>
+                            </div>
+
+                            <div
+                              className={`flex h-[13px] w-[13px] items-center justify-center rounded-full border-[1.5px] ${
+                                isSelected
+                                  ? "border-[#625be0]"
+                                  : "border-[#d2d7df]"
+                              }`}
+                            >
+                              {isSelected && (
+                                <div className="h-[7px] w-[7px] rounded-full bg-[#625be0]" />
+                              )}
+                            </div>
+                          </button>
+                        );
+                      }
+                    )}
                   </div>
                 )}
               />
@@ -265,7 +330,9 @@ export default function AssignTask({
 
                 <button
                   type="submit"
-                  disabled={developers.length === 0}
+                  disabled={
+                    developers.length === 0
+                  }
                   className="cursor-pointer rounded-[6px] border border-[#5147d8] bg-[#5147d8] px-[11px] py-[7px] text-[9px] font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Assign Task
