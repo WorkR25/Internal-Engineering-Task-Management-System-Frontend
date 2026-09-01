@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "sonner";
 import { submitForReview } from "@/services/submitForReviewApi";
 
 interface SubmitForReviewProps {
@@ -76,6 +77,8 @@ export default function SubmitForReview({
     mutationFn: submitForReview,
 
     onSuccess: () => {
+      toast.success("Submitted for review successfully!");
+
       onSubmitted?.({
         pullRequestUrl,
         notes,
@@ -91,6 +94,12 @@ export default function SubmitForReview({
     },
 
     onError: (error) => {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to submit for review"
+      );
+
       console.error(
         "Submit for review failed:",
         error
